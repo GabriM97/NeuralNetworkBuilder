@@ -8,11 +8,48 @@ import numpy as np
 import pickle
 from keras.models import Sequential
 from keras.layers import Dense
+from keras.utils import to_categorical
 
-
-def trainModel(optim):
-    print()
+def evaluateModel(x, y, metrics_list):
     
+    print("\nEvaluating the Model:")
+    loss = model.evaluate(test_x, to_categorical(test_y))
+    print("\nLoss:", round(loss[0], 4))
+    i=1
+    for metric in metrics_list:
+        print(metric + ":", loss[i])
+        i+=1
+        
+
+def trainModel(x, y, num_epochs, output_classes, batch_dim=32, verb=0, valid_split=0.0):
+    
+    print("\nStart to train the model!")
+    
+    if(output_classes > 2):
+        model.fit(x, 
+                  to_categorical(y), 
+                  epochs=num_epochs, 
+                  batch_size=batch_dim, 
+                  verbose=verb, 
+                  validation_split=valid_split)
+    else:
+         model.fit(x, y, 
+                   epochs=num_epochs, 
+                   batch_size=batch_dim, 
+                   verbose=verb, 
+                   validation_split=valid_split)
+    
+    
+
+def compileModel(model, optim, output_classes, metrics_list):
+    
+    if(output_classes > 2):
+        loss_func = "categorical_crossentropy"
+    else:
+        loss_func = "binary_crossentropy"
+    
+    model.compile(optimizer=optim, loss=loss_func, metrics=metrics_list)
+    print("\nModel compiled. Ready for training!")
     
 
 def buildModel(layers_number, neurons_per_layer, activ_functions, data_shape, model_type="Seq", get_info=False):
@@ -84,9 +121,8 @@ def loadLocalDataset(filename):
 
 # --- MAIN ---
 
-#train_x, train_y, test_x, test_y = loadLocalDataset()
+#train_x, train_y, test_x, test_y = loadLocalDataset("localpath")
 train_x, train_y, test_x, test_y = loadExampleDataset()
-
 
 layers_number = 3
 neurons_per_layer = [64,64,10]
@@ -102,14 +138,19 @@ model = buildModel(layers_number,
                    model_type, 
                    get_info)
 
+optimizer = "adam"
+output_classes = 10
+metrics_list = ["accuracy"]
+compileModel(model, optimizer, output_classes, metrics_list)
+
+epochs = 2
+batch_size = 32
+verbose = 1
+valid_split = 0.0
+trainModel(train_x, train_y, epochs, output_classes, batch_size, verbose)
 
 
-
-
-
-
-
-
+evaluateModel(test_x, test_y, metrics_list)
 
 
 
