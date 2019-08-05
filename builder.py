@@ -11,7 +11,22 @@ from keras.layers import Dense
 from keras.utils import to_categorical
 
 
+def saveModelWeights(model, filename):
+    try:
+        model.save_weights(filename)
+        print("\nModel's weights saved!")
+    except IOError:
+        print("\nError saving the model's weights.")
+        return -1
+    return 0
 
+
+def loadModelWeights(model, filename):
+    model.load_weights(filename)
+    print("\nWeights loaded!")
+    return model
+
+    
 def evaluateModel(model, x, y, metrics_list):
     
     print("\nEvaluating the Model:")
@@ -141,19 +156,46 @@ def create_and_save_NewModel():
         train_y = to_categorical(train_y)
         test_y = to_categorical(test_y)
     
-    epochs = 2
+    epochs = 5
     batch_size = 32
     verbose = 1
-    valid_split = 0.2
+    valid_split = 0.4
     trainModel(model, train_x, train_y, epochs, batch_size, verbose, valid_split)
+    
+    saveModelWeights(model, "model_mnist_images.h5")
     
     evaluateModel(model, test_x, test_y, metrics_list)
 
 
+def create_and_load_Model():
+    train_x, train_y, test_x, test_y = loadExampleDataset()
+    
+    layers_number = 3
+    output_classes = 10
+    neurons_per_layer = [64,64,output_classes]
+    activ_functions = ["relu", "relu", "softmax"]
+    data_shape = train_x[0].shape
+    model_type = "Seq"      #Sequential model
+    get_info = False
+    
+    model = buildModel(layers_number, 
+                       neurons_per_layer, 
+                       activ_functions, 
+                       data_shape, 
+                       model_type, 
+                       get_info)
+
+    loadModelWeights(model, "model_mnist_images.h5")
+    
+    prediction = model.predict(test_x[:5])   #predict the first 5 images
+    print("\nPrediction:", np.argmax(prediction, axis=1))
+    #print("\nPrediction:\n", prediction)
+    print("\nTruth:", test_y[:5])
+    
 # --- MAIN ---
 
-create_and_save_NewModel()
-
+#create_and_save_NewModel()
+create_and_load_Model()
 
 
 
