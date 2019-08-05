@@ -11,7 +11,9 @@ function homePage(){
     <div id="home_content">\
       <div id="home-title_container">\
         <div id="github-logo">\
-          <a href="#"><img src="assets/img/github-logo.jpg" alt="GitHub Logo"></a>\
+          <a href="https://github.com/GabriM97/NeuralNetworkBuilder" target="_blank">\
+            <img src="assets/img/github-logo.jpg" alt="GitHub Logo">\
+          </a>\
         </div>\
         <h1 id="main-title">Neural Network Builder</h1>\
         <h3 id="sub-title">Choose if you want to build a <b>new</b> Neural Network or if you want to <b>import</b> a pre-trained Neural Network</h3>\
@@ -22,3 +24,15 @@ function homePage(){
 
   $("#container").append(content)
 }
+
+
+// --- BUTTONS LISTENER ---
+function addEventsOnButtons(){
+  $(".home_btn").on("click", function(){
+    if($(this).name() == "new-network_btn"){
+
+    }else
+    if($(this).name() == "import-network_btn"){
+
+    }
+  });

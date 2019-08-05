@@ -52,6 +52,11 @@ html, body{
   background-size: cover !important;
 }
 
+#github-logo img:hover{
+  width: 42px;
+  height: 42px;
+}
+
 .home_btn{
   display: block;
   margin: 80px auto;
