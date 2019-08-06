@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" type="text/css" href="assets/css/home_style.css">
     <link rel="stylesheet" type="text/css" href="assets/css/main-title_style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/grid_system.css">
     <link rel="stylesheet" type="text/css" href="assets/css/new-network_style.css">
     <link rel="stylesheet" type="text/css" href="assets/css/import-network_style.css">
     <title>Neural Network Builder</title>
@@ -14,7 +15,114 @@
   <body>
     <div id="container"></div>
 
-    
+    <div id="form-container">
+      <form id="new-network_form" action="new_network.php" method="post">
+        <!-- DATASET + BUILD MODEL -->
+        <div class="row">
+          <div id="dataset-section" class="col-5">
+            <p class="section-title">Dataset</p>
+            Choose Dataset file:<br>
+            <input type="file" name="import_dataset" accept=".h5">
+          </div>
+
+          <!-- BUILD MODEL -->
+          <div id="build-section" class="col-7">
+            <p class="section-title">Build Model</p>
+            <div class="row">
+              <div class="col-4">
+                Model type <br>
+                <select name="model_type">
+                  <option value="seq" selected>Sequential</option>
+                  <option value="func" disabled>Functional</option>
+                </select>
+              </div>
+              <div class="col-4">
+                Layers number <br> <input type="number" name="layers_number" value="3" min="1" max="20">
+              </div>
+              <div class="col-4">
+                Output classes <br> <input type="number" name="output_classes" value="2" min="2" max="20">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BUILD MODEL - LAYERS -->
+        <div class="row">
+          <div id="layer_container">
+            <div class="layer col-3">
+              Layer X<br>
+              Neurons <br> <input type="number" name="neur_number" value="4" min="1" max="100">
+              Activation function <br>
+              <select name="activ_funct">
+                <option value="relu" selected>ReLU</option>
+                <option value="sigmoid">Sigmoid</option>
+                <option value="tanh">Tanh</option>
+                <option value="linear">Linear</option>
+                <option value="softmax">Softmax</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMPILE MODEL -->
+        <div class="row">
+          <div id="compile-section">
+            <p class="section-title">Compile Model</p>
+            <!--  -->
+            Learning rate
+            <!-- <input type="checkbox" name="check_learning_rate"><br> -->
+            <select name="learning_rate">
+              <option value="0.0001">0.0001</option>
+              <option value="0.001">0.001</option>
+              <option value="0.003">0.003</option>
+              <option value="0.01">0.01</option>
+              <option value="0.03">0.03</option>
+              <option value="0.1">0.1</option>
+              <option value="0.3">0.3</option>
+              <option value="1" selected>1</option>
+              <option value="3">3</option>
+              <option value="10">10</option>
+            </select>
+            <br><br>
+            Optimizer <br>
+            <input type="radio" name="optimizer" value="Adam" checked="checked">Adam
+            <input type="radio" name="optimizer" value="SGD">SGD
+            <br><br>
+            Metrics list <br>
+            <input type="checkbox" name="metrics" value="accuracy" checked="checked">Accuracy
+          </div>
+        </div>
+
+        <!-- TRAIN MODEL -->
+        <div class="row">
+          <div id="train-section">
+            <p class="section-title">Train Model</p>
+            Epochs <input type="number" name="epochs" value="5" min="1" max="1000">
+            Batch size <input type="number" name="batch_size" value="8" min="2" max="256">
+            Validation-Set split <input type="number" name="validation_split" value="0.0" min="0" max="1" step="0.01">
+          </div>
+        </div>
+
+        <!-- EVALUATE MODEL -->
+        <div class="row">
+          <div id="evaluate-section">
+            <p class="section-title">Evaluate Model</p>
+            Do you want to evaluate your model, after training it? <br>
+            <input type="radio" name="save_choose" value="true">Yes
+            <input type="radio" name="save_choose" value="false">No
+          </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="row">
+          <button type="button" name="button">Submit</button>
+          <button type="reset" name="button">Reset all</button>
+        </div>
+      </form>
+    </div>
+
+
+
 
 
   </body>

@@ -6,6 +6,20 @@
   text-align: center;
 }
 
+#back_home{
+  position: relative;
+  float: left;
+  text-decoration: none;
+  color: lightgray;
+  font-size: 1em;
+}
+
+#back_home:hover, .active{
+  color: white !important;
+  font-weight: bold;
+  font-size: 1.1em !important;
+}
+
 #main-title{
   margin-top: 0;
   padding: 50px 20px;

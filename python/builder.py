@@ -9,7 +9,7 @@ import pickle
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.utils import to_categorical
-from keras.optimizers import SGD
+#from keras.optimizers import SGD
 
 
 def saveModelWeights(model, filename):
@@ -161,7 +161,7 @@ def create_and_save_NewModel():
     
     epochs = 10
     batch_size = 64
-    verbose = 1
+    verbose = 2
     valid_split = 0.4
     trainModel(model, train_x, train_y, epochs, batch_size, verbose, valid_split)
     
@@ -170,7 +170,7 @@ def create_and_save_NewModel():
     evaluateModel(model, test_x, test_y, metrics_list)
 
 
-def create_and_load_Model():
+def load_Model():
     train_x, train_y, test_x, test_y = loadExampleDataset()
     
     layers_number = 3
@@ -198,7 +198,7 @@ def create_and_load_Model():
 # --- MAIN ---
 
 create_and_save_NewModel()
-#create_and_load_Model()
+#load_Model()
 
 
 

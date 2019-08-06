@@ -1,0 +1,18 @@
+#form-container .section-title{
+  margin-bottom: 5px;
+  font-weight: bold;
+  padding-top: 8px;
+  text-align: center;
+  margin-bottom: 15px;
+  /* border-top: 1px solid grey; */
+  /* width: 50%; */
+  /* margin: 10px auto; */
+}
+
+#form-container #dataset-section{
+  text-align: center;
+}
+
+#form-container .layer{
+  text-align: center;
+}

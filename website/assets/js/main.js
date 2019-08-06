@@ -3,7 +3,8 @@ $(document).ready(function(){
 });
 
 function home_main() {
-  homePage();
+  // homePage();
+  createNeuralNewtwork();
   addEventsOnButtons();
   $("#back_home").on("click", function(){ home_main(); });
 }
@@ -38,6 +39,7 @@ function homePage(){
 
    $("#container").append(content);
    $("#main-title_container").append(main_title);
+   $("#back_home").addClass("active");
    var sub_title = "Choose if you want to build a <b>new</b> Neural Network or if you want to <b>import</b> a pre-trained Neural Network";
    $("#main-title_container #sub-title").html(sub_title);
 }
