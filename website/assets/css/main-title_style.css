@@ -1,0 +1,44 @@
+/* MAIN TITLE */
+#main-title_container{
+  background-color: rgb(0,80,115);
+  /* background-color: #343a40; */
+  padding-bottom: 0;
+  text-align: center;
+}
+
+#main-title{
+  margin-top: 0;
+  padding: 50px 20px;
+  text-align: center;
+  color: white;
+}
+
+#sub-title{
+  font-weight: normal;
+  padding: 20px;
+  color: rgb(200,200,200);
+}
+
+#sub-title b{
+  color: lightgray;
+}
+
+#github-logo{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  margin: 10px;
+}
+
+#github-logo img{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-position: center;
+  background-size: cover !important;
+}
+
+#github-logo img:hover{
+  width: 42px;
+  height: 42px;
+}
