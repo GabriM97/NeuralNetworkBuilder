@@ -2,16 +2,24 @@
 box-sizing: border-box;
 }
 
+#form-container .row::before{
+  content: "";
+  display: block;
+  padding: 0.5rem;
+}
+
 #form-container .row::after, #form-container .section-title{
 content: "";
 clear: both;
 display: block;
+margin-bottom: 15px;
 }
 
 #form-container [class*="col-"]{
 float: left;
-padding: 10px;
-border: 1px solid black;
+padding: 5px;
+/* border: 1px solid black; */
+text-align: center;
 }
 
 .col-1 {width: 8.33%;}

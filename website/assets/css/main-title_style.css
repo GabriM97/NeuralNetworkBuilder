@@ -12,6 +12,7 @@
   text-decoration: none;
   color: lightgray;
   font-size: 1em;
+  margin: 10px;
 }
 
 #back_home:hover, .active{

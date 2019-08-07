@@ -11,8 +11,86 @@
 
 #form-container #dataset-section{
   text-align: center;
+  font-size: 1.2rem;
+}
+
+#form-container [type="file"]{
+  margin-top: 10px;
+  font-size: 1rem;
+  outline: none;
+  cursor: pointer;
+}
+
+#form-container select, #form-container [type="number"]{
+  width: 150px;
+  font-size: 1rem;
+  padding: 5px;
+  margin-top: 5px;
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid black;
+  cursor: pointer;
+  box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
+}
+
+#form-container [type="number"]:focus{
+  cursor: text;
+}
+
+#form-container [type="radio"],  #form-container [type="checkbox"]{
+  margin: 10px 5px 0 5px;
+}
+
+#form-container #layers_container, #form-container #evaluate-section{
+  background-color: rgb(0,80,115);
+  color: white;
 }
 
 #form-container .layer{
+  border-right: 1px solid white;
+  height: 80%;
+}
+
+#form-container .layer-num{
   text-align: center;
+}
+
+#form-container #evaluate-section{
+  text-align: center;
+  padding-bottom: 30px;
+}
+
+#form-container .elem-center{
+  display: inline-block;
+  margin: auto;
+  /* border: 1px solid blue; */
+  text-align: left;
+}
+
+#form-container .new-network_btn{
+  width: 100px;
+  height: 40px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 20px;
+  text-align: center;
+  /* border: 1px solid lightgray; */
+  border: 0;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px 2px black;
+  outline: none;
+  background-color: rgb(0,80,115);
+  color: white;
+  cursor: pointer;
+}
+
+#form-container .new-network_btn:hover{
+  box-shadow: 2px 2px 15px 2px black;
+  font-size: 1.15rem;
+}
+
+#form-container .form_btn{
+  display: inline-block;
+  /* border: 1px solid black; */
+  margin: 10px;
 }
