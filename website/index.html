@@ -55,26 +55,28 @@
         </div>
 
         <!-- BUILD MODEL - LAYERS -->
-        <div id="layers_container" class="row">
-          <div class="layer col-4">
-            <p class="layer-num">Layer <span class="number">X</span></p>
-            <div class="row">
-              <div class="col-6">
-                <div class="elem-center">
-                  Neurons <br>
-                  <input type="number" name="neur_number" value="4" min="1" max="100">
+        <div id="layers_container">
+          <div class="row">
+            <div class="layer col-4">
+              <p class="layer-num">Layer <span class="number">X</span></p>
+              <div class="row">
+                <div class="col-6">
+                  <div class="elem-center">
+                    Neurons <br>
+                    <input type="number" name="neur_number" value="4" min="1" max="100">
+                  </div>
                 </div>
-              </div>
-              <div class="col-6">
-                <div class="elem-center">
-                  Activation function <br>
-                  <select name="activ_funct">
-                    <option value="relu" selected>ReLU</option>
-                    <option value="sigmoid">Sigmoid</option>
-                    <option value="tanh">Tanh</option>
-                    <option value="linear">Linear</option>
-                    <option value="softmax">Softmax</option>
-                  </select>
+                <div class="col-6">
+                  <div class="elem-center">
+                    Activation function <br>
+                    <select name="activ_funct">
+                      <option value="relu" selected>ReLU</option>
+                      <option value="sigmoid">Sigmoid</option>
+                      <option value="tanh">Tanh</option>
+                      <option value="linear">Linear</option>
+                      <option value="softmax">Softmax</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
