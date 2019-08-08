@@ -3,8 +3,8 @@ $(document).ready(function(){
 });
 
 function home_main() {
-  // homePage();
-  createNeuralNewtwork();
+  homePage();
+  // createNeuralNewtwork();
   addEventsOnButtons();
   $("#back_home").on("click", function(){ home_main(); });
 }

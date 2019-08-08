@@ -15,7 +15,6 @@ function createNeuralNewtwork() {
   $("#main-title_container #sub-title").html(sub_title);
 
   $("#back_home").on("click", function(){ home_main(); });
-
   new_network_content();
 }
 
@@ -27,16 +26,16 @@ function new_network_content() {
   $("#new-network_main-content").append(content);
 
   addSections();
-  // addButtons();
+  addButtons();
 }
 
 function addSections(){
   addDataset();
   addBuildModel();
   addLayers();
-  // addCompileModel();
-  // addTrainModel();
-  // addEvaluateModel();
+  addCompileModel();
+  addTrainModel();
+  addEvaluateModel();
 }
 
 row_cnt = 0;
@@ -169,4 +168,116 @@ function addLayer_col(cols, current_main_row, layer_number_cnt){
     </div>\
   </div>';
   $("#row-" + current_main_row + "_" + (content_cnt-1)).append(activ_func);
+}
+
+function addCompileModel(){
+  $("#new-network_form").append("<div id='row" + row_cnt + "' class='row'></div>");
+  $("#row" + row_cnt).append("<div id='compile-section' class='col-6'></div>");
+  row_cnt++;
+  $("#compile-section").append("<p class='section-title'>Compile Model</p>");
+
+  var learning_rate = '\
+  <div class="col-4">\
+    <div class="elem-center">\
+      Learning rate <br>\
+      <select name="learning_rate">\
+        <option value="0.0001">0.0001</option>\
+        <option value="0.001">0.001</option>\
+        <option value="0.003">0.003</option>\
+        <option value="0.01">0.01</option>\
+        <option value="0.03">0.03</option>\
+        <option value="0.1">0.1</option>\
+        <option value="0.3">0.3</option>\
+        <option value="1" selected>1</option>\
+        <option value="3">3</option>\
+        <option value="10">10</option>\
+      </select>\
+    </div>\
+  </div>';
+  $("#compile-section").append(learning_rate);
+
+  var optimizer = '\
+  <div class="col-4">\
+    <div class="elem-center">\
+      Optimizer <br>\
+      <input type="radio" name="optimizer" value="Adam" checked="checked">Adam\
+      <br>\
+      <input type="radio" name="optimizer" value="SGD">SGD\
+    </div>\
+  </div>';
+  $("#compile-section").append(optimizer);
+
+  var metrics = '\
+  <div class="col-4">\
+    <div class="elem-center">\
+      Metrics list <br>\
+      <input type="checkbox" name="metrics" value="accuracy" checked="checked">Accuracy\
+    </div>\
+  </div>';
+  $("#compile-section").append(metrics);
+
+}
+
+function addTrainModel(){
+  $("#compile-section").after("<div id='train-section' class='col-6'>");
+  $("#train-section").append("<p class='section-title'>Train Model</p>");
+
+  var epochs = '\
+  <div class="col-4">\
+    <div class="elem-center">\
+      Epochs <br>\
+      <input type="number" name="epochs" value="5" min="1" max="1000">\
+    </div>\
+  </div>';
+  $("#train-section").append(epochs);
+
+  var batch_size = '\
+  <div class="col-4">\
+    <div class="elem-center">\
+      Batch size <br>\
+      <input type="number" name="batch_size" value="8" min="2" max="256">\
+    </div>\
+  </div>';
+  $("#train-section").append(batch_size);
+
+  var valid_split = '\
+  <div class="col-4">\
+    <div class="elem-center">\
+      Validation-Set split <br>\
+      <input type="number" name="validation_split" value="0.0" min="0" max="1" step="0.01">\
+    </div>\
+  </div>';
+  $("#train-section").append(valid_split);
+}
+
+function addEvaluateModel(){
+  $("#new-network_form").append("<div id='row" + row_cnt + "' class='row'></div>");
+  $("#row" + row_cnt).append("<div id='evaluate-section' class='col-12'></div>");
+  row_cnt++;
+
+  var evaluate = '\
+  <p class="section-title">Evaluate Model</p>\
+  <p class="question">Do you want to evaluate your model, after training it?</p>\
+  <div class="answer">\
+    <input type="radio" name="save_choose" value="true" checked="checked">Yes\
+    <input type="radio" name="save_choose" value="false">No\
+  </div>';
+  $("#evaluate-section").append(evaluate);
+}
+
+function addButtons(){
+  $("#new-network_form").append("<div id='row" + row_cnt + "' class='row'></div>");
+  $("#row" + row_cnt).append("<div id='form-buttons' class='col-12'></div>");
+  row_cnt++;
+
+  var buttons = '\
+  <div class="form_btn">\
+    <button type="button" name="submit-btn" class="new-network_btn">Submit</button>\
+  </div>\
+  <div class="form_btn">\
+    <button type="reset" name="reset-btn" class="new-network_btn">Reset all</button>\
+  </div>';
+
+  $("#form-buttons").append(buttons);
+
 }
