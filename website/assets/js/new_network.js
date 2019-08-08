@@ -2,29 +2,17 @@
 function createNeuralNewtwork() {
   $("#container").empty();
 
-  var content = '\
-    <div id="new-network_content">\
-      <div id="main-title_container"></div>\
-      <div id="new-network_main-content"></div>\
-    </div>';
-
   var sub_title = "Create a <b>new</b> Neural Network. &nbsp;From zero to <b>Hero</b>!";
+  mainTitleInit(sub_title);
 
-  $("#container").append(content);
-  $("#main-title_container").append(main_title);
-  $("#main-title_container #sub-title").html(sub_title);
-
-  $("#back_home").on("click", function(){ home_main(); });
-  new_network_content();
-}
-
-function new_network_content() {
   var content = '\
+  <div id="new-network_content">\
     <div id="form-container">\
       <form id="new-network_form" action="new_network.php" method="post"></form>\
-    </div>';
-  $("#new-network_main-content").append(content);
-
+    </div>\
+  </div>';
+  $("#container").append(content);
+  
   addSections();
   addButtons();
 }
@@ -272,12 +260,14 @@ function addButtons(){
 
   var buttons = '\
   <div class="form_btn">\
-    <button type="button" name="submit-btn" class="new-network_btn">Submit</button>\
+    <button type="button" id="submit_btn" name="submit-btn" class="new-network_btn">Submit</button>\
   </div>\
   <div class="form_btn">\
-    <button type="reset" name="reset-btn" class="new-network_btn">Reset all</button>\
+    <button type="reset" id="reset_btn" name="reset-btn" class="new-network_btn">Reset all</button>\
   </div>';
 
   $("#form-buttons").append(buttons);
+
+  $("#submit_btn").on("click", function(){ buildModelMain(); });
 
 }

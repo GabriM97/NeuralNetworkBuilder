@@ -11,17 +11,14 @@ html, body{
 
 
 /* --- HOME PAGE --- */
-#home_content{
-  /* border: 1px solid black; */
-}
 
-#home_main-content{
+#home_content{
   text-align: center;
   width: 600px;
   margin: auto;
 }
 
-#home_main-content .home_btn{
+#home_content .home_btn{
   display: block;
   margin: 80px auto;
   width: 600px;
@@ -38,12 +35,12 @@ html, body{
   cursor: pointer;
 }
 
-#home_main-content .home_btn:hover{
+#home_content .home_btn:hover{
   box-shadow: 2px 2px 15px 2px black;
   font-size: 1.6em;
 }
 
 /* bootstrap buttons */
-#home_main-content button{
+#home_content button{
   margin: 80px auto;
 }
