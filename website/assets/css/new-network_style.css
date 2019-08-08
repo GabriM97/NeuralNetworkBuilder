@@ -1,13 +1,15 @@
 #form-container .section-title{
-  margin-bottom: 5px;
+  margin-bottom: 25px;
   font-weight: bold;
-  padding-top: 8px;
   text-align: center;
-  margin-bottom: 15px;
   /* border-top: 1px solid grey; */
-  /* width: 50%; */
-  /* margin: 10px auto; */
 }
+
+#form-container [id*="-section"]{
+  /* border: 1px solid black; */
+  border-right: 1px solid black;
+}
+
 
 #form-container #dataset-section{
   text-align: center;
@@ -17,8 +19,13 @@
 #form-container [type="file"]{
   margin-top: 10px;
   font-size: 1rem;
-  outline: none;
+  /* outline: none; */
+  /* width: 250px; */
   cursor: pointer;
+}
+
+#form-container #build-section .section-title{
+  margin-bottom: 15px;
 }
 
 #form-container select, #form-container [type="number"]{
@@ -44,10 +51,14 @@
 #form-container #layers_container, #form-container #evaluate-section{
   background-color: rgb(0,80,115);
   color: white;
+  border: 0;
 }
 
 #form-container .layer{
-  border-right: 1px solid white;
+  /* border-right: 1px solid white; */
+  /* border-top: 1px solid white; */
+  border: 1px solid white;
+  border-radius: 50px;
   height: 80%;
 }
 
