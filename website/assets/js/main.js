@@ -45,7 +45,7 @@ function mainTitleInit(sub_title){
       <a href="#home" id="back_home">Home</a>\
       <div id="github-logo">\
         <a href="https://github.com/GabriM97/NeuralNetworkBuilder" target="_blank" title="Repository GitHub">\
-          <img src="assets/img/github-logo.jpg" alt="GitHub Logo">\
+          <img src="assets/img/github-logo.png" alt="GitHub Logo">\
         </a>\
       </div>\
       <h1 id="main-title">Neural Network Builder</h1>\
