@@ -8,7 +8,7 @@ function createNeuralNewtwork() {
   var content = '\
   <div id="new-network_content">\
     <div id="form-container">\
-      <form id="new-network_form" action="new_network.php" method="post"></form>\
+      <form id="new-network_form" action="new_network.php" method="POST" enctype="multipart/form-data"></form>\
     </div>\
   </div>';
   $("#container").append(content);
@@ -34,7 +34,7 @@ function addDataset(){
       <p class="section-title">Dataset</p>\
       <div class="elem-center">\
         Choose Dataset file:<br>\
-        <input type="file" id="import_dataset" name="import_dataset" accept=".json">\
+        <input type="file" id="import_dataset" name="import_dataset" accept=".json, .csv">\
       </div>\
     </div>';
 
@@ -137,7 +137,7 @@ function addLayer_col(cols, current_main_row, layer_number_cnt){
   <div class="col-6">\
     <div class="elem-center">\
       Neurons <br>\
-      <input type="number" name="neur_number" value="4" min="1" max="100">\
+      <input type="number" name="neur_number[]" value="4" min="1" max="100">\
     </div>\
   </div>';
   $("#row-" + current_main_row + "_" + (content_cnt-1)).append(neurons_num);
@@ -146,7 +146,7 @@ function addLayer_col(cols, current_main_row, layer_number_cnt){
   <div class="col-6">\
     <div class="elem-center">\
       Activation function <br>\
-      <select name="activ_funct">\
+      <select name="activ_funct[]">\
         <option value="relu" selected>ReLU</option>\
         <option value="sigmoid">Sigmoid</option>\
         <option value="tanh">Tanh</option>\
@@ -247,8 +247,8 @@ function addEvaluateModel(){
   <p class="section-title">Evaluate Model</p>\
   <p class="question">Do you want to evaluate your model, after training it?</p>\
   <div class="answer">\
-    <input type="radio" name="save_choose" value="true" checked="checked">Yes\
-    <input type="radio" name="save_choose" value="false">No\
+    <input type="radio" name="evaluate_choose" value="true" checked="checked">Yes\
+    <input type="radio" name="evaluate_choose" value="false">No\
   </div>';
   $("#evaluate-section").append(evaluate);
 }
@@ -260,7 +260,7 @@ function addButtons(){
 
   var buttons = '\
   <div class="form_btn">\
-    <button type="button" id="submit_btn" name="submit-btn" class="new-network_btn">Submit</button>\
+    <button type="submit" id="submit_btn" name="submit-btn" class="new-network_btn">Submit</button>\
   </div>\
   <div class="form_btn">\
     <button type="reset" id="reset_btn" name="reset-btn" class="new-network_btn">Reset all</button>\

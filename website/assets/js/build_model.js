@@ -1,12 +1,12 @@
 function buildModelMain(){
 
-  saveInputData();
+  //saveInputData();
   // $("#container").empty();
 
   var sub_title = "Building your Keras model ...";
   mainTitleInit(sub_title);
 
-  /*var trainX, trainY, testX, testY =*/ getDataset();
+  /*var trainX, trainY, testX, testY =*/ //getDataset();
   // var model = getModel();
   // compileModel(model);
   // trainModel();
