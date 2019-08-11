@@ -12,7 +12,7 @@ function createNeuralNewtwork() {
     </div>\
   </div>';
   $("#container").append(content);
-  
+
   addSections();
   addButtons();
 }
@@ -34,7 +34,7 @@ function addDataset(){
       <p class="section-title">Dataset</p>\
       <div class="elem-center">\
         Choose Dataset file:<br>\
-        <input type="file" name="import_dataset" accept=".h5">\
+        <input type="file" id="import_dataset" name="import_dataset" accept=".json">\
       </div>\
     </div>';
 
@@ -268,6 +268,6 @@ function addButtons(){
 
   $("#form-buttons").append(buttons);
 
-  $("#submit_btn").on("click", function(){ buildModelMain(); });
+  //$("#submit_btn").on("click", function(){ buildModelMain(); });
 
 }

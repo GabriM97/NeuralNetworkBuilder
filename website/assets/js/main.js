@@ -5,6 +5,7 @@ $(document).ready(function(){
 function home_main() {
   homePage();
   // buildModelMain();
+  // saveInputData();
   addEventsOnMainPageButtons();
 }
 

@@ -106,6 +106,7 @@ def loadExampleDataset():
     test_images = test_images.reshape((-1,784))
 
     print("\nMNIST Dataset loaded!")
+    #print(train_images[0])
     #print(train_images.shape)
     #print(test_images.shape)
     
@@ -159,7 +160,7 @@ def create_and_save_NewModel():
         train_y = to_categorical(train_y)
         test_y = to_categorical(test_y)
     
-    epochs = 10
+    epochs = 5
     batch_size = 64
     verbose = 2
     valid_split = 0.4
