@@ -160,7 +160,7 @@ def create_and_save_NewModel():
         train_y = to_categorical(train_y)
         test_y = to_categorical(test_y)
     
-    epochs = 5
+    epochs = 1
     batch_size = 64
     verbose = 2
     valid_split = 0.4
