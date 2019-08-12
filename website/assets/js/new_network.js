@@ -32,9 +32,17 @@ function addDataset(){
   var dataset = '\
     <div id="dataset-section" class="col-5">\
       <p class="section-title">Dataset</p>\
-      <div class="elem-center">\
-        Choose Dataset file:<br>\
-        <input type="file" id="import_dataset" name="import_dataset" accept=".json, .csv">\
+      <div class="col-6">\
+        <div class="elem-center">\
+          Choose Dataset file:<br>\
+          <input type="file" id="import_dataset" name="import_dataset" accept=".json, .csv, .pickle, .pkl">\
+        </div>\
+      </div>\
+      <div class="col-6">\
+    		<div class="elem-center">\
+    			Input Dimension<br>\
+    			<input type="number" id="input_shape" name="input_shape" value="1" min="1">\
+    		</div>\
       </div>\
     </div>';
 
@@ -71,7 +79,7 @@ function addBuildModel(){
   <div class="col-4">\
     <div class="elem-center">\
       Output classes <br>\
-      <input type="number" name="output_classes" value="2" min="2" max="20">\
+      <input type="number" name="output_classes" value="2" min="1" max="20">\
     </div>\
   </div>';
 
@@ -188,9 +196,9 @@ function addCompileModel(){
   <div class="col-4">\
     <div class="elem-center">\
       Optimizer <br>\
-      <input type="radio" name="optimizer" value="Adam" checked="checked">Adam\
+      <input type="radio" name="optimizer" value="adam" checked="checked">Adam\
       <br>\
-      <input type="radio" name="optimizer" value="SGD">SGD\
+      <input type="radio" name="optimizer" value="sgd">SGD\
     </div>\
   </div>';
   $("#compile-section").append(optimizer);
