@@ -23,19 +23,23 @@ def loadExampleDataset():
 
 
 def saveExampleDataset(data):
+    path = "./saves/"
+    filename = "local_dataset.pkl"
+
     try:
-        with open("local_dataset.pkl", 'wb') as inp:
+        with open(path+filename, 'wb') as inp:
             pickle.dump(data, inp)
             print("\nLocal dataset saved.")
             return 0
-    except IOError:
-        print("\nError saving local dataset.")
+    except IOError as e:
+        print("\nError saving local dataset: " + e)
         return -1
 
 
 def loadLocalDataset(filename):
+    path = "./saves/"
     try:
-        with open(filename, "rb") as inp:
+        with open(path+filename, "rb") as inp:
             data = pickle.load(inp)
             print("\nLocal Dataset", filename, "loaded!")
     except IOError:
@@ -60,10 +64,10 @@ def get_MNIST_save():
 
 def load_local(filename):
     train_x, train_y, test_x, test_y = loadLocalDataset(filename)
-    print(train_x, train_y, test_x, test_y)
+    #print(train_x, train_y, test_x, test_y)
 
 # --- MAIN ---
 
-#get_MNIST_save()
+get_MNIST_save()
 filename = sys.argv[1]
-load_local(filename)
+#load_local(filename)

@@ -37,10 +37,12 @@ def getLayersInfo(filename):
         print("\nError trying to load layers structure from", filename)
         return -1
 
-    neurons_per_layer = data["neurons"]
+    neurons_per_layer = []
+    for neur in data["neurons_number"]:
+        neurons_per_layer.append(int(neur))
     activ_functions = data["activ_function"]
 
-    return neurons_per_layer, activ_function
+    return neurons_per_layer, activ_functions
 
 
 def saveModel(model, filename):
@@ -51,9 +53,25 @@ def saveModel(model, filename):
         print("Error saving the model:", e)
         return -1
 
+
+def importModel(modelPath):
+    model = -1
+
+    model = load_model(modelPath)
+    if(model == -1):
+        print("Error importing the model.")
+
+    return model
+
+
 #----------------------------------------------
 
-def method(layers_number, neurons_per_layer, activ_functions, data_shape, model_type, get_info):
+def buildMethod():
+    model_type = sys.argv[1]
+    layers_number = int(sys.argv[2])
+    neurons_per_layer, activ_functions = getLayersInfo(sys.argv[3])
+    data_shape = (int(sys.argv[4]),)
+    get_info = False
 
     model = buildModel(layers_number,
                        neurons_per_layer,
@@ -62,15 +80,24 @@ def method(layers_number, neurons_per_layer, activ_functions, data_shape, model_
                        model_type,
                        get_info)
 
-    exit = saveModel(model, "personal_model.h5")
+    filename = "./python/saves/personal_model.h5"   # PHP SCRIPT
+    #filename = "./saves/personal_model.h5"          # CMD SCRIPT
+    exit = saveModel(model, filename)
     print("exit_status:", exit)
+
+
+def importMethod():
+    filename = "./python/saves/personal_model.h5"   # PHP SCRIPT
+    #filename = "./saves/personal_model.h5"          # CMD SCRIPT
+    model = importModel(filename)
+
+    if(model != -1):
+        print("exit_status: 0")
+    else:
+        print("exit_status:", model)
+
 
 # --- MAIN ---
 
-model_type = sys.argv[1]
-layers_number = sys.argv[2]
-neurons_per_layer, activ_functions = getLayersInfo(sys.argv[3])
-data_shape = sys.argv[4]
-get_info = False
-
-method(layers_number, neurons_per_layer, activ_functions, data_shape, model_type, get_info)
+buildMethod()
+#importMethod()
