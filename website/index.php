@@ -21,6 +21,7 @@
   </body>
   <script type="text/javascript" src="assets/js/lib/jquery-3.4.1.js"></script>
   <script type="text/javascript" src="assets/js/lib/tfjs-1.0.0.js"></script>
+  <script type="text/javascript" src="assets/js/main_title.js"></script>
   <script type="text/javascript" src="assets/js/main.js"></script>
   <script type="text/javascript" src="assets/js/new_network.js"></script>
   <script type="text/javascript" src="assets/js/build_model.js"></script>
