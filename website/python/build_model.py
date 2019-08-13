@@ -25,7 +25,7 @@ def buildModel(layers_number, neurons_per_layer, activ_functions, data_shape, mo
     elif(model_type == "func"):
         print("\nNOT SUPPORTED YET - WORK IN PROGRESS...")
 
-    print(model.summary()) if get_info else print("\nModel Builded!")
+    print(model.summary()) if get_info else print("\nModel builded!")
     return model
 
 
@@ -71,7 +71,7 @@ def buildMethod():
     layers_number = int(sys.argv[2])
     neurons_per_layer, activ_functions = getLayersInfo(sys.argv[3])
     data_shape = (int(sys.argv[4]),)
-    get_info = False
+    get_info = True
 
     model = buildModel(layers_number,
                        neurons_per_layer,

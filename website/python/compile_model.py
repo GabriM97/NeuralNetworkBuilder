@@ -44,7 +44,7 @@ def compile():
 
     model = importModel()
     optimizer = sys.argv[1]
-    learning_rate = int(sys.argv[2])
+    learning_rate = float(sys.argv[2])
     output_classes = int(sys.argv[3])
     #metrics_list = sys.argv[4]
     metrics_list = ["accuracy"]
