@@ -5,7 +5,7 @@ from keras.utils import to_categorical
 from keras.models import load_model
 
 def trainModel(model, x, y, num_epochs, batch_dim=32, verb=0, valid_split=0.0):
-    print("\nStart training.")
+    print("\nStart training.\n")
     model.fit(x, y,
               epochs=num_epochs,
               batch_size=batch_dim,
