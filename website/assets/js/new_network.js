@@ -79,13 +79,18 @@ function addBuildModel(){
   <div class="col-4">\
     <div class="elem-center">\
       Output classes <br>\
-      <input type="number" name="output_classes" value="2" min="1" max="20">\
+      <input type="number" id="output_classes" name="output_classes" value="2" min="1" max="100">\
     </div>\
   </div>';
 
   $("#row"+row_cnt).append(model_type);
   $("#row"+row_cnt).append(layers_num);
   $("#row"+row_cnt).append(output_classes);
+
+  $("#output_classes").change(function(){
+      var value = $(this).val();
+      $("#layers_container [id*='_" + (content_cnt-1) + "'] [name*='neur_number']").val(value);
+  });
 
   row_cnt++;
 }
@@ -102,6 +107,7 @@ function addLayers(){
   renderLayers(layers_num);
 }
 
+var content_cnt = 0;
 function renderLayers(layers_num){
   $("#layers_container").empty();
   content_cnt = 0;
@@ -130,9 +136,17 @@ function renderLayers(layers_num){
       }
     }
   }
+
+  var last_layer_selector = "#layers_container [id*='_" + (content_cnt-1) + "'] [name*='neur_number']";
+  var value = $("#output_classes").val();
+  $(last_layer_selector).val(value);
+
+  $("#layers_container [id*='_" + (content_cnt-1) + "'] [name*='neur_number']").change(function(){
+    var value = $(this).val();
+    $("#output_classes").val(value);
+  });
 }
 
-var content_cnt = 0;
 function addLayer_col(cols, current_main_row, layer_number_cnt){
   var layer_content = $("<div class='layer col-" + cols + "'></div>");
   var layer_name = "<p class='layer-num'>Layer " + layer_number_cnt + "</p>";
