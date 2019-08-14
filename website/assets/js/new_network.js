@@ -194,11 +194,11 @@ function addCompileModel(){
         <option value="0.0001">0.0001</option>\
         <option value="0.001">0.001</option>\
         <option value="0.003">0.003</option>\
-        <option value="0.01">0.01</option>\
+        <option value="0.01" selected>0.01</option>\
         <option value="0.03">0.03</option>\
         <option value="0.1">0.1</option>\
         <option value="0.3">0.3</option>\
-        <option value="1" selected>1</option>\
+        <option value="1">1</option>\
         <option value="3">3</option>\
         <option value="10">10</option>\
       </select>\

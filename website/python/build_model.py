@@ -5,7 +5,6 @@ from keras.models import Sequential, load_model
 from keras.layers import Dense
 
 def buildModel(layers_number, neurons_per_layer, activ_functions, data_shape, model_type="Seq", get_info=False):
-
     model_type = model_type.lower()
     if(model_type != "seq" and model_type != "func"):
         print("\nSyntax model type ERROR! Set to default model type: Sequential")
@@ -60,9 +59,7 @@ def importModel(modelPath):
     model = load_model(modelPath)
     if(model == -1):
         print("Error importing the model.")
-
     return model
-
 
 #----------------------------------------------
 
@@ -86,18 +83,6 @@ def buildMethod():
     print("exit_status:", exit)
 
 
-def importMethod():
-    filename = "./python/saves/personal_model.h5"   # PHP SCRIPT
-    #filename = "./saves/personal_model.h5"          # CMD SCRIPT
-    model = importModel(filename)
-
-    if(model != -1):
-        print("exit_status: 0")
-    else:
-        print("exit_status:", model)
-
-
 # --- MAIN ---
 
 buildMethod()
-#importMethod()

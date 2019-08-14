@@ -124,8 +124,8 @@ def get_MNIST_save():
             "test_x": test_x,
             "test_y": test_y }
     saveDatasetPKL(data)
-    saveDatasetJSON(data)
-    saveDatasetCSV(data)
+    #saveDatasetJSON(data)
+    #saveDatasetCSV(data)
 
 def load_local(filename):
     train_x, train_y, test_x, test_y = loadLocalDataset(filename)

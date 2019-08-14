@@ -1,7 +1,8 @@
 import sys
 import pickle
 import json
-import pandas    #for csv files
+import pandas as pd   #for csv files
+import numpy as np
 from keras.utils import to_categorical
 from keras.models import load_model
 

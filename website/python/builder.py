@@ -28,7 +28,6 @@ def loadModelWeights(model, filename):
 
 
 def evaluateModel(model, x, y, metrics_list):
-
     print("\nEvaluating the Model:")
     loss = model.evaluate(x, y)
 
@@ -40,9 +39,7 @@ def evaluateModel(model, x, y, metrics_list):
 
 
 def trainModel(model, x, y, num_epochs, batch_dim=32, verb=0, valid_split=0.0):
-
     print("\nStart to train the model!")
-
     model.fit(x, y,
               epochs=num_epochs,
               batch_size=batch_dim,
@@ -53,7 +50,6 @@ def trainModel(model, x, y, num_epochs, batch_dim=32, verb=0, valid_split=0.0):
 
 
 def compileModel(model, optim, output_classes, metrics_list):
-
     if(output_classes > 2):
         loss_func = "categorical_crossentropy"
     else:
@@ -64,7 +60,6 @@ def compileModel(model, optim, output_classes, metrics_list):
 
 
 def buildModel(layers_number, neurons_per_layer, activ_functions, data_shape, model_type="Seq", get_info=False):
-
     model_type = model_type.lower()
     if(model_type != "seq" and model_type != "func"):
         print("\nSyntax model type ERROR! Set to default model type: Sequential")
@@ -122,17 +117,17 @@ def loadLocalDataset(filename):
         print("\nError trying to Load data from", filename)
         return -1
 
-    train_x = data[0]   #TRAIN X
-    train_y = data[1]   #TRAIN Y
-    test_x = data[2]    #TEST X
-    test_y = data[3]    #TEST Y
+    train_x = data["train_x"]
+    train_y = data["train_y"]
+    test_x = data["test_x"]
+    test_y = data["test_y"]
 
     return train_x, train_y, test_x, test_y
 
 
 def create_and_save_NewModel():
-    #train_x, train_y, test_x, test_y = loadLocalDataset("localpath")
-    train_x, train_y, test_x, test_y = loadExampleDataset()
+    train_x, train_y, test_x, test_y = loadLocalDataset("./saves/local_dataset.pkl")
+    #train_x, train_y, test_x, test_y = loadExampleDataset()
 
     layers_number = 3
     output_classes = 10
@@ -149,7 +144,7 @@ def create_and_save_NewModel():
                        model_type,
                        get_info)
 
-    learning_rate = 0.005
+    #learning_rate = 0.005
     #optimizer = Adam(lr=learning_rate)
     optimizer = "adam"
     metrics_list = ["accuracy"]
