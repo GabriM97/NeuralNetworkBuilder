@@ -1,6 +1,7 @@
 import sys
 import pickle
 import json
+import pandas    #for csv files
 from keras.utils import to_categorical
 from keras.models import load_model
 
@@ -18,6 +19,7 @@ def trainModel(model, x, y, num_epochs, batch_dim=32, verb=0, valid_split=0.0):
 def loadLocalDataset(filename):
     path = "./python/saves/" + filename     # PHP SCRIPT
     #path = "./saves/" + filename            # CMD SRIPT
+
     try:
         if(filename.find(".pkl", -5) != -1):
             with open(path, "rb") as inp:
@@ -25,14 +27,20 @@ def loadLocalDataset(filename):
         elif(filename.find(".json", -6) != -1):
             with open(path, "r") as inp:
                 data = json.load(inp)
+        elif(filename.find(".csv", -5) != -1):
+            data = pd.read_csv(path)
+            #print("\nLocal Dataset", filename, "loaded!")
+            train_x = data["train_x"].tolist()
+            train_y = data["train_y"].tolist()
+            return train_x, train_y
+
         #print("\nLocal Dataset", filename, "loaded!")
-    except IOError:
-        print("\nError trying to Load data from", filename)
-        return -1
+    except Exception as e:
+        print("\n", e, "Error trying to Load data from", filename)
+        return -1, -1
 
     train_x = data["train_x"]
     train_y = data["train_y"]
-
     return train_x, train_y
 
 #---------------------------------
