@@ -22,17 +22,19 @@
         <div id="terminal-content">
           <pre class="pre-container">
           <?php
+              $errors = "False";
               // DATASET SECTION
               $dataset_tmp_name = $_FILES["import_dataset"]["tmp_name"];
               $dataset_name = $_FILES["import_dataset"]["name"];
               $input_shape = $_POST["input_shape"];
               echo "\n <pre class='pre-title'> \tStep 1: -- SAVE DATASET -- </pre>";
               $dataset = saveDataset($dataset_tmp_name, $dataset_name);
+              if($dataset != 0) $errors = "True";
 
               // BUILD MODEL SECTION
               $model_type = $_POST["model_type"];
               $layers_number= $_POST["layers_number"];
-              $output_classes = $_POST["output_classes"];   // == $layer['neurons_number'][-1]
+              $output_classes = $_POST["output_classes"];
 
                   // LAYERS SECTION
               $layers = array("neurons_number" => array(), "activ_function" => array());
@@ -41,30 +43,35 @@
                 $layers["activ_function"][$i] = $_POST["activ_funct"][$i];
               }
               echo "<hr> <pre class='pre-title'> \tStep 2: -- BUILD MODEL -- </pre>";
-              buildModel($model_type, $layers_number, $output_classes, $input_shape, $layers);
+              $exit = buildModel($model_type, $layers_number, $output_classes, $input_shape, $layers);
+              if($exit != 0) $errors = "True";
 
               // COMPILE MODEL SECTION
               $learning_rate = $_POST["learning_rate"];
               $optimizer = $_POST["optimizer"];
               $metrics = $_POST["metrics"];
               echo "<hr> <pre class='pre-title'> \tStep 3: -- COMPILE MODEL -- </pre>";
-              compileModel($optimizer, $learning_rate, $output_classes, $metrics);
+              $exit = compileModel($optimizer, $learning_rate, $output_classes, $metrics);
+              if($exit != 0) $errors = "True";
+
 
               // TRAIN MODEL SECTION
               $epochs = $_POST["epochs"];
               $batch_size = $_POST["batch_size"];
               $validation_split = $_POST["validation_split"];
               echo "<hr> <pre class='pre-title'> \tStep 4: -- TRAIN MODEL -- </pre>";
-              trainModel($dataset, $epochs, $batch_size, $validation_split, $output_classes);
+              $exit = trainModel($dataset, $epochs, $batch_size, $validation_split, $output_classes);
+              if($exit != 0) $errors = "True";
 
               //EVALUATE MODEL SECTION
               $evaluate_choose = $_POST["evaluate_choose"];
               if($evaluate_choose == "true"){
                 echo "<hr> <pre class='pre-title'> \tStep 5: -- EVALUATE MODEL -- </pre>";
-                evaluateModel($dataset, $output_classes, $metrics);
+                $exit = evaluateModel($dataset, $output_classes, $metrics);
+                if($exit != 0) $errors = "True";
               }
 
-              $jsScript =
+              $autoscroll =
               '<script type="text/javascript">
                 var height = 0;
                 $("pre").each(function(i, value){
@@ -73,11 +80,21 @@
                 height += \'\';
                 $("#terminal-container").animate({scrollTop: height});
               </script>';
-              echo $jsScript;
+              echo $autoscroll;
             ?>
           </pre>
         </div>
       </div>
+      <?php
+        if($errors == "False"){
+          echo "<div class='download-model'>
+                  <a href='python/saves/personal_model.h5'>
+                    <div class='cloud-download-container'><img src='assets/img/cloud-download.png' alt='download-img'></div>
+                    Download your model
+                  </a>
+                </div>";
+        }
+      ?>
     </div>
   </body>
   <script type="text/javascript" src="assets/js/lib/jquery-3.4.1.js"></script>
@@ -105,17 +122,17 @@
     if(strstr(substr($dataset_name, -5), ".csv")) $type = "csv";
     elseif(strstr(substr($dataset_name, -6), ".json")) $type = "json";
     elseif(strstr(substr($dataset_name, -5), ".pkl")) $type = "pkl";
+    $dataset_original_name = $dataset_name;
     $dataset_name = "local_dataset.$type";
 
     $local_path = "./python/saves/" . $dataset_name;
     if(move_uploaded_file($dataset_tmp_name, $local_path)){
-      echo "<pre class='pre-content'>Dataset saved!</pre>";
+      echo "<pre class='pre-content'>Dataset $dataset_original_name saved!</pre>";
       return $dataset_name;
     }else{
-        echo "Failed to upload.";
+        echo "Failed to upload .";
         return -1;
     }
-
   }
 
   /* --- BUILD MODEL --- */
@@ -125,12 +142,17 @@
     if($filename !== -1){
       $cmd = escapeshellcmd("C:/Users/gabry/AppData/Local/Programs/Python/Python37/python.exe " .
                             "./python/build_model.py $model_type $layers_number $filename $input_shape");
+
+      echo("\n model_type: $model_type \n layers_number: $layers_number \n input_shape: $input_shape");
       $exit_status = exec_script($cmd);
-      if($exit_status != 0)
+      if($exit_status != 0){
         echo "<br>ERROR BUILDING THE MODEL ...";
+      }
     }else{
       echo "<br>ERROR. Failed to save layers configuration.";
+      return $filename;   // -1
     }
+    return $exit_status;
   }
 
   function saveLayers($layers){
@@ -151,27 +173,38 @@
   function compileModel($optimizer, $learning_rate, $output_classes, $metrics){
     $cmd = escapeshellcmd("C:/Users/gabry/AppData/Local/Programs/Python/Python37/python.exe " .
                           "./python/compile_model.py $optimizer $learning_rate $output_classes");
+
+    echo("\n optimizer: $optimizer \n learning_rate: $learning_rate");
     $exit_status = exec_script($cmd);
     if($exit_status != 0)
       echo "<br>ERROR COMPILING THE MODEL ...";
+
+    return $exit_status;
   }
 
   /* --- TRAIN MODEL --- */
   function trainModel($dataset, $epochs, $batch_size, $validation_split, $output_classes){
     $cmd = escapeshellcmd("C:/Users/gabry/AppData/Local/Programs/Python/Python37/python.exe " .
                           "./python/train_model.py $dataset $epochs $batch_size $validation_split $output_classes");
+
+    echo("\n epochs: $epochs \n batch_size: $batch_size \n validation_split: $validation_split \n output_classes: $output_classes");
     $exit_status = exec_script($cmd);
     if($exit_status != 0)
       echo "<br>ERROR TRAINING THE MODEL ...";
+
+    return $exit_status;
   }
 
   /* --- EVALUATE MODEL --- */
   function evaluateModel($dataset, $output_classes, $metrics){
     $cmd = escapeshellcmd("C:/Users/gabry/AppData/Local/Programs/Python/Python37/python.exe " .
                           "./python/evaluate_model.py $dataset $output_classes");
+
     $exit_status = exec_script($cmd);
     if($exit_status != 0)
       echo "<br>ERROR EVALUATING THE MODEL ...";
+
+    return $exit_status;
   }
 
 
