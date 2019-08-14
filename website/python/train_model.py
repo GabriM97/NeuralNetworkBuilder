@@ -1,19 +1,46 @@
 import sys
 import pickle
 import json
-import pandas    #for csv files
+import pandas as pd   #for csv files
+import numpy as np
 from keras.utils import to_categorical
 from keras.models import load_model
 
 def trainModel(model, x, y, num_epochs, batch_dim=32, verb=0, valid_split=0.0):
     print("\nStart training.\n")
-    model.fit(x, y,
-              epochs=num_epochs,
-              batch_size=batch_dim,
-              verbose=verb,
-              validation_split=valid_split)
 
-    print("\nTraining completed.")
+    try:
+        model.fit(x, y,
+                  epochs=num_epochs,
+                  batch_size=batch_dim,
+                  verbose=verb,
+                  validation_split=valid_split)
+        print("\nTraining completed.")
+        return model
+    except Exception as e:
+        print("Error training the model:", e)
+        return -1
+
+#---------------------------------
+def saveModel(model):
+    filename = "./python/saves/personal_model.h5"     # PHP SCRIPT
+    #filename = "./saves/personal_model.h5"            # CMD SRIPT
+    try:
+        model.save(filename)
+        return 0
+    except Exception as e:
+        print("Error saving the model:", e)
+        return -1
+
+
+def importModel():
+    filename = "./python/saves/personal_model.h5"     # PHP SCRIPT
+    #filename = "./saves/personal_model.h5"            # CMD SRIPT
+    model = -1
+    model = load_model(filename)
+    if(model == -1):
+        print("Error importing the model.")
+
     return model
 
 def loadLocalDataset(filename):
@@ -43,28 +70,6 @@ def loadLocalDataset(filename):
     train_y = data["train_y"]
     return train_x, train_y
 
-#---------------------------------
-def saveModel(model):
-    filename = "./python/saves/personal_model.h5"     # PHP SCRIPT
-    #filename = "./saves/personal_model.h5"            # CMD SRIPT
-    try:
-        model.save(filename)
-        return 0
-    except Exception as e:
-        print("Error saving the model:", e)
-        return -1
-
-
-def importModel():
-    filename = "./python/saves/personal_model.h5"     # PHP SCRIPT
-    #filename = "./saves/personal_model.h5"            # CMD SRIPT
-    model = -1
-    model = load_model(filename)
-    if(model == -1):
-        print("Error importing the model.")
-
-    return model
-
 def train():
     filename = sys.argv[1]
     train_x, train_y = loadLocalDataset(filename)
@@ -79,7 +84,11 @@ def train():
         train_y = to_categorical(train_y)
 
     model = trainModel(model, train_x, train_y, epochs, batch_size, verbose, valid_split)
-    exit = saveModel(model)
+    if(model == -1):
+        exit = -1
+    else:
+        exit = saveModel(model)
+
     print("exit_status:", exit)
 
 # --- MAIN ---
