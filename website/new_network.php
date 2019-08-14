@@ -83,30 +83,17 @@
   <script type="text/javascript" src="assets/js/lib/jquery-3.4.1.js"></script>
   <script type="text/javascript" src="assets/js/main_title.js"></script>
   <script type="text/javascript">
-    function consoleText(words, elem){
-      var letterCount = 1;
-      var x = 1;
-      var target = document.getElementsByTagName(elem).lastChild;
-      //var target = $(id+":last-child");
-      window.setInterval(function(){
-        target.innerHTML = words.substring(0, letterCount)
-        //target.html(words.substring(0, letterCount));
-        letterCount += x;
-      }, 100);
-
-      // var visible = true;
-      // var con = document.getElementById('console');
-      // window.setInterval(function(){
-      //   if(visible === true){
-      //     con.className = 'console-underscore hidden'
-      //     visible = false;
-      //
-      //   } else {
-      //     con.className = 'console-underscore'
-      //     visible = true;
-      //   }
-      // }, 400);
-    }
+    // function consoleText(words, elem){
+    //   var letterCount = 1;
+    //   var x = 1;
+    //   var target = document.getElementsByTagName(elem).lastChild;
+    //   //var target = $(id+":last-child");
+    //   window.setInterval(function(){
+    //     target.innerHTML = words.substring(0, letterCount)
+    //     //target.html(words.substring(0, letterCount));
+    //     letterCount += x;
+    //   }, 100);
+    // }
   </script>
 </html>
 
