@@ -24,6 +24,59 @@
   cursor: pointer;
 }
 
+#dataset-section .section-title{
+  display: inline-block;
+  after:
+}
+
+#dataset-section .tooltip{
+  position: relative;
+  display: inline-block;
+}
+
+#dataset-section .tooltip img{
+  height: 20px;
+  width: 20px;
+  margin-bottom: -5px;
+}
+
+/* Tooltip text */
+#dataset-section .tooltip .tooltiptext {
+  visibility: hidden;
+  width: 450px;
+  margin-left: -225px;
+  bottom: 130%;
+  left: 50%;
+  background-color: rgb(40,40,40);
+  color: #fff;
+  text-align: center;
+  padding: 5px 5px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+#dataset-section .tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+#dataset-section .tooltip .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgb(40,40,40) transparent transparent transparent;
+}
+
+#dataset-section .tooltiptext a{
+  color: grey;
+  text-decoration: none;
+  font-weight: bold; 
+}
+
 #form-container #build-section .section-title{
   margin-bottom: 15px;
 }

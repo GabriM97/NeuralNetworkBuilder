@@ -32,6 +32,17 @@ function addDataset(){
   var dataset = '\
     <div id="dataset-section" class="col-5">\
       <p class="section-title">Dataset</p>\
+      <div class="tooltip">\
+        <img src="./assets/img/info_icon.png" alt="info_icon">\
+        <span class="tooltiptext">\
+          Dataset accepted extensions: .csv, .json, .pkl or .pickle<br>\
+          Download the example dataset to understand how your dataset have to be:<br>\
+          <a href="assets/example_dataset/data.csv">CSV</a>,\
+          <a href="assets/example_dataset/data.json">JSON</a>,\
+          <a href="assets/example_dataset/data.pkl">PKL/PICKLE</a>.\
+        </span>\
+      </div>\
+      <br>\
       <div class="col-6">\
         <div class="elem-center">\
           Choose Dataset file:<br>\
