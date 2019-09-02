@@ -1,3 +1,5 @@
+<?php  $python_path = "C:/Users/Gabriele/AppData/Local/Programs/Python/Python37/python.exe";   ?>
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -90,7 +92,7 @@
           echo "<div class='download-model'>
                   <a href='python/saves/personal_model.h5'>
                     <div class='cloud-download-container'><img src='assets/img/cloud-download.png' alt='download-img'></div>
-                    Download your model
+                    Download your trained model!
                   </a>
                 </div>";
         }
@@ -137,11 +139,11 @@
 
   /* --- BUILD MODEL --- */
   function buildModel($model_type, $layers_number, $output_classes, $input_shape, $layers){
+    global $python_path;
     $filename = saveLayers($layers);
 
     if($filename !== -1){
-      $cmd = escapeshellcmd("C:/Users/gabry/AppData/Local/Programs/Python/Python37/python.exe " .
-                            "./python/build_model.py $model_type $layers_number $filename $input_shape");
+      $cmd = escapeshellcmd("$python_path ./python/build_model.py $model_type $layers_number $filename $input_shape");
 
       echo("\n model_type: $model_type \n layers_number: $layers_number \n input_shape: $input_shape");
       $exit_status = exec_script($cmd);
@@ -171,8 +173,8 @@
 
   /* --- COMPILE MODEL --- */
   function compileModel($optimizer, $learning_rate, $output_classes, $metrics){
-    $cmd = escapeshellcmd("C:/Users/gabry/AppData/Local/Programs/Python/Python37/python.exe " .
-                          "./python/compile_model.py $optimizer $learning_rate $output_classes");
+    global $python_path;
+    $cmd = escapeshellcmd("$python_path ./python/compile_model.py $optimizer $learning_rate $output_classes");
 
     echo("\n optimizer: $optimizer \n learning_rate: $learning_rate");
     $exit_status = exec_script($cmd);
@@ -184,8 +186,8 @@
 
   /* --- TRAIN MODEL --- */
   function trainModel($dataset, $epochs, $batch_size, $validation_split, $output_classes){
-    $cmd = escapeshellcmd("C:/Users/gabry/AppData/Local/Programs/Python/Python37/python.exe " .
-                          "./python/train_model.py $dataset $epochs $batch_size $validation_split $output_classes");
+    global $python_path;
+    $cmd = escapeshellcmd("$python_path ./python/train_model.py $dataset $epochs $batch_size $validation_split $output_classes");
 
     echo("\n epochs: $epochs \n batch_size: $batch_size \n validation_split: $validation_split \n output_classes: $output_classes");
     $exit_status = exec_script($cmd);
@@ -197,8 +199,8 @@
 
   /* --- EVALUATE MODEL --- */
   function evaluateModel($dataset, $output_classes, $metrics){
-    $cmd = escapeshellcmd("C:/Users/gabry/AppData/Local/Programs/Python/Python37/python.exe " .
-                          "./python/evaluate_model.py $dataset $output_classes");
+    global $python_path;
+    $cmd = escapeshellcmd("$python_path ./python/evaluate_model.py $dataset $output_classes");
 
     $exit_status = exec_script($cmd);
     if($exit_status != 0)
@@ -232,8 +234,9 @@
       return -1;
   }
 
-  function test_cmd(){
-    $command = escapeshellcmd("C:/Users/gabry/AppData/Local/Programs/Python/Python37/python.exe ./python/builder.py");
-    system($command);
-  }
+  // function test_cmd(){
+  //   global $python_path;
+  //   $command = escapeshellcmd("$python_path ./python/builder.py");
+  //   system($command);
+  // }
 ?>
