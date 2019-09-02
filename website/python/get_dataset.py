@@ -1,7 +1,7 @@
 import sys
 import pickle
 import json
-import numpy
+import numpy as np
 import pandas as pd  #for csv files
 
 def getExampleDataset():
@@ -127,7 +127,7 @@ def get_MNIST_save():
     #saveDatasetJSON(data)
     #saveDatasetCSV(data)
 
-def load_local(filename):
+def load_local(filename = sys.argv[1]):
     train_x, train_y, test_x, test_y = loadLocalDataset(filename)
     #print("\ntrain_x:", train_x,"\ntrain_y:", train_y, "\ntest_x:", test_x, "\ntest_y:", test_y)
 
@@ -142,5 +142,4 @@ def load_local(filename):
 # --- MAIN ---
 
 get_MNIST_save()
-#filename = sys.argv[1]
-#load_local(filename)
+#load_local()
