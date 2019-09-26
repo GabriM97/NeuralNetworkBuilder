@@ -38,6 +38,7 @@ html, body{
 #home_content .home_btn:hover{
   box-shadow: 2px 2px 15px 2px black;
   font-size: 1.6em;
+  transition: all .5s;
 }
 
 /* bootstrap buttons */
