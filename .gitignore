@@ -3,3 +3,15 @@
 *.json
 *.pkl
 *.h5
+nnb_website/node_modules
+nnb_website/public/hot
+nnb_website/public/storage
+nnb_website/storage/*.key
+nnb_website/vendor
+nnb_website/.env
+nnb_website/.env.backup
+nnb_website/.phpunit.result.cache
+nnb_website/Homestead.json
+nnb_website/Homestead.yaml
+nnb_website/npm-debug.log
+nnb_website/yarn-error.log
