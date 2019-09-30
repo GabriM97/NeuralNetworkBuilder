@@ -1,100 +1,72 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.app')
+<!-- Styles -->
+<style>
+    .content {
+        text-align: center;
+    }
 
-        <title>Laravel</title>
+    .title {
+        color: #636b6f;
+        font-size: 70px;
+        text-transform: uppercase;
+        margin-bottom: 30px;
+        font-weight: 400;
+    }
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+    .sub-title {
+        color: #636b6f;
+        margin-top: 20px;
+        font-size: 40px;
+        font-weight: 400;
+    }
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
+    .description{
+        color: #636b6f;
+        padding: 0 5px;
+        font-size: 20px;
+        font-weight: 500;
+        letter-spacing: .1rem;
+        line-height: 1.5rem;
+    }
 
-            .full-height {
-                height: 100vh;
-            }
+    .description a {
+        color: #636b6f;
+        padding: 0 2px;
+        font-size: 20px;
+        text-decoration: none;
+        text-transform: uppercase;
+    }
 
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
+    .description a:hover {
+        color: #505050;
+        text-decoration: none;
+    }
 
-            .position-ref {
-                position: relative;
-            }
+    .highlight-text {
+        color: #404040;
+    }
+</style>
 
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
+@section('page-title', 'Welcome | Neural Network Builder ')
 
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://vapor.laravel.com">Vapor</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
-            </div>
+@section('content')
+    <div class="content">
+        <div class="title">
+            <div class="sub-title">Welcome to</div>
+            Neural Network Builder
         </div>
-    </body>
-</html>
+
+        <div class="description">
+            With this tool you can create, build and edit your own Neural Network Models. <br>
+            You can also train your models with personal datasets into a remote server! <br>
+            Or you can just predict a value from a pre-trained model. <br>
+            What are you waiting for? Start now, <span class="highlight-text">IT'S FREE!</span> <br>
+            @auth
+                Go to your <a href="{{ url('/home') }}">Home</a>
+            @else
+                If you are registered, <a href="{{ route('login') }}">Sing in</a> <br>
+                Otherwise create a new account and Join Us! <a href="{{ route('register') }}">Register now</a>
+            @endauth
+        </div>
+    </div>
+@endsection

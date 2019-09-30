@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
-    
     public function __construct()
     {
         $this->middleware('auth');
@@ -20,7 +20,11 @@ class UsersController extends Controller
      */
     public function index()
     {
-        //
+        // ADMIN ONLY
+        
+        $projects = Project::all();
+        $title = "Our Projects";
+        return view('projects.index', compact("title", "projects"));
     }
 
     /**
@@ -30,7 +34,10 @@ class UsersController extends Controller
      */
     public function create()
     {
-        //
+        // ADMIN ONLY
+
+        $title = "Create Project";
+        return view('projects.create', compact("title"));
     }
 
     /**
@@ -41,7 +48,13 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // ADMIN ONLY
+
+        $project = new Project();
+        $project->title = request('title');
+        $project->description = request('description');
+        $project->save();
+        return redirect("/projects");
     }
 
     /**
@@ -52,7 +65,8 @@ class UsersController extends Controller
      */
     public function show(User $user)
     {
-        //
+        $title = "$user->username | NeuralNetworkBuilder";
+        return view("users.show", compact("title", "user"));
     }
 
     /**
@@ -63,7 +77,8 @@ class UsersController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        $title = "Edit Project";
+        return view('projects.edit', compact("title", "project"));
     }
 
     /**
@@ -75,7 +90,10 @@ class UsersController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $project->title = $request->title;
+        $project->description = $request->description;
+        $project->update();
+        return redirect("/projects");
     }
 
     /**
@@ -86,6 +104,8 @@ class UsersController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $id = $project->id;
+        $project->delete();
+        return redirect("/projects");
     }
 }
