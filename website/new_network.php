@@ -1,4 +1,5 @@
-<?php  $python_path = "C:/Users/Gabriele/AppData/Local/Programs/Python/Python37/python.exe";   ?>
+<?php  //$python_path = "C:/Users/Gabriele/AppData/Local/Programs/Python/Python37/python.exe";  //windows ?>
+<?php  $python_path = "/usr/bin/python";  //linux   ?>
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
