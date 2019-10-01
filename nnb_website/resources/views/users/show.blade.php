@@ -4,36 +4,49 @@
 
 @section('content')
 
-    <div class="text-center">
+    @isset($return_status)
+        @php
+            if($return_status == 0) $msg_class = "alert-success";
+            else $msg_class = "alert-danger";
+        @endphp
+    
+        <div class="container text-center alert {{$msg_class}}" role="alert">{{$return_msg}}</div>
+        
+    @endisset
+
+    <div class="container text-center">
         <h2 class="content-title">Profile details</h2>
-        <p>Username: {{ $user->username }} 
+        <p>Username: {{ $user->username }}</p>
+
+        <p>Account type:
         @php
             switch ($user->rank){
                 case -1:    // Admin
-                    echo "<span style='color: rgb(200,0,0,.6)'>(Admin)</span>";
+                    echo "<span style='color: rgb(200,0,0)'>Admin</span>";
                     break;
                 case 0:    // Base user
-                    echo "<span style='color: rgb(100,100,100,.6)'>(Base)</span>";
+                    echo "<span style='color: rgb(100,100,100)'>Base</span>";
                     break;
                 case 1:    // Advanced user
-                    echo "<span style='color: rgb(10,10,200,.6)'>(Advanced)</span>";
+                    echo "<span style='color: rgb(10,10,200)'>Advanced</span>";
                     break;
                 case 2:    // Professional user
-                    echo "<span style='color: rgb(10,150,10,.6)'>(Professional)</span>";
+                    echo "<span style='color: rgb(10,150,10)'>Professional</span>";
                     break;
                 default:
+                    echo "Not defined";
                     break;
             } 
         @endphp
-        </p>
         
         @if ((Auth::user()->id == $user->id) || (Auth::user()->rank == -1))
             {{-- logged user can visualize its FULL details  --}}
 
+            <button class='btn btn-outline-primary btn-sm'>Upgrade</button></p>
             <p>Email: {{ $user->email }} <span>{{ $user->email_verified_at ? "(Verified)" : "(Not verified)" }}</span></p>
-            <p>Available space: {{ $user->available_space/1048576 }} MB <span class="available-space-bar"></span></p>
             <p>Your Models: {{ $user->models_number }}</p>      {{-- add link to user models --}}
             <p>Your Datasets: {{ $user->datasets_number }}</p>    {{-- add link to user datasets --}}
+            <p>Available space: {{ $user->available_space/1048576 }} MB <span class="available-space-bar"></span></p>
             <p>Last login: {{ $user->last_signed_on }}</p>
             <p>Account created on: {{ $user->created_at }}</p>
             
@@ -49,9 +62,8 @@
                     <button class="btn" type="submit">Delete</button>
                 </form>
             @endif
-            
-
         @else
+        </p>    <!-- close Account type tag -->
             {{-- logged user can visualize NON-SENSITIVE details of user in URL  --}}
 
             <p>Models: {{ $user->models_number }}</p>

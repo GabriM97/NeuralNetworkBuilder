@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
@@ -77,8 +78,11 @@ class UsersController extends Controller
      */
     public function edit(User $user)
     {
-        $title = "Edit Project";
-        return view('projects.edit', compact("title", "project"));
+        if((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1))
+            return redirect(route('user.edit', ['user' => Auth::user()]));
+        
+        $title = "Edit profile | NeuralNetworkBuilder";
+        return view('users.edit', compact("title", "user"));
     }
 
     /**
@@ -90,10 +94,72 @@ class UsersController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $project->title = $request->title;
-        $project->description = $request->description;
-        $project->update();
-        return redirect("/projects");
+        $process = $request->process;
+
+        if((Auth::user()->id == $user->id) || (Auth::user()->rank == -1)){
+            switch ($process) {
+                case 'changeusername':  // CHANGE USERNAME (ADMIN ONLY)
+                    if(Auth::user()->rank == -1){      
+                        $new_username = $request->username;
+                        $query = User::where("username", $new_username);
+                        echo $query;
+                        if($query){     // == NULL
+                            $user->username = $new_username;
+                            $status = 0;
+                            $msg = "Username changed in <i>$new_username</i>";
+                        }else{
+                            $status = -1;
+                            $msg = "Username <i>$new_username</i> already exists.";
+                        }
+                    }
+                    break;
+                case 'changeemail':     // CHANGE EMAIL
+                    $current_psw = Hash::make($request->current_password);
+                    if($current_psw !== $user->password){   //if password is wrong
+                        $status = -1;
+                        $msg = "Password wrong.";
+                        break;
+                    }
+
+                    $new_email = $request->new_email;
+                    $query = User::where("email", $new_email);
+                    echo $query;
+                    if($query){     // == NULL
+                        $user->email = $new_email;
+                        $status = 0;
+                        $msg = "Email modified.";
+                    }else{
+                        $status = -1;
+                        $msg = "Email <i>$new_email</i> already in use.";
+                    }
+                    break;
+                case 'changepassword':      // CHANGE PASSWORD
+                    $current_psw = Hash::make($request->current_password);
+                    if($current_psw !== $user->password){   //if password is wrong
+                        $status = -1;
+                        $msg = "Password wrong.";
+                        break;
+                    }
+                    $user->password = Hash::make($request->new_password);
+                    $status = 0;
+                    $msg = "Password modified.";
+                    break;
+                default:
+                    $status = -1;
+                    $msg = "Request not valid.";
+                    break;
+            }
+            $user->update();    // $user->save();
+        }else{
+            $user = Auth::user();
+            $status = -1;
+            $msg = "Request not allowed.";
+        }
+        return redirect(route("user.show", 
+                        ["user" => $user,
+                         "return_status" => $status,
+                         "return_msg" => $msg
+                        ]));
     }
 
     /**
@@ -104,8 +170,11 @@ class UsersController extends Controller
      */
     public function destroy(User $user)
     {
-        $id = $project->id;
-        $project->delete();
-        return redirect("/projects");
+        if(Auth::user()->rank == -1){
+            $user->delete();
+            return redirect(route("user.index"));
+        }else{
+            return redirect(route("home"));
+        }
     }
 }
