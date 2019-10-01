@@ -7,13 +7,15 @@
 <div class="container text-center">
     <h2 style="display:inline-block" class="content-title">Edit profile | {{ $user->username }}</h2>
         
-        @if(Auth::user()->rank == -1))
+        @if(Auth::user()->rank == -1)
             <!-- DELETE USER FORM (ADMIN ONLY) -->
-            <form style="display:inline-block" class="form-delete" method="POST" action="{{route("user.destroy", ["user" => $user])}}">
-                @csrf
-                @method("DELETE")
-                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
-            </form>
+            {{-- 
+                <form style="display:inline-block" class="form-delete" method="POST" action="{{route("user.destroy", ["user" => $user])}}">
+                    @csrf
+                    @method("DELETE")
+                    <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+            --}}
             <br><br>
             <!-- CHANGE USERNAME FORM (ADMIN ONLY) -->
             <form class="form-edit" method="POST" action="{{route("user.update", ["user" => $user])}}">
@@ -34,8 +36,8 @@
             @method("PATCH")
             <input type="hidden" name="process" value="changeemail">
 
-            <p><input type="text" name="new_email" placeholder="Insert new email"></p>
-            <p><input type="text" name="confirm_new_email" placeholder="Confirm new email"></p>
+            <p><input type="email" name="new_email" placeholder="Insert new email"></p>
+            <p><input type="email" name="confirm_new_email" placeholder="Confirm new email"></p>
             <p><input type="password" name="current_password" placeholder="Insert current password"></p>
 
             <button type="submit">Confirm</button>

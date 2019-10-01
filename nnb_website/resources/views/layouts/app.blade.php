@@ -87,6 +87,7 @@
         </nav>
 
         <main class="py-4">
+            <a href="{{ URL::previous() }}"><button class="btn btn-secondary ml-5">Go Back</button></a>
             @yield('content')
         </main>
     </div>

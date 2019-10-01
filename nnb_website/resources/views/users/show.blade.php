@@ -4,7 +4,7 @@
 
 @section('content')
 
-    @isset($return_status)
+    @if(isset($return_status))
         @php
             if($return_status == 0) $msg_class = "alert-success";
             else $msg_class = "alert-danger";
@@ -12,7 +12,7 @@
     
         <div class="container text-center alert {{$msg_class}}" role="alert">{{$return_msg}}</div>
         
-    @endisset
+    @endif
 
     <div class="container text-center">
         <h2 class="content-title">Profile details</h2>
@@ -38,29 +38,82 @@
                     break;
             } 
         @endphp
+        </p>
         
         @if ((Auth::user()->id == $user->id) || (Auth::user()->rank == -1))
             {{-- logged user can visualize its FULL details  --}}
 
-            <button class='btn btn-outline-primary btn-sm'>Upgrade</button></p>
             <p>Email: {{ $user->email }} <span>{{ $user->email_verified_at ? "(Verified)" : "(Not verified)" }}</span></p>
             <p>Your Models: {{ $user->models_number }}</p>      {{-- add link to user models --}}
             <p>Your Datasets: {{ $user->datasets_number }}</p>    {{-- add link to user datasets --}}
-            <p>Available space: {{ $user->available_space/1048576 }} MB <span class="available-space-bar"></span></p>
+            <p>Available space:
+                @if ($user->available_space/1048576 >= 1024)
+                    {{ $user->available_space/1073741824 }} GB
+                @else
+                    {{ $user->available_space/1048576 }} MB 
+                @endif
+                <span class="available-space-bar"></span>
+            </p>
             <p>Last login: {{ $user->last_signed_on }}</p>
             <p>Account created on: {{ $user->created_at }}</p>
             
             <!-- Edit button -->
-            <a href="{{ route('user.edit', ['user' => Auth::user()]) }}"><button class="btn btn-primary">Edit</button></a>
+            <a href="{{ route('user.edit', ['user' => $user]) }}"><button class="btn btn-primary">Edit</button></a>
             
-            <!-- Delete button - ADMIN ONLY -->
             @if (Auth::user()->rank == -1)
-                <form class="form-delete" method="POST" action="{{ route('user.destroy', ['user' => Auth::user()]) }}">
-                    <!-- TO DO: test if works without csrf and method("delete") -->
+                <!-- Delete button - ADMIN ONLY -->
+                <form style="display:inline-block" class="form-delete" method="POST" action="{{route("user.destroy", ["user" => $user])}}">
                     @csrf
-                    @method("DELETE")       
-                    <button class="btn" type="submit">Delete</button>
+                    @method("DELETE")
+                    <button class="btn btn-danger" type="submit">Delete</button>
                 </form>
+
+                @if ($user->rank >= 0 && $user->rank < 2)
+                    <!-- Upgrade button - ADMIN ONLY-->
+                    <form style="display:inline-block" class="form-upgrade" method="POST" action="{{route("user.update", ["user" => $user])}}">
+                        @csrf
+                        @method("PATCH")
+                        <input type="hidden" name="process" value="upgradeaccount">
+
+                        <button class='btn btn-success' type="submit">Upgrade</button>
+                    </form>
+                @endif
+
+                @if ($user->rank > 0 && $user->rank <= 2)
+                    <!-- Downgrade button - ADMIN ONLY-->
+                    <form style="display:inline-block" class="form-downgrade" method="POST" action="{{route("user.update", ["user" => $user])}}">
+                        @csrf
+                        @method("PATCH")
+                        <input type="hidden" name="process" value="downgradeaccount">
+
+                        <button class='btn btn-warning' type="submit">Downgrade</button>
+                    </form>
+                @endif
+                
+                <br><br>
+
+                @if ($user->rank != -1)
+                    <!-- Make Admin button - ADMIN ONLY-->
+                    <form style="display:inline-block" class="form-makeadmin" method="POST" action="{{route("user.update", ["user" => $user])}}">
+                        @csrf
+                        @method("PATCH")
+                        <input type="hidden" name="process" value="makeadmin">
+
+                        <button class='btn btn-outline-danger btn-sm' type="submit">MAKE ADMIN</button>
+                    </form>
+                @endif
+
+                @if ($user->rank == -1)
+                    <!-- Remove Admin button - ADMIN ONLY-->
+                    <form style="display:inline-block" class="form-removeadmin" method="POST" action="{{route("user.update", ["user" => $user])}}">
+                        @csrf
+                        @method("PATCH")
+                        <input type="hidden" name="process" value="removeadmin">
+
+                        <button class='btn btn-outline-danger btn-sm' type="submit">REMOVE ADMIN</button>
+                    </form>
+                @endif
+
             @endif
         @else
         </p>    <!-- close Account type tag -->
