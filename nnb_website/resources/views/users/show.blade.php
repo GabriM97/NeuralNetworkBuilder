@@ -62,7 +62,7 @@
             
             @if (Auth::user()->rank == -1)
                 <!-- Delete button - ADMIN ONLY -->
-                <form style="display:inline-block" class="form-delete" method="POST" action="{{route("user.destroy", ["user" => $user])}}">
+                <form class="form-delete d-inline-block" method="POST" action="{{route("user.destroy", ["user" => $user])}}">
                     @csrf
                     @method("DELETE")
                     <button class="btn btn-danger" type="submit">Delete</button>
@@ -70,7 +70,7 @@
 
                 @if ($user->rank >= 0 && $user->rank < 2)
                     <!-- Upgrade button - ADMIN ONLY-->
-                    <form style="display:inline-block" class="form-upgrade" method="POST" action="{{route("user.update", ["user" => $user])}}">
+                    <form class="form-upgrade d-inline-block" method="POST" action="{{route("user.update", ["user" => $user])}}">
                         @csrf
                         @method("PATCH")
                         <input type="hidden" name="process" value="upgradeaccount">
@@ -81,7 +81,7 @@
 
                 @if ($user->rank > 0 && $user->rank <= 2)
                     <!-- Downgrade button - ADMIN ONLY-->
-                    <form style="display:inline-block" class="form-downgrade" method="POST" action="{{route("user.update", ["user" => $user])}}">
+                    <form class="form-downgrade d-inline-block" method="POST" action="{{route("user.update", ["user" => $user])}}">
                         @csrf
                         @method("PATCH")
                         <input type="hidden" name="process" value="downgradeaccount">
@@ -94,7 +94,7 @@
 
                 @if ($user->rank != -1)
                     <!-- Make Admin button - ADMIN ONLY-->
-                    <form style="display:inline-block" class="form-makeadmin" method="POST" action="{{route("user.update", ["user" => $user])}}">
+                    <form class="form-makeadmin d-inline-block" method="POST" action="{{route("user.update", ["user" => $user])}}">
                         @csrf
                         @method("PATCH")
                         <input type="hidden" name="process" value="makeadmin">
@@ -105,7 +105,7 @@
 
                 @if ($user->rank == -1)
                     <!-- Remove Admin button - ADMIN ONLY-->
-                    <form style="display:inline-block" class="form-removeadmin" method="POST" action="{{route("user.update", ["user" => $user])}}">
+                    <form class="form-removeadmin d-inline-block" method="POST" action="{{route("user.update", ["user" => $user])}}">
                         @csrf
                         @method("PATCH")
                         <input type="hidden" name="process" value="removeadmin">

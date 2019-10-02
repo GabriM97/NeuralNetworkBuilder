@@ -23,9 +23,9 @@ class UsersController extends Controller
     {
         // ADMIN ONLY
         
-        $projects = Project::all();
-        $title = "Our Projects";
-        return view('projects.index', compact("title", "projects"));
+        $users = User::all();
+        $title = "All users | Neural Network Builder";
+        return view('users.index', compact("title", "users"));
     }
 
     /**

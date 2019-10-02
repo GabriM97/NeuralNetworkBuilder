@@ -5,12 +5,12 @@
 @section('content')
 
 <div class="container text-center">
-    <h2 style="display:inline-block" class="content-title">Edit profile | {{ $user->username }}</h2>
+    <h2 class="content-title d-inline-block">Edit profile | {{ $user->username }}</h2>
         
         @if(Auth::user()->rank == -1)
             <!-- DELETE USER FORM (ADMIN ONLY) -->
             {{-- 
-                <form style="display:inline-block" class="form-delete" method="POST" action="{{route("user.destroy", ["user" => $user])}}">
+                <form class="form-delete d-inline-block" method="POST" action="{{route("user.destroy", ["user" => $user])}}">
                     @csrf
                     @method("DELETE")
                     <button class="btn btn-danger btn-sm" type="submit">Delete</button>
@@ -30,7 +30,7 @@
 
         <br>
         <!-- CHANGE EMAIL FORM -->
-        <h4 style="display: inline-block">Change email</h4> <span>(current: {{ $user->email }})</span>
+        <h4 class="d-inline-block">Change email</h4> <span>(current: {{ $user->email }})</span>
         <form class="form-edit" method="POST" action="{{route("user.update", ["user" => $user])}}">
             @csrf
             @method("PATCH")
