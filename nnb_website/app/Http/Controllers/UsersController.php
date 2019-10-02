@@ -38,9 +38,11 @@ class UsersController extends Controller
     public function create()
     {
         // ADMIN ONLY
+        if(Auth::user()->rank !== -1)
+            return redirect(route("home"));
 
-        $title = "Create Project";
-        return view('projects.create', compact("title"));
+        $title = "Create new User | Neural Network Builder";
+        return view('users.create', compact("title"));
     }
 
     /**
@@ -52,6 +54,33 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         // ADMIN ONLY
+        if(Auth::user()->rank !== -1)
+            return redirect(route("home"));
+
+
+        $username = $request->username;
+        $email = $request->email;
+        $query_username = User::where("username", $username)->get();
+        $query_email = User::where("email", $email)->get();
+
+        $status = -1;
+        if(count($query_username) != 0){
+            $msg = "The username has already been taken.";
+            return view("users.create", compact("status", "msg"));
+        }
+
+        if(count($query_email) != 0){
+            $msg = "The email has already been taken.";
+            return view("users.create", compact("status", "msg"));
+        }
+
+        // DA CONTINUARE
+
+        return User::create([
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);    
 
         $project = new Project();
         $project->title = request('title');

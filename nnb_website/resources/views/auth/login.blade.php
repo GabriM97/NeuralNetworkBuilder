@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page-title', "Login | Neural Network Builder")
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
