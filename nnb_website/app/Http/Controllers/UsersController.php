@@ -22,6 +22,8 @@ class UsersController extends Controller
     public function index()
     {
         // ADMIN ONLY
+        if(Auth::user()->rank !== -1)
+            return redirect(route("home"));
         
         $users = User::all();
         $title = "All users | Neural Network Builder";

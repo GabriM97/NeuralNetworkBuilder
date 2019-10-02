@@ -46,6 +46,19 @@
                             <li class="nav-item">
                                     <a class="nav-link" href="{{ route('welcome') }}">{{ __('Tainings') }}</a>
                             </li>
+
+                            @if (Auth::user()->rank == -1)
+                                <li class="nav-item dropdown ml-3">
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle text-danger" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        Admin panel <span class="caret"></span>
+                                    </a>
+    
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="{{ route('user.index') }}">{{ __('All Users') }}</a>
+                                        <a class="dropdown-item" href="{{ route('user.create') }}">{{ __('Create user') }}</a>
+                                    </div>
+                                </li>
+                            @endif
                         @endauth
                     </ul>
 

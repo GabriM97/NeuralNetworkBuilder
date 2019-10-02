@@ -12,7 +12,7 @@
 
 <div class="container text-center">
     <a href="{{route("user.create")}}">
-        <button class="btn btn-info">+ Create new User</button>
+        <button class="btn btn-info"><strong>+</strong> Create new User</button>
     </a>
 </div>
 
