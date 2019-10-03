@@ -41,7 +41,7 @@
                                 <a class="nav-link" href="{{ route('welcome') }}">{{ __('Models') }}</a>
                             </li>
                             <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('welcome') }}">{{ __('Datasets') }}</a>
+                                    <a class="nav-link" href="{{ route('datasets.index', ["user" => Auth::user()]) }}">{{ __('Datasets') }}</a>
                             </li>
                             <li class="nav-item">
                                     <a class="nav-link" href="{{ route('welcome') }}">{{ __('Tainings') }}</a>

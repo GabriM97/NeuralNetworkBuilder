@@ -27,7 +27,7 @@ class UsersController extends Controller
             return redirect(route("home"));
         
         $users = User::all();
-        $title = "All users | Neural Network Builder";
+        $title = "Users | Neural Network Builder";
         return view('users.index', compact("title", "users"));
     }
 
