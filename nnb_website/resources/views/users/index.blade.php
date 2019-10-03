@@ -11,7 +11,7 @@
 @section('content')
 
 <div class="container text-center">
-    <a href="{{route("user.create")}}">
+    <a href="{{route("users.create")}}">
         <button class="btn btn-info"><strong>+</strong> Create new User</button>
     </a>
 </div>
@@ -70,7 +70,7 @@
                 <div class="col-sm"> // </div>
                 <div class="col-sm">{{$usr->last_signed_on}}</div>
                 <div class="col-sm">
-                    <a href="{{ route('user.show', ['user' => $usr]) }}">
+                    <a href="{{ route('users.show', ['user' => $usr]) }}">
                         <button class="btn btn-primary">Details</button>
                     </a>
                 </div>

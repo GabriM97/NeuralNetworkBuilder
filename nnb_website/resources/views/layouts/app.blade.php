@@ -54,8 +54,8 @@
                                     </a>
     
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item" href="{{ route('user.index') }}">{{ __('All Users') }}</a>
-                                        <a class="dropdown-item" href="{{ route('user.create') }}">{{ __('Create user') }}</a>
+                                        <a class="dropdown-item" href="{{ route('users.index') }}">{{ __('All Users') }}</a>
+                                        <a class="dropdown-item" href="{{ route('users.create') }}">{{ __('Create user') }}</a>
                                     </div>
                                 </li>
                             @endif
@@ -81,7 +81,7 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('user.show', ['user' => Auth::user()]) }}">{{ __('Profile') }}</a>
+                                    <a class="dropdown-item" href="{{ route('users.show', ['user' => Auth::user()]) }}">{{ __('Profile') }}</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
                                         document.getElementById('logout-form').submit();">

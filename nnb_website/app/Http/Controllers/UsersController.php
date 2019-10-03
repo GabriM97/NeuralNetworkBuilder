@@ -73,8 +73,7 @@ class UsersController extends Controller
             'password' => Hash::make($request->password),
         ]);    
 
-        //$user->save();
-        return redirect(route("user.index"));
+        return redirect(route("users.index"));
     }
 
     /**
@@ -98,7 +97,7 @@ class UsersController extends Controller
     public function edit(User $user)
     {
         if((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1))
-            return redirect(route('user.edit', ['user' => Auth::user()]));
+            return redirect(route('users.edit', ['user' => Auth::user()]));
         
         $title = "Edit profile | NeuralNetworkBuilder";
         return view('users.edit', compact("title", "user"));
@@ -252,7 +251,7 @@ class UsersController extends Controller
     {
         if(Auth::user()->rank == -1){
             //$user->delete();      //DO NOTHING ATM
-            return redirect(route("user.index"));
+            return redirect(route("users.index"));
         }else{
             return redirect(route("home"));
         }

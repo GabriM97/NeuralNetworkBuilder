@@ -10,7 +10,7 @@
         @if(Auth::user()->rank == -1)
             <!-- DELETE USER FORM (ADMIN ONLY) -->
             {{-- 
-                <form class="form-delete d-inline-block" method="POST" action="{{route("user.destroy", ["user" => $user])}}">
+                <form class="form-delete d-inline-block" method="POST" action="{{route("users.destroy", ["user" => $user])}}">
                     @csrf
                     @method("DELETE")
                     <button class="btn btn-danger btn-sm" type="submit">Delete</button>
@@ -18,7 +18,7 @@
             --}}
             <br><br>
             <!-- CHANGE USERNAME FORM (ADMIN ONLY) -->
-            <form class="form-edit" method="POST" action="{{route("user.update", ["user" => $user])}}">
+            <form class="form-edit" method="POST" action="{{route("users.update", ["user" => $user])}}">
                 @csrf
                 @method("PATCH")
                 <input type="hidden" name="process" value="changeusername">
@@ -31,7 +31,7 @@
         <br>
         <!-- CHANGE EMAIL FORM -->
         <h4 class="d-inline-block">Change email</h4> <span>(current: {{ $user->email }})</span>
-        <form class="form-edit" method="POST" action="{{route("user.update", ["user" => $user])}}">
+        <form class="form-edit" method="POST" action="{{route("users.update", ["user" => $user])}}">
             @csrf
             @method("PATCH")
             <input type="hidden" name="process" value="changeemail">
@@ -47,7 +47,7 @@
 
         <!-- CHANGE PASSWORD FORM -->
         <h4>Change password</h4>
-        <form class="form-edit" method="POST" action="{{route("user.update", ["user" => $user])}}">
+        <form class="form-edit" method="POST" action="{{route("users.update", ["user" => $user])}}">
             @csrf
             @method("PATCH")
             <input type="hidden" name="process" value="changepassword">
