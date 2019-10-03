@@ -71,9 +71,12 @@ class UsersController extends Controller
             'username' => $username,
             'email' => $email,
             'password' => Hash::make($request->password),
-        ]);    
+        ]);
 
-        return redirect(route("users.index"));
+        $return_status = 0;
+        $return_msg = "User $user->username created!";
+        $title = "$user->username | NeuralNetworkBuilder";
+        return view("users.show", compact("user", "return_status", "return_msg", "title"));
     }
 
     /**
@@ -250,7 +253,7 @@ class UsersController extends Controller
     public function destroy(User $user)
     {
         if(Auth::user()->rank == -1){
-            //$user->delete();      //DO NOTHING ATM
+            $user->delete();      //DO NOTHING ATM
             return redirect(route("users.index"));
         }else{
             return redirect(route("home"));

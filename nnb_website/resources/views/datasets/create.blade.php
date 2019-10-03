@@ -1,5 +1,4 @@
-{{-- ADMIN ONLY --}}
-@if(Auth::user()->rank != -1)
+@if(Auth::user()->id != $user->id)
     {{ redirect(route("home"))  }}
 @endif
 
@@ -8,20 +7,38 @@
 @section('page-title', $title)
 
 @section('content')
-	<h2 class="ml-5">Create new User</h2>
-
 	<div class="container col-md-5">
-		<form method="POST" action="{{route("users.store")}}">
+		<h2 class="mb-5">Create new Dataset</h2>
+		<form method="POST" action="{{route("datasets.store", ['user' => $user])}}">
 			@csrf
-			
-			{{-- Username field --}}
+
+			{{-- Import dataset field --}}
 			<div class="form-group row">
-				<label for="username" class="col-md-4 col-form-label text-md-right">{{ __('Username') }}</label>
+				<div class="offset-md-2">Dataset</div>
+				
+				<img src="{{ asset('img/info_icon.png') }}" class="ml-2 mb-1" alt="info_icon" style="height: 20px; width: 20px" data-toggle="tooltip" data-placement="top" data-html="true" 
+				title="
+					Dataset accepted extensions: .csv, .json, .pkl or .pickle<br>
+					Download the example dataset to understand how your dataset have to be:<br>
+					<a href='{{ asset('example_dataset/data.csv') }}'>CSV</a>,
+					<a href='{{ asset('example_dataset/data.json') }}'>JSON</a>,
+					<a href='{{ asset('example_dataset/data.pkl') }}'>PKL/PICKLE</a>.
+				">
 
-				<div class="col-md-6">
-					<input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autocomplete="username" autofocus>
+				<div class="custom-file offset-md-2 mr-3">
+					<input type="file" class="custom-file-input" id="dataset_file" name="dataset_file" accept=".json, .csv, .pickle, .pkl" required>
+					<label class="custom-file-label" for="dataset_file">Choose file</label>
+				</div>
+			</div>
 
-					@error('username')
+			{{-- Title field --}}
+			<div class="form-group row">
+				<label for="data-title" class="col-md-4 col-form-label text-md-right">{{ __('Title') }}</label>
+
+				<div class="col-md-8">
+					<input id="data-title" type="text" class="form-control @error('data_name') is-invalid @enderror" name="data-title" value="{{ old('data_name') }}" required autofocus>
+
+					@error('data_name')
 						<span class="invalid-feedback" role="alert">
 							<strong>{{ $message }}</strong>
 						</span>
@@ -29,14 +46,14 @@
 				</div>
 			</div>
 
-			{{-- Email field --}}
+			{{-- Description field --}}
 			<div class="form-group row">
-				<label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+				<label for="description" class="col-md-4 col-form-label text-md-right">{{ __('Description') }}</label>
 
-				<div class="col-md-6">
-					<input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+				<div class="col-md-8">
+					<textarea id="description" class="form-control @error('data_description') is-invalid @enderror" name="description" value="{{ old('data_description') }}" required></textarea>
 
-					@error('email')
+					@error('data_description')
 						<span class="invalid-feedback" role="alert">
 							<strong>{{ $message }}</strong>
 						</span>
@@ -44,26 +61,45 @@
 				</div>
 			</div>
 
-			{{-- Password field --}}
 			<div class="form-group row">
-				<label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-				<div class="col-md-6">
-					<input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-					@error('password')
-						<span class="invalid-feedback" role="alert">
-							<strong>{{ $message }}</strong>
-						</span>
-					@enderror
+				<div class="col-md-6 text-md-right">
+					{{-- X_Shape field --}}
+					<label for="input_shape" class="col-form-label pr-2">{{ __('Input shape') }}</label>
+					<input id="input_shape" type="number" class="col-md-6 form-control float-right" name="input_shape" required value="1" step="1" min="1" max="1000">
+				</div>
+				<div class="col-md-6 text-md-right">
+					{{-- Y_Classes field --}}
+					<label for="output_classes" class="col-form-label pr-2">{{ __('Output classes') }}</label>
+					<input id="output_classes" type="number" class="col-md-6 form-control float-right" name="output_classes" required value="1" step="1" min="1" max="1000">
 				</div>
 			</div>
+
+			{{-- Train, Test or Both --}}
+			<fieldset class="form-group">
+				<div class="row">
+					<legend class="col-form-label col-sm-4 pt-3 text-md-right">Data Type</legend>
+					<div class="col-sm-6">
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="dataset_type" id="train" value="option1" >
+							<label class="form-check-label" for="train">For Train</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="dataset_type" id="test" value="option2">
+							<label class="form-check-label" for="test">For Test</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="dataset_type" id="generic" value="option3" checked>
+							<label class="form-check-label" for="generic">Both</label>
+						</div>
+					</div>
+				</div>
+			</fieldset>
 
 			{{-- Submit button --}}
 			<div class="form-group row mb-0">
 				<div class="col-md-6 offset-md-4">
 					<button type="submit" class="btn btn-primary">
-						{{ __('Add User') }}
+						{{ __('Import Dataset') }}
 					</button>
 				</div>
 			</div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Dataset;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 class DatasetsController extends Controller
@@ -37,7 +38,11 @@ class DatasetsController extends Controller
      */
     public function create(User $user)
     {
-        //
+        if((Auth::user()->id != $user->id))
+            return redirect(route("home"));
+
+        $title = "Import Dataset | Neural Network Builder";
+        return view('datasets.create', compact("title", "user"));
     }
 
     /**
@@ -48,7 +53,19 @@ class DatasetsController extends Controller
      */
     public function store(Request $request, User $user)
     {
-        //
+        if((Auth::user()->id != $user->id))
+            return redirect(route("home"));
+
+        $username = $request->username;
+        $email = $request->email;
+
+        $user = User::create([
+            'username' => $username,
+            'email' => $email,
+            'password' => Hash::make($request->password),
+        ]);    
+
+        return redirect(route("datasets.index"));      //to change in ->  return redirect(route("datasets.show"));
     }
 
     /**
