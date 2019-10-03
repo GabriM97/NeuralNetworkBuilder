@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Validator;
 
 class UsersController extends Controller
 {
@@ -57,36 +58,23 @@ class UsersController extends Controller
         if(Auth::user()->rank !== -1)
             return redirect(route("home"));
 
+        $validateData = $request->validate([
+            'username' => ['unique:users', 'required', 'max:255', 'string'],
+            'email' => ['email', 'unique:users', 'required', 'max:255','string'],
+            'password' => ['min:8', 'required', 'string'],
+        ]);
 
         $username = $request->username;
         $email = $request->email;
-        $query_username = User::where("username", $username)->get();
-        $query_email = User::where("email", $email)->get();
 
-        $status = -1;
-        if(count($query_username) != 0){
-            $msg = "The username has already been taken.";
-            return view("users.create", compact("status", "msg"));
-        }
-
-        if(count($query_email) != 0){
-            $msg = "The email has already been taken.";
-            return view("users.create", compact("status", "msg"));
-        }
-
-        // DA CONTINUARE
-
-        return User::create([
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+        $user = User::create([
+            'username' => $username,
+            'email' => $email,
+            'password' => Hash::make($request->password),
         ]);    
 
-        $project = new Project();
-        $project->title = request('title');
-        $project->description = request('description');
-        $project->save();
-        return redirect("/projects");
+        //$user->save();
+        return redirect(route("user.index"));
     }
 
     /**
