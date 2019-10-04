@@ -104,8 +104,8 @@ class DatasetsController extends Controller
             $id = $dataset->id;
             $filename = "data_$id.$file_extension";
             $local_path = $local_dir.$filename;
-            $dataset_file->storeAs($local_dir, $filename);
-            Storage::setVisibility($local_path, 'public');
+            $dataset_file->storeAs("public/$local_dir", $filename);
+            Storage::setVisibility("public/$local_path", 'public');
             $dataset->local_path = $local_path;     //save path+filename
             $dataset->save();
 
@@ -140,7 +140,11 @@ class DatasetsController extends Controller
      */
     public function edit(User $user, Dataset $dataset)
     {
-        //
+        if((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1))
+            return redirect(route('datasets.index', ['user' => Auth::user()]));
+        
+        $title = "Edit dataset | NeuralNetworkBuilder";
+        return view('datasets.edit', compact("title", "user", "dataset"));
     }
 
     /**
@@ -152,7 +156,7 @@ class DatasetsController extends Controller
      */
     public function update(Request $request, User $user, Dataset $dataset)
     {
-        //
+        return $request;
     }
 
     /**
@@ -163,7 +167,7 @@ class DatasetsController extends Controller
      */
     public function destroy(User $user, Dataset $dataset)
     {
-        if(Auth::user()->id == $user->id){
+        if(Auth::user()->id == $user->id || Auth::user()->rank == -1){
             Storage::delete($dataset->local_path);
             $dataset->delete();
             $user->datasets_number--;
@@ -181,5 +185,13 @@ class DatasetsController extends Controller
         }else{
             return redirect(route("home"));
         }
+    }
+
+    public function download(User $user, Dataset $dataset)
+    {
+        if(Auth::user()->id == $user->id || Auth::user()->rank == -1){
+            return Storage::download(asset("storage/$dataset->local_path"));
+        }else
+            return redirect(route("home"));
     }
 }

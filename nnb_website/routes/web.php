@@ -20,3 +20,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('/users', 'UsersController');
 
 Route::resource('/users/{user}/datasets', 'DatasetsController');
+Route::get('/users/{user}/datasets/{dataset}/download/', 'DatasetsController@download')->name("datasets.download");

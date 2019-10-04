@@ -75,9 +75,9 @@
                     <button class="btn btn-danger ml-1 mr-1" type="submit">Delete</button>
                 </form>
 
-                {{-- EDIT BUTTON--}}
-                <a href="{{ route('datasets.edit', ['user' => $user, 'dataset' => $data]) }}">
-                    <button class="btn btn-outline-info ml-1">Edit</button>
+                {{-- DOWNLOAD BUTTON--}}
+                <a href="{{ route("datasets.download", ['user' => $user, 'dataset' => $data]) }}">
+                    <button class="btn btn-outline-danger ml-1">Download</button>
                 </a>
             </div>
         </div>
