@@ -47,11 +47,14 @@
             <p>Your Models: {{ $user->models_number }}</p>      {{-- add link to user models --}}
             <p>Your Datasets: {{ $user->datasets_number }}</p>    {{-- add link to user datasets --}}
             <p>Available space:
-                @if ($user->available_space/1048576 >= 1024)
-                    {{ $user->available_space/1073741824 }} GB
-                @else
-                    {{ $user->available_space/1048576 }} MB 
-                @endif
+                @php
+                    if($user->available_space/1024 < 1000) 
+                        echo round($user->available_space/1024, 2)." KB";
+                    elseif($user->available_space/1048576 < 1000) 
+                        echo round($user->available_space/1048576, 2)." MB";
+                    else //if($user->available_space/1073741824 < 1000) 
+                        echo round($user->available_space/1073741824, 2)." GB";
+                @endphp
                 <span class="available-space-bar"></span>
             </p>
             <p>Last login: {{ $user->last_signed_on }}</p>

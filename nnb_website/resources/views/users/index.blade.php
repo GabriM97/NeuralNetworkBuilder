@@ -19,24 +19,24 @@
 <h2 class="ml-5">Users</h2>
     <div class="container text-center">
         <div class="row border border-secondary text-center font-weight-bold">    <!-- TITLE ROW -->
-            <div class="col-sm">ID</div>
-            <div class="col-sm">Username</div>
-            <div class="col-sm">Email</div>
-            <div class="col-sm">Account Type</div>
-            <div class="col-sm">Available Space</div>
-            <div class="col-sm">Models</div>
-            <div class="col-sm">Datasets</div>
-            <div class="col-sm">Tainings</div>
-            <div class="col-sm">Last Login</div>
-            <div class="col-sm">Action</div>
+            <div class="col-md-1">ID</div>
+            <div class="col-md-1">Username</div>
+            <div class="col-md-2">Email</div>
+            <div class="col-md-1">Account Type</div>
+            <div class="col-md-1">Available Space</div>
+            <div class="col-md-1">Models</div>
+            <div class="col-md-1">Datasets</div>
+            <div class="col-md-1">Tainings</div>
+            <div class="col-md-2">Last Login</div>
+            <div class="col-md-1">Action</div>
         </div>
 
         @foreach ($users as $usr)
             <div class="row border border-secondary text-center">
-                <div class="col-sm">{{$usr->id}}</div>
-                <div class="col-sm">{{$usr->username}}</div>
-                <div class="col-sm">{{$usr->email}}</div>
-                <div class="col-sm">    {{-- ACCOUNT TYPE --}}
+                <div class="col-md-1">{{$usr->id}}</div>
+                <div class="col-md-1">{{$usr->username}}</div>
+                <div class="col-md-2">{{$usr->email}}</div>
+                <div class="col-md-1">    {{-- ACCOUNT TYPE --}}
                     @php
                         switch ($usr->rank){
                             case -1:    // Admin
@@ -57,19 +57,22 @@
                         }
                     @endphp
                 </div>
-                <div class="col-sm">    {{-- AVAILABLE SPACE --}}
-                    @if ($usr->available_space/1048576 >= 1024)
-                        {{ $usr->available_space/1073741824 }} GB
-                    @else
-                        {{ $usr->available_space/1048576 }} MB 
-                    @endif
+                <div class="col-md-1">    {{-- AVAILABLE SPACE --}}
+                    @php
+                        if($usr->available_space/1024 < 1000) 
+                            echo round($usr->available_space/1024, 2)." KB";
+                        elseif($usr->available_space/1048576 < 1000) 
+                            echo round($usr->available_space/1048576, 2)." MB";
+                        else //if($usr->available_space/1073741824 < 1000) 
+                            echo round($usr->available_space/1073741824, 2)." GB";
+                    @endphp
                     <span class="available-space-bar"></span>
                 </div>
-                <div class="col-sm">{{$usr->models_number}}</div>
-                <div class="col-sm">{{$usr->datasets_number}}</div>
-                <div class="col-sm"> // </div>
-                <div class="col-sm">{{$usr->last_signed_on}}</div>
-                <div class="col-sm">
+                <div class="col-md-1">{{$usr->models_number}}</div>
+                <div class="col-md-1">{{$usr->datasets_number}}</div>
+                <div class="col-md-1"> // </div>
+                <div class="col-md-2">{{$usr->last_signed_on}}</div>
+                <div class="col-md-1">
                     <a href="{{ route('users.show', ['user' => $usr]) }}">
                         <button class="btn btn-primary">Details</button>
                     </a>

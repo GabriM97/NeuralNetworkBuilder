@@ -6,6 +6,7 @@ use App\Dataset;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 
 class DatasetsController extends Controller
@@ -26,7 +27,7 @@ class DatasetsController extends Controller
         if((Auth::user()->id != $user->id) && (Auth::user()->rank !== -1))
             return redirect(route("home"));
 
-        $datasets = Dataset::where("user_id", $user->id);
+        $datasets = Dataset::where("user_id", $user->id)->get();
         $title = "Datasets | Neural Network Builder";
         return view("datasets.index", compact("title", "user", "datasets"));
     }
@@ -56,16 +57,67 @@ class DatasetsController extends Controller
         if((Auth::user()->id != $user->id))
             return redirect(route("home"));
 
-        $username = $request->username;
-        $email = $request->email;
+        // File data
+        $dataset_file = $request->file("dataset_file");
+        $file_size = $dataset_file->getClientSize();
+        $file_extension = $dataset_file->getClientOriginalExtension();
+        $hashed_user = hash("md5", $user->id);  
+        $local_dir = "users/$hashed_user/datasets/";
+        
+        //Check user available space
+        if($user->available_space < $file_size)
+            return redirect(route("datasets.index", ["user" => $user]));
 
-        $user = User::create([
-            'username' => $username,
-            'email' => $email,
-            'password' => Hash::make($request->password),
-        ]);    
+        // Get Dataset info
+        $user_id = $user->id;
+        $title = $request->data_title;
+        $description = $request->description;
+        $input_shape = $request->input_shape;
+        $output_classes = $request->output_classes;
+        $dataset_type = $request->dataset_type;
 
-        return redirect(route("datasets.index"));      //to change in ->  return redirect(route("datasets.show"));
+        // Set Data type
+        $isTrain = false;
+        $isTest = false;
+        $isGeneric = false;
+        if($dataset_type == "train")    $isTrain = true;
+        if($dataset_type == "test")     $isTest = true;
+        if($dataset_type == "generic")  $isGeneric = true;
+
+        // Add dataset record
+        $dataset = Dataset::create([        // link to -> asset('storage/file.txt');
+            'user_id' => $user_id,
+            'data_name' => $title,
+            'data_description' => $description,
+            'file_size' => $file_size,
+            'file_extension' => $file_extension,
+            'x_shape' => $input_shape,
+            'y_classes' => $output_classes,
+            'local_path' => $local_dir,     //save path only
+            'is_train' => $isTrain,
+            'is_test' => $isTest,
+            'is_generic' => $isGeneric,
+        ]);
+
+        try {
+            // Store dataset
+            $id = $dataset->id;
+            $filename = "data_$id.$file_extension";
+            $local_path = $local_dir.$filename;
+            $dataset_file->storeAs($local_dir, $filename);
+            Storage::setVisibility($local_path, 'public');
+            $dataset->local_path = $local_path;     //save path+filename
+            $dataset->save();
+
+            //Update user details
+            $user->datasets_number++;
+            $user->available_space -= $file_size;
+            $user->save();
+        } catch (\Throwable $th) {
+            $dataset->delete();
+        }
+        
+        return redirect(route("datasets.index", ["user" => $user]));      //to change in ->  return redirect(route("datasets.show"));
     }
 
     /**
@@ -110,6 +162,23 @@ class DatasetsController extends Controller
      */
     public function destroy(User $user, Dataset $dataset)
     {
-        //
+        if(Auth::user()->id == $user->id){
+            Storage::delete($dataset->local_path);
+            $dataset->delete();
+            $user->datasets_number--;
+
+            $tot_size = $user->get_tot_files_size();
+            if($user->available_space > 0)  $user->available_space += $dataset->file_size;
+            else    // avb_spc = 0
+                if($tot_size < $user->get_max_available_space()) 
+                    $user->available_space = $user->get_max_available_space() - $tot_size;
+                else
+                    $user->available_space = 0;
+
+            $user->save();
+            return redirect(route("datasets.index", compact("user")));
+        }else{
+            return redirect(route("home"));
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Dataset;
 
 class User extends Authenticatable
 {
@@ -16,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'email', 'password',
+        'username', 'email', 'password', 'rank', 'available_space',
     ];
 
     /**
@@ -36,4 +37,34 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function get_max_available_space(){
+        switch ($this->rank) {
+            case -1:  // ADMIN
+                return 1073741824000;   // 1000 GB
+                break;
+            case 0:  // Base
+                return 2147483648;   // 2 GB
+                break;
+            case 1:  // Advanced
+                return 10737418240;   // 10 GB
+                break;
+            case 2:  // Professional
+                return 32212254720;   // 30 GB
+                break;
+            
+            default:
+                return 0;
+                break;
+        }
+    }
+
+    public function get_tot_files_size(){
+        $tot_datasets_size = Dataset::where("user_id", $this->id)
+                                        ->sum("file_size");
+        /* $tot_models_size = Model::where("user_id", $this->id)
+                                        ->sum("model_size"); */
+        $tot_size = $tot_datasets_size /*+ $tot_models_size*/;
+        return $tot_size;
+    }
 }

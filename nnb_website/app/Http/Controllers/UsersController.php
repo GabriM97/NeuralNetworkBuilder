@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Dataset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 
 class UsersController extends Controller
@@ -72,6 +74,14 @@ class UsersController extends Controller
             'email' => $email,
             'password' => Hash::make($request->password),
         ]);
+
+        $hashed_user = hash("md5", $user->id); 
+        $user_dir_datasets = "users/$hashed_user/datasets";
+        $user_dir_models = "users/$hashed_user/models";
+        $user_dir_trainings = "users/$hashed_user/trainings";
+        Storage::makeDirectory($user_dir_datasets);
+        Storage::makeDirectory($user_dir_models);
+        Storage::makeDirectory($user_dir_trainings);
 
         $return_status = 0;
         $return_msg = "User $user->username created!";
@@ -165,17 +175,18 @@ class UsersController extends Controller
                     
                 case 'upgradeaccount':
                     if(Auth::user()->rank == -1){
-                        if($user->rank == 0 ){    //if Base
-                            $user->rank += 1;
-                            $user->available_space += 8589934592;    // +8 GB   (10GB MAX)
-                        }else if($user->rank == 1){  //if Advanced
-                            $user->rank += 1;
-                            $user->available_space += 21474836480;    // +20 GB   (30GB MAX)
-                        }else{
+                        if($user->rank != 0  && $user->rank != 1){ 
                             $status = -1;
                             $msg = "Request not valid.";
                             break;
                         }
+                        $user->rank += 1;
+                        $tot_size = $user->get_tot_files_size();
+                        if($tot_size > $user->get_max_available_space())   //available_space < 0
+                            $user->available_space = 0;
+                        else
+                            $user->available_space = $user->get_max_available_space() - $tot_size;
+                            
                         $status = 0;
                         $msg = "User upgraded.";
                     }
@@ -183,17 +194,18 @@ class UsersController extends Controller
 
                 case 'downgradeaccount':
                     if(Auth::user()->rank == -1){
-                        if($user->rank == 1 ){    //if Advanced
-                            $user->rank -= 1;
-                            $user->available_space -= 8589934592;    // -8 GB   (2GB MAX)
-                        }else if($user->rank == 2){  //if Professional
-                            $user->rank -= 1;
-                            $user->available_space -= 21474836480;    // -20 GB   (10GB MAX)
-                        }else{
+                        if($user->rank != 1  && $user->rank != 2){ 
                             $status = -1;
                             $msg = "Request not valid.";
                             break;
                         }
+                        $user->rank -= 1;
+                        $tot_size = $user->get_tot_files_size();
+                        if($tot_size > $user->get_max_available_space())   //available_space < 0
+                            $user->available_space = 0;
+                        else
+                            $user->available_space = $user->get_max_available_space() - $tot_size;
+                            
                         $status = 0;
                         $msg = "User downgraded.";
                     }
@@ -203,7 +215,7 @@ class UsersController extends Controller
                     if(Auth::user()->rank == -1){
                         if($user->rank != -1){
                             $user->rank = -1;
-                            $user->available_space = 1073741824000;     // +1000 GB  
+                            $user->available_space = $user->get_max_available_space();     // 1000 GB  
                             $status = 0;
                             $msg = "User is now Admin.";
                         }else{
@@ -217,7 +229,10 @@ class UsersController extends Controller
                     if(Auth::user()->rank == -1){
                         if($user->rank == -1){
                             $user->rank = 0;
-                            $user->available_space -= 1071594340352;     // -998 GB  (2 GB of Base Account)
+
+                            $tot_size = $user->get_tot_files_size();
+                            $available = $user->get_max_available_space() - $tot_size;
+                            $user->available_space = $available < 0 ? 0 : $available;
                             $status = 0;
                             $msg = "User is no more Admin.";
                         }else{
@@ -253,7 +268,8 @@ class UsersController extends Controller
     public function destroy(User $user)
     {
         if(Auth::user()->rank == -1){
-            $user->delete();      //DO NOTHING ATM
+            $user->delete();            
+            Storage::deleteDirectory("users/".hash("md5", $user->id));
             return redirect(route("users.index"));
         }else{
             return redirect(route("home"));

@@ -9,7 +9,7 @@
 @section('content')
 	<div class="container col-md-5">
 		<h2 class="mb-5">Create new Dataset</h2>
-		<form method="POST" action="{{route("datasets.store", ['user' => $user])}}">
+		<form method="POST" enctype="multipart/form-data" action="{{route("datasets.store", ['user' => $user])}}">
 			@csrf
 
 			{{-- Import dataset field --}}
@@ -24,11 +24,11 @@
 					<a href='{{ asset('example_dataset/data.json') }}'>JSON</a>,
 					<a href='{{ asset('example_dataset/data.pkl') }}'>PKL/PICKLE</a>.
 				">
-
+ 
 				<div class="custom-file offset-md-2 mr-3">
 					<input type="file" class="custom-file-input" id="dataset_file" name="dataset_file" accept=".json, .csv, .pickle, .pkl" required>
 					<label class="custom-file-label" for="dataset_file">Choose file</label>
-				</div>
+				</div> 
 			</div>
 
 			{{-- Title field --}}
@@ -36,7 +36,7 @@
 				<label for="data-title" class="col-md-4 col-form-label text-md-right">{{ __('Title') }}</label>
 
 				<div class="col-md-8">
-					<input id="data-title" type="text" class="form-control @error('data_name') is-invalid @enderror" name="data-title" value="{{ old('data_name') }}" required autofocus>
+					<input id="data-title" type="text" class="form-control @error('data_name') is-invalid @enderror" name="data_title" value="{{ old('data_name') }}" required autofocus>
 
 					@error('data_name')
 						<span class="invalid-feedback" role="alert">
@@ -80,16 +80,24 @@
 					<legend class="col-form-label col-sm-4 pt-3 text-md-right">Data Type</legend>
 					<div class="col-sm-6">
 						<div class="form-check">
-							<input class="form-check-input" type="radio" name="dataset_type" id="train" value="option1" >
-							<label class="form-check-label" for="train">For Train</label>
+							<input class="form-check-input" type="radio" name="dataset_type" id="train" value="train" >
+							<label class="form-check-label" for="train">For Train <img src="{{ asset('img/info_icon.png') }}" class="ml-2" alt="info_icon" style="height: 20px; width: 20px" data-toggle="tooltip" data-placement="right" 
+								title="{X_train, Y_train}">
+							</label>
 						</div>
 						<div class="form-check">
-							<input class="form-check-input" type="radio" name="dataset_type" id="test" value="option2">
-							<label class="form-check-label" for="test">For Test</label>
+							<input class="form-check-input" type="radio" name="dataset_type" id="test" value="test">
+							<label class="form-check-label" for="test">For Test
+								<img src="{{ asset('img/info_icon.png') }}" class="ml-2" alt="info_icon" style="height: 20px; width: 20px" data-toggle="tooltip" data-placement="right" 
+								title="{X_test, Y_test}">
+							</label>
 						</div>
 						<div class="form-check">
-							<input class="form-check-input" type="radio" name="dataset_type" id="generic" value="option3" checked>
-							<label class="form-check-label" for="generic">Both</label>
+							<input class="form-check-input" type="radio" name="dataset_type" id="generic" value="generic" checked>
+							<label class="form-check-label" for="generic">Both
+								<img src="{{ asset('img/info_icon.png') }}" class="ml-2" alt="info_icon" style="height: 20px; width: 20px" data-toggle="tooltip" data-placement="right" 
+								title="{X_train, Y_train, X_test, Y_test}">
+							</label>
 						</div>
 					</div>
 				</div>

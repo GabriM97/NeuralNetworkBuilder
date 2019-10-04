@@ -63,10 +63,20 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+
+        $hashed_user = hash("md5", $user->id); 
+        $user_dir_datasets = "users/$hashed_user/datasets";
+        $user_dir_models = "users/$hashed_user/models";
+        $user_dir_trainings = "users/$hashed_user/trainings";
+        Storage::makeDirectory($user_dir_datasets);
+        Storage::makeDirectory($user_dir_models);
+        Storage::makeDirectory($user_dir_trainings);
+
+        return $user;
     }
 }
