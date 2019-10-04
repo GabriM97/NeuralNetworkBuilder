@@ -1,3 +1,7 @@
+@if(Auth::user()->rank != -1 || $user->id != Auth::user()->id)
+    {{ redirect(route("home"))  }}
+@endif
+
 @extends("layouts.app")
 
 @section('page-title', $title)
