@@ -1,6 +1,6 @@
 {{-- ADMIN ONLY --}}
 @if(Auth::user()->rank != -1)
-    {{ redirect(route("home"))  }}
+    {!! redirect(route("home"))  !!}
 @endif
 
 @extends("layouts.app")

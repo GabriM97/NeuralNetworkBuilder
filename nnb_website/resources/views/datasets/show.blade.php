@@ -1,9 +1,14 @@
+@if(Auth::user()->rank != -1 && $user->id != Auth::user()->id)
+    {!! redirect(route("home")) !!}
+@endif
+
 @extends("layouts.app")
 
 @section('page-title', $title)
 
 @section('content')
 
+    {{-- 
     @if(isset($return_status))
         @php
             if($return_status == 0) $msg_class = "alert-success";
@@ -13,118 +18,104 @@
         <div class="container text-center alert {{$msg_class}}" role="alert">{{$return_msg}}</div>
         
     @endif
+    --}}
 
-    <div class="container text-center">
-        <h2 class="content-title">Profile details</h2>
-        <p>Username: {{ $user->username }}</p>
+    <div class="container col-7 text-sm-center">
+        <h2 class="content-title mb-5">Dataset details</h2>
+        <div class="row">
+            <!-- Left column -->
+            <div class="col-7">
+                <div class="row">
+                    <div class="col-4 text-right font-weight-bold">Title</div>
+                    <div class="col-8 text-left">{{ $dataset->data_name }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-4 text-right font-weight-bold">Description</div>
+                    <div class="col-8 border text-left">
+                        @if($dataset->data_description)
+                            {{$dataset->data_description}}
+                        @else
+                            <span class="font-italic">No description</span>
+                        @endif
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 text-right font-weight-bold">Data type</div>
+                    <div class="col-6 text-left"> {{-- DATA TYPE --}}
+                        @php
+                            if($dataset->is_train) echo "Train";
+                            if($dataset->is_test) echo "Test";
+                            if($dataset->is_generic) echo "Generic";
+                        @endphp
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 text-right font-weight-bold">Last time used</div>
+                    <div class="col-8 text-left">
+                        @if($dataset->last_time_used)
+                                {{$dataset->last_time_used}}
+                        @else
+                            <span class="font-italic">Never</span>
+                        @endif    
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 text-right font-weight-bold">Uploaded at</div>
+                    <div class="col-8 text-left">{{$dataset->created_at}}</div>
+                </div>
+            </div>
 
-        <p>Account type:
-        @php
-            switch ($user->rank){
-                case -1:    // Admin
-                    echo "<span style='color: rgb(200,0,0)'>Admin</span>";
-                    break;
-                case 0:    // Base user
-                    echo "<span style='color: rgb(100,100,100)'>Base</span>";
-                    break;
-                case 1:    // Advanced user
-                    echo "<span style='color: rgb(10,10,200)'>Advanced</span>";
-                    break;
-                case 2:    // Professional user
-                    echo "<span style='color: rgb(10,150,10)'>Professional</span>";
-                    break;
-                default:
-                    echo "Not defined";
-                    break;
-            } 
-        @endphp
-        </p>
-        
-        @if ((Auth::user()->id == $user->id) || (Auth::user()->rank == -1))
-            {{-- logged user can visualize its FULL details  --}}
-
-            <p>Email: {{ $user->email }} <span>{{ $user->email_verified_at ? "(Verified)" : "(Not verified)" }}</span></p>
-            <p>Your Models: {{ $user->models_number }}</p>      {{-- add link to user models --}}
-            <p>Your Datasets: {{ $user->datasets_number }}</p>    {{-- add link to user datasets --}}
-            <p>Available space:
-                @if ($user->available_space/1048576 >= 1024)
-                    {{ $user->available_space/1073741824 }} GB
-                @else
-                    {{ $user->available_space/1048576 }} MB 
+            <!-- Right column -->
+            <div class="col-5">
+                
+                @if(Auth::user()->rank == -1 && $user->id != Auth::user()->id)
+                    <div class="row">
+                        <div class="col-7 text-right font-weight-bold">Owner</div>
+                        <div class="col-5 text-left">{{$user->username}}</div>
+                    </div>
                 @endif
-                <span class="available-space-bar"></span>
-            </p>
-            <p>Last login: {{ $user->last_signed_on }}</p>
-            <p>Account created on: {{ $user->created_at }}</p>
-            
-            <!-- Edit button -->
-            <a href="{{ route('users.edit', ['user' => $user]) }}"><button class="btn btn-primary">Edit</button></a>
-            
-            @if (Auth::user()->rank == -1)
-                <!-- Delete button - ADMIN ONLY -->
-                <form class="form-delete d-inline-block" method="POST" action="{{route("users.destroy", ["user" => $user])}}">
+
+                <div class="row">
+                    <div class="col-7 text-right font-weight-bold">File size</div>
+                    <div class="col-5 text-left pr-0">    {{-- FILE SIZE --}}
+                        @php
+                            if($dataset->file_size/1024 < 1000) 
+                                echo round($dataset->file_size/1024, 2)." KB";
+                            elseif($dataset->file_size/1048576 < 1000) 
+                                echo round($dataset->file_size/1048576, 2)." MB";
+                            else //if($dataset->file_size/1073741824 < 1000) 
+                                echo round($dataset->file_size/1073741824, 2)." GB";
+                        @endphp
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7 text-right font-weight-bold">File extension</div>
+                    <div class="col-5 text-left">{{$dataset->file_extension}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-7 text-right font-weight-bold">Input shape</div>
+                    <div class="col-5 text-left">{{$dataset->x_shape}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-7 text-right font-weight-bold">Output classes</div>
+                    <div class="col-5 text-left">{{$dataset->y_classes}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-right">   {{-- EDIT BUTTON --}}         
+                <a href="{{ route('datasets.edit', compact("user", "dataset")) }}">
+                    <button class="btn btn-primary">Edit</button>
+                </a>
+            </div>
+            <div class="col-6 text-left">   {{-- DELETE BUTTON --}}
+                <form class="form-delete d-inline-block" method="POST" action="{{route('datasets.destroy', compact("user", "dataset"))}}">
                     @csrf
                     @method("DELETE")
                     <button class="btn btn-danger" type="submit">Delete</button>
                 </form>
-
-                @if ($user->rank >= 0 && $user->rank < 2)
-                    <!-- Upgrade button - ADMIN ONLY-->
-                    <form class="form-upgrade d-inline-block" method="POST" action="{{route("users.update", ["user" => $user])}}">
-                        @csrf
-                        @method("PATCH")
-                        <input type="hidden" name="process" value="upgradeaccount">
-
-                        <button class='btn btn-success' type="submit">Upgrade</button>
-                    </form>
-                @endif
-
-                @if ($user->rank > 0 && $user->rank <= 2)
-                    <!-- Downgrade button - ADMIN ONLY-->
-                    <form class="form-downgrade d-inline-block" method="POST" action="{{route("users.update", ["user" => $user])}}">
-                        @csrf
-                        @method("PATCH")
-                        <input type="hidden" name="process" value="downgradeaccount">
-
-                        <button class='btn btn-warning' type="submit">Downgrade</button>
-                    </form>
-                @endif
-                
-                <br><br>
-
-                @if ($user->rank != -1)
-                    <!-- Make Admin button - ADMIN ONLY-->
-                    <form class="form-makeadmin d-inline-block" method="POST" action="{{route("users.update", ["user" => $user])}}">
-                        @csrf
-                        @method("PATCH")
-                        <input type="hidden" name="process" value="makeadmin">
-
-                        <button class='btn btn-outline-danger btn-sm' type="submit">MAKE ADMIN</button>
-                    </form>
-                @endif
-
-                @if ($user->rank == -1)
-                    <!-- Remove Admin button - ADMIN ONLY-->
-                    <form class="form-removeadmin d-inline-block" method="POST" action="{{route("users.update", ["user" => $user])}}">
-                        @csrf
-                        @method("PATCH")
-                        <input type="hidden" name="process" value="removeadmin">
-
-                        <button class='btn btn-outline-danger btn-sm' type="submit">REMOVE ADMIN</button>
-                    </form>
-                @endif
-
-            @endif
-        @else
-        </p>    <!-- close Account type tag -->
-            {{-- logged user can visualize NON-SENSITIVE details of user in URL  --}}
-
-            <p>Models: {{ $user->models_number }}</p>
-            <p>Datasets: {{ $user->datasets_number }}</p>
-            <p>Last login: {{ $user->last_signed_on }}</p>
-            <p>Account created on: {{ $user->created_at }}</p>
-
-        @endif
+            </div>
+        </div>
     </div>
 @endsection
 

@@ -1,5 +1,5 @@
 @if(Auth::user()->id != $user->id)
-    {{ redirect(route("home"))  }}
+    {!! redirect(route("home"))  !!}
 @endif
 
 @extends("layouts.app")
@@ -51,7 +51,7 @@
 				<label for="description" class="col-md-4 col-form-label text-md-right">{{ __('Description') }}</label>
 
 				<div class="col-md-8">
-					<textarea id="description" class="form-control @error('data_description') is-invalid @enderror" name="description" value="{{ old('data_description') }}" required></textarea>
+					<textarea id="description" class="form-control @error('data_description') is-invalid @enderror" name="description" value="{{ old('data_description') }}"></textarea>
 
 					@error('data_description')
 						<span class="invalid-feedback" role="alert">

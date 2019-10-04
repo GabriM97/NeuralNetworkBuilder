@@ -53,12 +53,12 @@
                 <div class="col-6">{{ $user->email }} <span>{{ $user->email_verified_at ? "(Verified)" : "(Not verified)" }}</span></div>
             </div>
             <div class="row">
-                <div class="col-6 text-right">Your Models</div>
-                <div class="col-6">{{ $user->models_number }}</div> {{-- add link to user models --}}
+                <div class="col-6 text-right"><a href="{{--route("models.index", compact("user"))--}}">Models</a></div>
+                <div class="col-6">{{ $user->models_number }}</div>
             </div>
             <div class="row">
-                <div class="col-6 text-right">Your Datasets</div>
-                <div class="col-6">{{ $user->datasets_number }}</div>   {{-- add link to user datasets --}}
+            <div class="col-6 text-right"><a href="{{route("datasets.index", compact("user"))}}">Datasets</a></div>
+                <div class="col-6">{{ $user->datasets_number }}</div>
             </div>
             <div class="row">
                 <div class="col-6 text-right">Available space</div>

@@ -127,8 +127,9 @@ class DatasetsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(User $user, Dataset $dataset)
-    {
-        //
+    {   
+        $title = "$dataset->data_name | NeuralNetworkBuilder";
+        return view("datasets.show", compact("title", "user", "dataset"));
     }
 
     /**
