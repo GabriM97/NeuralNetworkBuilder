@@ -85,7 +85,7 @@ class DatasetsController extends Controller
         if($dataset_type == "generic")  $isGeneric = true;
 
         // Add dataset record
-        $dataset = Dataset::create([        // link to -> asset('storage/file.txt');
+        $dataset = Dataset::create([
             'user_id' => $user_id,
             'data_name' => $title,
             'data_description' => $description,
@@ -168,7 +168,7 @@ class DatasetsController extends Controller
     public function destroy(User $user, Dataset $dataset)
     {
         if(Auth::user()->id == $user->id || Auth::user()->rank == -1){
-            Storage::delete($dataset->local_path);
+            Storage::delete("public/$dataset->local_path");
             $dataset->delete();
             $user->datasets_number--;
 
@@ -190,7 +190,8 @@ class DatasetsController extends Controller
     public function download(User $user, Dataset $dataset)
     {
         if(Auth::user()->id == $user->id || Auth::user()->rank == -1){
-            return Storage::download(asset("storage/$dataset->local_path"));
+            Storage::download("storage/$dataset->local_path");
+            return redirect(route("datasets.index", compact("user")));
         }else
             return redirect(route("home"));
     }

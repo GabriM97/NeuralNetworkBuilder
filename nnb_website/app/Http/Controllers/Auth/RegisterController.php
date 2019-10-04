@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class RegisterController extends Controller
 {
@@ -70,9 +71,9 @@ class RegisterController extends Controller
         ]);
 
         $hashed_user = hash("md5", $user->id); 
-        $user_dir_datasets = "users/$hashed_user/datasets";
-        $user_dir_models = "users/$hashed_user/models";
-        $user_dir_trainings = "users/$hashed_user/trainings";
+        $user_dir_datasets = "public/users/$hashed_user/datasets";
+        $user_dir_models = "public/users/$hashed_user/models";
+        $user_dir_trainings = "public/users/$hashed_user/trainings";
         Storage::makeDirectory($user_dir_datasets);
         Storage::makeDirectory($user_dir_models);
         Storage::makeDirectory($user_dir_trainings);

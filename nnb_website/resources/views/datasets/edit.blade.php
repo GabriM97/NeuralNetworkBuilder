@@ -16,20 +16,20 @@
         @csrf
         @method("PATCH")
         
-        <div class="row"> {{-- TITLE --}}
+        <div class="row mb-3"> {{-- TITLE --}}
             <div class="col text-right font-weight-bold">Title</div>
             <div class="col text-left">
                 <input type="text" class="" name="title" value="{{$dataset->data_name}}">
             </div>
         </div>
-        <div class="row"> {{-- DESCRIPTION --}}
+        <div class="row mb-3"> {{-- DESCRIPTION --}}
             <div class="col text-right font-weight-bold">Description</div>
             <div class="col text-left">
-                <textarea name="description">{{$dataset->description}}</textarea>
+                <textarea name="description" rows="4">{{$dataset->data_description}}</textarea>
             </div>
         </div>
 
-        <div class="row"> {{-- DATA TYPE --}}
+        <div class="row mb-3"> {{-- DATA TYPE --}}
             <div class="col text-right font-weight-bold">Data Type</div>
             <div class="col text-left">
                 <div class="form-check">
@@ -55,7 +55,9 @@
 
         <div class="row">  {{-- CONFIRM BUTTON --}}
             <div class="col text-right"><button class="btn btn-primary" type="submit">Confirm</button></div>
-            <div class="col text-left"><button class="btn btn-secondary" type="submit">Cancel</button></div>
+
+            {{-- CANCEL BUTTON DOESN'T WORK --}}
+            <div class="col text-left"><a href="{{ route("datasets.index", compact("user")) }}"><button class="btn btn-secondary">Cancel</button></a></div>
         </div>
     </form>
 </div>
