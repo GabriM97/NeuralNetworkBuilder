@@ -8,9 +8,8 @@
 @section('page-title', $title)
 
 @section('content')
-	<h2 class="ml-5">Create new User</h2>
-
 	<div class="container col-md-5">
+		<h2 class="mb-5">Create new User</h2>
 		<form method="POST" action="{{route("users.store")}}">
 			@csrf
 			

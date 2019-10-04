@@ -10644,3 +10644,7 @@ a.text-dark:focus {
   }
 }
 
+button {
+  margin: 5px 0;
+}
+

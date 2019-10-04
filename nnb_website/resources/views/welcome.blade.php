@@ -62,9 +62,10 @@
             Or you can just predict a value from a pre-trained model. <br>
             What are you waiting for? Start now, <span class="highlight-text">IT'S FREE!</span> <br>
             @auth
-                Go to your <a href="{{ url('/home') }}">Home</a>
+                <br>Go to your <a href="{{ url('/home') }}">Home</a>
             @else
-                If you are registered, <a href="{{ route('login') }}">Sing in</a> <br>
+                <br><br>
+                If you are registered, <a href="{{ route('login') }}">Sing in</a> <br><br>
                 Otherwise create a new account and Join Us! <a href="{{ route('register') }}">Register now</a>
             @endauth
         </div>
