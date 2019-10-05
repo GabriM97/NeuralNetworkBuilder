@@ -190,8 +190,7 @@ class DatasetsController extends Controller
     public function download(User $user, Dataset $dataset)
     {
         if(Auth::user()->id == $user->id || Auth::user()->rank == -1){
-            Storage::download("storage/$dataset->local_path");
-            return redirect(route("datasets.index", compact("user")));
+           return Storage::disk('public')->download($dataset->local_path, "dataset.$dataset->file_extension");
         }else
             return redirect(route("home"));
     }
