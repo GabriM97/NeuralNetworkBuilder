@@ -19,24 +19,24 @@
 <h2 class="ml-5">Users</h2>
     <div class="container text-center">
         <div class="row border border-secondary text-center font-weight-bold">    <!-- TITLE ROW -->
-            <div class="col-md-1">ID</div>
-            <div class="col-md-1">Username</div>
-            <div class="col-md-2">Email</div>
-            <div class="col-md-1">Account Type</div>
-            <div class="col-md-1">Available Space</div>
-            <div class="col-md-1">Models</div>
-            <div class="col-md-1">Datasets</div>
-            <div class="col-md-1">Tainings</div>
-            <div class="col-md-2">Last Login</div>
-            <div class="col-md-1">Action</div>
+            <div class="col-md-1 align-self-center">ID</div>
+            <div class="col-md-1 align-self-center">Username</div>
+            <div class="col-md-2 align-self-center">Email</div>
+            <div class="col-md-1 align-self-center">Account Type</div>
+            <div class="col-md-1 align-self-center">Available Space</div>
+            <div class="col-md-1 align-self-center">Models</div>
+            <div class="col-md-1 align-self-center">Datasets</div>
+            <div class="col-md-1 align-self-center">Tainings</div>
+            <div class="col-md-2 align-self-center">Last Login</div>
+            <div class="col-md-1 align-self-center">Action</div>
         </div>
 
         @foreach ($users as $usr)
             <div class="row border border-secondary text-center">
-                <div class="col-md-1">{{$usr->id}}</div>
-                <div class="col-md-1">{{$usr->username}}</div>
-                <div class="col-md-2">{{$usr->email}}</div>
-                <div class="col-md-1">    {{-- ACCOUNT TYPE --}}
+                <div class="col-md-1 align-self-center">{{$usr->id}}</div>
+                <div class="col-md-1 align-self-center">{{$usr->username}}</div>
+                <div class="col-md-2 align-self-center">{{$usr->email}}</div>
+                <div class="col-md-1 align-self-center">    {{-- ACCOUNT TYPE --}}
                     @php
                         switch ($usr->rank){
                             case -1:    // Admin
@@ -57,7 +57,7 @@
                         }
                     @endphp
                 </div>
-                <div class="col-md-1">    {{-- AVAILABLE SPACE --}}
+                <div class="col-md-1 align-self-center pr-2 pl-2">    {{-- AVAILABLE SPACE --}}
                     @php
                         if($usr->available_space/1024 < 1000) 
                             echo round($usr->available_space/1024, 2)." KB";
@@ -68,11 +68,11 @@
                     @endphp
                     <span class="available-space-bar"></span>
                 </div>
-                <div class="col-md-1">{{$usr->models_number}}</div>
-                <div class="col-md-1">{{$usr->datasets_number}}</div>
-                <div class="col-md-1"> // </div>
-                <div class="col-md-2">{{$usr->last_signed_on}}</div>
-                <div class="col-md-1">
+                <div class="col-md-1 align-self-center">{{$usr->models_number}}</div>
+                <div class="col-md-1 align-self-center">{{$usr->datasets_number}}</div>
+                <div class="col-md-1 align-self-center"> // </div>
+                <div class="col-md-2 align-self-center">{{$usr->last_signed_on}}</div>
+                <div class="col-md-1 align-self-center">
                     <a href="{{ route('users.show', ['user' => $usr]) }}">
                         <button class="btn btn-primary">Details</button>
                     </a>

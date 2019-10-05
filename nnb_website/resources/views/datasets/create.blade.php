@@ -16,14 +16,16 @@
 			<div class="form-group row">
 				<div class="offset-md-2">Dataset</div>
 				
-				<img src="{{ asset('img/info_icon.png') }}" class="ml-2 mb-1" alt="info_icon" style="height: 20px; width: 20px" data-toggle="tooltip" data-placement="top" data-html="true" 
-				title="
-					Dataset accepted extensions: .csv, .json, .pkl or .pickle<br>
-					Download the example dataset to understand how your dataset have to be:<br>
-					<a href='{{ asset('example_dataset/data.csv') }}'>CSV</a>,
-					<a href='{{ asset('example_dataset/data.json') }}'>JSON</a>,
-					<a href='{{ asset('example_dataset/data.pkl') }}'>PKL/PICKLE</a>.
-				">
+				<div class="tooltip tooltip-custom">
+					<img src="{{ asset('img/info_icon.png') }}" alt="info_icon" class="info">
+					<span class="tooltiptext">
+					  Dataset accepted extensions: .csv, .json, .pkl or .pickle<br>
+					  Download the example dataset to understand how your dataset have to be:<br>
+					  <a href="{{ asset('example_dataset/data.csv') }}">CSV</a>,
+					  <a href="{{ asset('example_dataset/data.json') }}">JSON</a>,
+					  <a href="{{ asset('example_dataset/data.pkl') }}">PKL/PICKLE</a>.
+					</span>
+				  </div>
  
 				<div class="custom-file offset-md-2 mr-3">
 					<input type="file" class="custom-file-input" id="dataset_file" name="dataset_file" accept=".json, .csv, .pickle, .pkl" required>
@@ -81,22 +83,29 @@
 					<div class="col-sm-6">
 						<div class="form-check">
 							<input class="form-check-input" type="radio" name="dataset_type" id="train" value="train" >
-							<label class="form-check-label" for="train">For Train <img src="{{ asset('img/info_icon.png') }}" class="ml-2" alt="info_icon" style="height: 20px; width: 20px" data-toggle="tooltip" data-placement="right" 
-								title="{X_train, Y_train}">
+							<label class="form-check-label" for="train">For Train 
+								<div class="tooltip tooltip-custom">
+									<img src="{{ asset('img/info_icon.png') }}" alt="info_icon" class="info">
+									<span class="tooltiptext">Dataset: &ensp; <strong>{ X_train, Y_train }</strong></span>
+								</div>
 							</label>
 						</div>
 						<div class="form-check">
 							<input class="form-check-input" type="radio" name="dataset_type" id="test" value="test">
-							<label class="form-check-label" for="test">For Test
-								<img src="{{ asset('img/info_icon.png') }}" class="ml-2" alt="info_icon" style="height: 20px; width: 20px" data-toggle="tooltip" data-placement="right" 
-								title="{X_test, Y_test}">
+							<label class="form-check-label" for="test">For test
+								<div class="tooltip tooltip-custom">
+									<img src="{{ asset('img/info_icon.png') }}" alt="info_icon" class="info">
+									<span class="tooltiptext">Dataset: &ensp; <strong>{ X_test, Y_test }</strong></span>
+								</div>
 							</label>
 						</div>
 						<div class="form-check">
 							<input class="form-check-input" type="radio" name="dataset_type" id="generic" value="generic" checked>
 							<label class="form-check-label" for="generic">Both
-								<img src="{{ asset('img/info_icon.png') }}" class="ml-2" alt="info_icon" style="height: 20px; width: 20px" data-toggle="tooltip" data-placement="right" 
-								title="{X_train, Y_train, X_test, Y_test}">
+								<div class="tooltip tooltip-custom">
+									<img src="{{ asset('img/info_icon.png') }}" alt="info_icon" class="info">
+									<span class="tooltiptext">Dataset: &ensp; <strong>{ X_train, Y_train, X_test, Y_test }</strong></span>
+								</div>
 							</label>
 						</div>
 					</div>

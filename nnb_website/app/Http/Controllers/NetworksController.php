@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Network;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class NetworksController extends Controller
 {
@@ -12,9 +15,14 @@ class NetworksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(User $user)
     {
-        //
+        if((Auth::user()->id != $user->id) && (Auth::user()->rank !== -1))
+            return redirect(route("home"));
+
+        $networks = Network::where("user_id", $user->id)->get();
+        $title = "Models | Neural Network Builder";
+        return view("networks.index", compact("title", "user", "networks"));
     }
 
     /**
@@ -22,7 +30,7 @@ class NetworksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(User $user)
     {
         //
     }
@@ -33,7 +41,7 @@ class NetworksController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
         //
     }
@@ -44,7 +52,7 @@ class NetworksController extends Controller
      * @param  \App\Network  $network
      * @return \Illuminate\Http\Response
      */
-    public function show(Network $network)
+    public function show(User $user, Network $network)
     {
         //
     }
@@ -55,7 +63,7 @@ class NetworksController extends Controller
      * @param  \App\Network  $network
      * @return \Illuminate\Http\Response
      */
-    public function edit(Network $network)
+    public function edit(User $user, Network $network)
     {
         //
     }
@@ -67,7 +75,7 @@ class NetworksController extends Controller
      * @param  \App\Network  $network
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Network $network)
+    public function update(Request $request, User $user, Network $network)
     {
         //
     }
@@ -78,7 +86,7 @@ class NetworksController extends Controller
      * @param  \App\Network  $network
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Network $network)
+    public function destroy(User $user, Network $network)
     {
         //
     }

@@ -10648,8 +10648,56 @@ button {
   margin: 5px 0;
 }
 
+.tooltip-custom {
+  position: relative;
+  display: inline-block;
+  opacity: 1;
+  margin-left: 5px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
 .info {
   height: 20px;
   width: 20px;
+  cursor: pointer;
+}
+
+/* Tooltip text */
+
+.tooltip-custom .tooltiptext {
+  visibility: hidden;
+  width: 450px;
+  margin-left: -225px;
+  bottom: 130%;
+  left: 50%;
+  background-color: rgba(40, 40, 40, 0.95);
+  color: #fff;
+  text-align: center;
+  padding: 5px 5px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip-custom:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tooltip-custom .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #282828 transparent transparent transparent;
+}
+
+.tooltiptext a {
+  color: grey;
+  text-decoration: underline;
+  font-weight: bold;
 }
 
