@@ -21,10 +21,16 @@
     --}}
 
     <div class="container col-7 text-sm-center">
-        <h2 class="content-title mb-5">Dataset details</h2>
+        <h2 class="content-title mb-5 d-inline-block">Dataset details</h2>
+        
+        {{-- DOWNLOAD BUTTON DOESN'T WORK--}}
+        <a href="{{ route("datasets.download", compact("user", "dataset")) }}">
+            <button class="btn btn-sm btn-outline-dark ml-3">Download</button>
+        </a>
+        
         <div class="row">
             <!-- Left column -->
-            <div class="col-7">
+            <div class="col-7 text-break">
                 <div class="row">
                     <div class="col-4 text-right font-weight-bold">Title</div>
                     <div class="col-8 text-left">{{ $dataset->data_name }}</div>
@@ -32,7 +38,7 @@
                 <div class="row">
                     <div class="col-4 text-right font-weight-bold">Description</div>
                     <div class="col-8 border text-left">
-                        @if($dataset->data_description)
+                        @if($dataset->data_description)     {{-- description != NULL --}}
                             {{$dataset->data_description}}
                         @else
                             <span class="font-italic">No description</span>

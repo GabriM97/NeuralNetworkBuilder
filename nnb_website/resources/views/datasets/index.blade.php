@@ -65,19 +65,19 @@
 
             <div class="col-md-3">    {{-- DETAILS BUTTON --}}
                 <a href="{{ route('datasets.show', ['user' => $user, 'dataset' => $data]) }}">
-                    <button class="btn btn-primary mr-1">Details</button>
+                    <button class="btn btn-primary">Details</button>
                 </a>
                 
                 {{-- DELETE BUTTON --}}
                 <form class="form-delete d-inline-block" method="POST" action="{{route('datasets.destroy', ['user' => $user, 'dataset' => $data])}}">
                     @csrf
                     @method("DELETE")
-                    <button class="btn btn-danger ml-1 mr-1" type="submit">Delete</button>
+                    <button class="btn btn-danger" type="submit">Delete</button>
                 </form>
 
                 {{-- DOWNLOAD BUTTON DOESN'T WORK--}}
                 <a href="{{ route("datasets.download", ['user' => $user, 'dataset' => $data]) }}">
-                    <button class="btn btn-outline-danger ml-1">Download</button>
+                    <button class="btn btn-outline-dark">Download</button>
                 </a>
             </div>
         </div>

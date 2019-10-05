@@ -53,11 +53,34 @@
             </div>
         </div>
 
+        <div class="row mb-3"> {{-- X_SHAPE | Y_CLASSES --}}
+            <div class="col-6">
+                <div class="row text-right font-weight-bold">
+                    <div class="col offset-8">Input shape (X_features)</div>
+                </div>
+                <div class="row text-right">
+                    <div class="col"><input type="number" name="x_input" value="{{$dataset->x_shape}}" min="1" max="1000" step="1"></div>
+                </div>
+            </div>
+            <div class="col-2">     {{-- col-sm-3 col-md-2 --}}
+                <div class="row text-left font-weight-bold">
+                    <div class="col">Output classes (Y_labels)</div>
+                </div>
+                <div class="row text-left">
+                    <div class="col"><input type="number" name="y_output" value="{{$dataset->y_classes}}" min="1" max="1000" step="1"></div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">  {{-- CONFIRM BUTTON --}}
             <div class="col text-right"><button class="btn btn-primary" type="submit">Confirm</button></div>
 
             {{-- CANCEL BUTTON DOESN'T WORK --}}
-            <div class="col text-left"><a href="{{ route("datasets.index", compact("user")) }}"><button class="btn btn-secondary">Cancel</button></a></div>
+            <div class="col text-left">
+                <a href="{{ route("datasets.show", compact("user", "dataset")) }}">
+                    <button type="button" class="btn btn-secondary">Cancel</button>
+                </a>
+            </div>
         </div>
     </form>
 </div>

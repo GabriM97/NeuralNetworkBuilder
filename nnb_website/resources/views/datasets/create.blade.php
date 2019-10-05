@@ -64,12 +64,12 @@
 			<div class="form-group row">
 				<div class="col-md-6 text-md-right">
 					{{-- X_Shape field --}}
-					<label for="input_shape" class="col-form-label pr-2">{{ __('Input shape') }}</label>
+					<label for="input_shape" class="col-form-label pr-2">{{ __('Input shape') }}</label><br>
 					<input id="input_shape" type="number" class="col-md-6 form-control float-right" name="input_shape" required value="1" step="1" min="1" max="1000">
 				</div>
 				<div class="col-md-6 text-md-right">
 					{{-- Y_Classes field --}}
-					<label for="output_classes" class="col-form-label pr-2">{{ __('Output classes') }}</label>
+					<label for="output_classes" class="col-form-label pr-2">{{ __('Output classes') }}</label><br>
 					<input id="output_classes" type="number" class="col-md-6 form-control float-right" name="output_classes" required value="1" step="1" min="1" max="1000">
 				</div>
 			</div>

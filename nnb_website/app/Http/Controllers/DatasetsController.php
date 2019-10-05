@@ -128,6 +128,9 @@ class DatasetsController extends Controller
      */
     public function show(User $user, Dataset $dataset)
     {   
+        if((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1))
+            return redirect(route('datasets.index', ['user' => Auth::user()]));
+            
         $title = "$dataset->data_name | NeuralNetworkBuilder";
         return view("datasets.show", compact("title", "user", "dataset"));
     }
@@ -155,8 +158,29 @@ class DatasetsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, User $user, Dataset $dataset)
-    {
-        return $request;
+    {   
+        if((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1))
+            return redirect(route('datasets.index', ['user' => Auth::user()]));
+
+        $dataset->data_name = $request->title;
+        $dataset->data_description = $request->description;
+        $dataset->x_shape = $request->x_input;
+        $dataset->y_classes = $request->y_output;
+
+        // Set Data type
+        $dataset_type = $request->dataset_type;
+        $isTrain = false;
+        $isTest = false;
+        $isGeneric = false;
+        if($dataset_type == "train")    $isTrain = true;
+        if($dataset_type == "test")     $isTest = true;
+        if($dataset_type == "generic")  $isGeneric = true;
+        $dataset->is_train = $isTrain;
+        $dataset->is_test = $isTest;
+        $dataset->is_generic = $isGeneric;
+
+        $dataset->save();
+        return redirect(route("datasets.show", compact("user", "dataset")));
     }
 
     /**
@@ -190,7 +214,7 @@ class DatasetsController extends Controller
     public function download(User $user, Dataset $dataset)
     {
         if(Auth::user()->id == $user->id || Auth::user()->rank == -1){
-           return Storage::disk('public')->download($dataset->local_path, "dataset.$dataset->file_extension");
+           return Storage::disk('public')->download($dataset->local_path, "dataset_$dataset->data_name.$dataset->file_extension");
         }else
             return redirect(route("home"));
     }
