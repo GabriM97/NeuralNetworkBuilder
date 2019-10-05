@@ -27,7 +27,7 @@ class CreateDatasetsTable extends Migration
             $table->string('file_extension');
             $table->integer('x_shape');         //input size
             $table->integer('y_classes');       //output size
-            $table->string('local_path');       //  hash(user_id)/datasets/dataset_id.***
+            $table->string('local_path');       //  users/hash(user_id)/datasets/dataset_id.***
             $table->boolean('is_train')->default(false);
             $table->boolean('is_test')->default(false);
             $table->boolean('is_generic')->default(true);
