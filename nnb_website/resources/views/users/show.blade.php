@@ -53,7 +53,7 @@
                 <div class="col-6">{{ $user->email }} <span>{{ $user->email_verified_at ? "(Verified)" : "(Not verified)" }}</span></div>
             </div>
             <div class="row">
-                <div class="col-6 text-right"><a href="{{--route("models.index", compact("user"))--}}">Models</a></div>
+                <div class="col-6 text-right"><a href="{{route("networks.index", compact("user"))}}">Models</a></div>
                 <div class="col-6">{{ $user->models_number }}</div>
             </div>
             <div class="row">

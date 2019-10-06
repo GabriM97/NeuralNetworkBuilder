@@ -145,10 +145,12 @@ class UsersController extends Controller
                     break;
 
                 case 'changeemail':     // CHANGE EMAIL
-                    if(!(Hash::check($request->current_password, $user->password))){   //if password is wrong
-                        $status = -1;
-                        $msg = "Password wrong.";
-                        break;
+                    if(Auth::user()->rank != -1){
+                        if(!(Hash::check($request->current_password, $user->password))){   //if password is wrong
+                            $status = -1;
+                            $msg = "Password wrong.";
+                            break;
+                        }
                     }
                     $new_email = $request->new_email;
                     $query = User::where("email", $new_email)->get();
@@ -163,10 +165,12 @@ class UsersController extends Controller
                     break;
 
                 case 'changepassword':      // CHANGE PASSWORD
-                    if(!(Hash::check($request->current_password, $user->password))){   //if password is wrong
-                        $status = -1;
-                        $msg = "Current password wrong.";
-                        break;
+                    if(Auth::user()->rank != -1){
+                        if(!(Hash::check($request->current_password, $user->password))){   //if password is wrong
+                            $status = -1;
+                            $msg = "Current password wrong.";
+                            break;
+                        }
                     }
                     $user->password = Hash::make($request->new_password);
                     $status = 0;

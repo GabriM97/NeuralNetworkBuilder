@@ -56,13 +56,17 @@
         @method("PATCH")
         <input type="hidden" name="process" value="changeemail">
 
-        <div class="row mb-3">
+        <div class="row mb-2">
             <div class="col text-right"><input type="email" name="new_email" placeholder="Insert new email"></div>
             <div class="col text-left"><input type="email" name="confirm_new_email" placeholder="Confirm new email"></div>
         </div>
-        <div class="row mb-2">
-            <div class="col"><input type="password" name="current_password" placeholder="Insert current password"></div>
-        </div>
+
+        @if(Auth::user()->rank != -1)
+            <div class="row mt-3 mb-2">
+                <div class="col"><input type="password" name="current_password" placeholder="Insert current password"></div>
+            </div>
+        @endif
+
         <div class="row">
             <div class="col"><button class="btn btn-primary" type="submit">Confirm</button></div>
         </div>
@@ -79,14 +83,16 @@
         @method("PATCH")
         <input type="hidden" name="process" value="changepassword">
 
-        <div class="row mb-3">
+        <div class="row mb-2">
             <div class="col text-right"><input type="password" name="new_password" placeholder="Insert new password"></div>
             <div class="col text-left"><input type="password" name="confirm_new_password" placeholder="Confirm new password"></div>
         </div>
 
-        <div class="row mb-2">
-            <div class="col"><input type="password" name="current_password" placeholder="Insert current password"></div>
-        </div>
+        @if(Auth::user()->rank != -1)
+            <div class="row mt-3 mb-2">
+                <div class="col"><input type="password" name="current_password" placeholder="Insert current password"></div>
+            </div>
+        @endif
 
         <div class="row">
             <div class="col"><button class="btn btn-primary" type="submit">Confirm</button></div>

@@ -62,9 +62,9 @@ class User extends Authenticatable
     public function get_tot_files_size(){
         $tot_datasets_size = Dataset::where("user_id", $this->id)
                                         ->sum("file_size");
-        /* $tot_models_size = Model::where("user_id", $this->id)
-                                        ->sum("model_size"); */
-        $tot_size = $tot_datasets_size /*+ $tot_models_size*/;
+        $tot_models_size = Network::where("user_id", $this->id)
+                                        ->sum("file_size");
+        $tot_size = $tot_datasets_size + $tot_models_size;
         return $tot_size;
     }
 }

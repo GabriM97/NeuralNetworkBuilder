@@ -75,6 +75,13 @@
                                 </li>
                             @endif
                         @else
+                            <li class="nav-item">   
+                                @if(Auth::user()->available_space <= 0)
+                                    <div class="alert alert-danger text-center mr-3" role="alert">
+                                        NO SPACE AVAILABLE!
+                                    </div>
+                                @endif        
+                            </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->username }} <span class="caret"></span>

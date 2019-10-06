@@ -9,13 +9,15 @@
 @section('content')
 
 <div class="container text-center">
-    @if(Auth::user()->rank == -1 && $user->id != Auth::user()->id)
+    @if($user->id != Auth::user()->id)
         <h2 class="mb-4">Datasets | user: {{$user->username}}</h2>
     @else
-        <a href="{{route("datasets.create", ['user' => $user])}}">
-            <button class="btn btn-info"><strong>+</strong> Import new Dataset</button>
-        </a>
-        <h2 class="mb-3 text-left">Your datasets</h2>
+        @if($user->available_space > 0)
+            <a href="{{route("datasets.create", ['user' => $user])}}">
+                <button class="btn btn-info"><strong>+</strong> Import new Dataset</button>
+            </a>
+        @endif
+        <h2 class="mb-3 mt-3 text-left">Your datasets</h2>
     @endif
 
     <div class="row border border-secondary text-center font-weight-bold">    <!-- TITLE ROW -->
@@ -76,7 +78,7 @@
                     <button class="btn btn-danger" type="submit">Delete</button>
                 </form>
 
-                {{-- DOWNLOAD BUTTON DOESN'T WORK--}}
+                {{-- DOWNLOAD BUTTON --}}
                 <a href="{{ route("datasets.download", ['user' => $user, 'dataset' => $data]) }}">
                     <button class="btn btn-outline-dark">Download</button>
                 </a>

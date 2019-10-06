@@ -1,4 +1,4 @@
-@if(Auth::user()->id != $user->id)
+@if((Auth::user()->id != $user->id) || ($user->available_space <= 0))
     {!! redirect(route("home"))  !!}
 @endif
 
