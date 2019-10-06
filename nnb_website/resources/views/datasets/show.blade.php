@@ -23,8 +23,8 @@
     <div class="container col-7 text-sm-center">
         <h2 class="content-title mb-5 d-inline-block">Dataset details</h2>
         
-        {{-- DOWNLOAD BUTTON DOESN'T WORK--}}
-        <a href="{{ route("datasets.download", compact("user", "dataset")) }}">
+        {{-- DOWNLOAD BUTTON --}}
+        <a href="{{ route("datasets.download", compact('user', 'dataset')) }}">
             <button class="btn btn-sm btn-outline-dark ml-3">Download</button>
         </a>
         
@@ -32,12 +32,12 @@
             <!-- Left column -->
             <div class="col-7 text-break">
                 <div class="row">
-                    <div class="col-4 text-right font-weight-bold">Title</div>
-                    <div class="col-8 text-left">{{ $dataset->data_name }}</div>
+                    <div class="col-4 align-self-center text-right font-weight-bold">Title</div>
+                    <div class="col-8 align-self-center text-left">{{ $dataset->data_name }}</div>
                 </div>
                 <div class="row">
-                    <div class="col-4 text-right font-weight-bold">Description</div>
-                    <div class="col-8 border text-left">
+                    <div class="col-4 align-self-center text-right font-weight-bold">Description</div>
+                    <div class="col-8 align-self-center border text-left">
                         @if($dataset->data_description)     {{-- description != NULL --}}
                             {{$dataset->data_description}}
                         @else
@@ -46,8 +46,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-4 text-right font-weight-bold">Data type</div>
-                    <div class="col-6 text-left"> {{-- DATA TYPE --}}
+                    <div class="col-4 align-self-center text-right font-weight-bold">Data type</div>
+                    <div class="col-6 align-self-center text-left"> {{-- DATA TYPE --}}
                         @php
                             if($dataset->is_train) echo "Train";
                             if($dataset->is_test) echo "Test";
@@ -56,8 +56,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-4 text-right font-weight-bold">Last time used</div>
-                    <div class="col-8 text-left">
+                    <div class="col-4 align-self-center text-right font-weight-bold">Last time used</div>
+                    <div class="col-8 align-self-center text-left">
                         @if($dataset->last_time_used)
                                 {{$dataset->last_time_used}}
                         @else
@@ -66,8 +66,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-4 text-right font-weight-bold">Uploaded at</div>
-                    <div class="col-8 text-left">{{$dataset->created_at}}</div>
+                    <div class="col-4 align-self-center text-right font-weight-bold">Uploaded at</div>
+                    <div class="col-8 align-self-center text-left">{{$dataset->created_at}}</div>
                 </div>
             </div>
 
@@ -76,14 +76,14 @@
                 
                 @if(Auth::user()->rank == -1 && $user->id != Auth::user()->id)
                     <div class="row">
-                        <div class="col-7 text-right font-weight-bold">Owner</div>
-                        <div class="col-5 text-left">{{$user->username}}</div>
+                        <div class="col-7 align-self-center text-right font-weight-bold">Owner</div>
+                        <div class="col-5 align-self-center text-left">{{$user->username}}</div>
                     </div>
                 @endif
 
                 <div class="row">
-                    <div class="col-7 text-right font-weight-bold">File size</div>
-                    <div class="col-5 text-left pr-0">    {{-- FILE SIZE --}}
+                    <div class="col-7 align-self-center text-right font-weight-bold">File size</div>
+                    <div class="col-5 align-self-center text-left pr-0">    {{-- FILE SIZE --}}
                         @php
                             if($dataset->file_size/1024 < 1000) 
                                 echo round($dataset->file_size/1024, 2)." KB";
@@ -95,16 +95,16 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-7 text-right font-weight-bold">File extension</div>
-                    <div class="col-5 text-left">{{$dataset->file_extension}}</div>
+                    <div class="col-7 align-self-center text-right font-weight-bold">File extension</div>
+                    <div class="col-5 align-self-center text-left">{{$dataset->file_extension}}</div>
                 </div>
                 <div class="row">
-                    <div class="col-7 text-right font-weight-bold">Input shape</div>
-                    <div class="col-5 text-left">{{$dataset->x_shape}}</div>
+                    <div class="col-7 align-self-center text-right font-weight-bold">Input shape</div>
+                    <div class="col-5 align-self-center text-left">{{$dataset->x_shape}}</div>
                 </div>
                 <div class="row">
-                    <div class="col-7 text-right font-weight-bold">Output classes</div>
-                    <div class="col-5 text-left">{{$dataset->y_classes}}</div>
+                    <div class="col-7 align-self-center text-right font-weight-bold">Output classes</div>
+                    <div class="col-5 align-self-center text-left">{{$dataset->y_classes}}</div>
                 </div>
             </div>
         </div>

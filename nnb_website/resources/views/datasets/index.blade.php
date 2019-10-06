@@ -33,7 +33,7 @@
     </div>
 
     @foreach ($datasets as $data)
-        <div class="row border border-secondary text-center">
+        <div class="row border border-secondary text-center text-break">
             <div class="col-md-2 align-self-center">{{$data->data_name}}</div>
             <div class="col-md-1 align-self-center">    {{-- FILE SIZE --}}
                 @php

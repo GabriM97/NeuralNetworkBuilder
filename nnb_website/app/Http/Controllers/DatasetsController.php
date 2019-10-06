@@ -57,6 +57,16 @@ class DatasetsController extends Controller
         if((Auth::user()->id != $user->id))
             return redirect(route("home"));
 
+        // validate data
+        $validateData = $request->validate([
+            'dataset_file' => ['file', 'required'],
+            'title' => ['required', 'max:50', 'string'],
+            'description' => ['max:255', 'string', 'nullable'],
+            'input_shape' => ['numeric', 'between:1,1000', 'required', 'string'],
+            'output_classes' => ['numeric', 'between:1,1000', 'required', 'string'],
+            'dataset_type' => ['in:train,test,generic', 'required', 'string'],
+        ]);
+
         // File data
         $dataset_file = $request->file("dataset_file");
         $file_size = $dataset_file->getClientSize();
@@ -70,7 +80,7 @@ class DatasetsController extends Controller
 
         // Get Dataset info
         $user_id = $user->id;
-        $title = $request->data_title;
+        $title = $request->title;
         $description = $request->description;
         $input_shape = $request->input_shape;
         $output_classes = $request->output_classes;

@@ -27,12 +27,12 @@
             <div class="col-md-1 align-self-center">Models</div>
             <div class="col-md-1 align-self-center">Datasets</div>
             <div class="col-md-1 align-self-center">Tainings</div>
-            <div class="col-md-2 align-self-center">Last Login</div>
-            <div class="col-md-1 align-self-center">Action</div>
+            <div class="col-md-1 align-self-center">Last Login</div>
+            <div class="col-md-2 align-self-center">Action</div>
         </div>
 
         @foreach ($users as $usr)
-            <div class="row border border-secondary text-center">
+            <div class="row border border-secondary text-center text-break">
                 <div class="col-md-1 align-self-center">{{$usr->id}}</div>
                 <div class="col-md-1 align-self-center">{{$usr->username}}</div>
                 <div class="col-md-2 align-self-center">{{$usr->email}}</div>
@@ -71,8 +71,8 @@
                 <div class="col-md-1 align-self-center">{{$usr->models_number}}</div>
                 <div class="col-md-1 align-self-center">{{$usr->datasets_number}}</div>
                 <div class="col-md-1 align-self-center"> // </div>
-                <div class="col-md-2 align-self-center">{{$usr->last_signed_on}}</div>
-                <div class="col-md-1 align-self-center">
+                <div class="col-md-1 align-self-center pl-1 pr-1">{{$usr->last_signed_on}}</div>
+                <div class="col-md-2 align-self-center">
                     <a href="{{ route('users.show', ['user' => $usr]) }}">
                         <button class="btn btn-primary">Details</button>
                     </a>

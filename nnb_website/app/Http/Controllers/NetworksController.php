@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Storage;
 
 class NetworksController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -32,7 +38,11 @@ class NetworksController extends Controller
      */
     public function create(User $user)
     {
-        //
+        if((Auth::user()->id != $user->id))
+            return redirect(route("home"));
+
+        $title = "Build Model | Neural Network Builder";
+        return view('networks.create', compact("title", "user"));
     }
 
     /**

@@ -17,12 +17,12 @@
     <div class="container col-6">
         <h2 class="content-title text-center">Profile details</h2>
         <div class="row">
-            <div class="col-6 text-right">Username</div>
-            <div class="col-6">{{ $user->username }}</div>
+            <div class="col-6 text-right align-self-center font-weight-bold">Username</div>
+            <div class="col-6 text-break align-self-center">{{ $user->username }}</div>
         </div>
         <div class="row">
-            <div class="col-6 text-right">Account type</div>
-            <div class="col-6">
+            <div class="col-6 text-right align-self-center font-weight-bold">Account type</div>
+            <div class="col-6 align-self-center">
             @php
                 switch ($user->rank){
                     case -1:    // Admin
@@ -49,20 +49,20 @@
             {{-- logged user can visualize its FULL details  --}}
 
             <div class="row">
-                <div class="col-6 text-right">Email</div>
-                <div class="col-6">{{ $user->email }} <span>{{ $user->email_verified_at ? "(Verified)" : "(Not verified)" }}</span></div>
+                <div class="col-6 text-right text-break align-self-center font-weight-bold">Email</div>
+                <div class="col-6 align-self-center">{{ $user->email }} <span>{{ $user->email_verified_at ? "(Verified)" : "(Not verified)" }}</span></div>
             </div>
             <div class="row">
-                <div class="col-6 text-right"><a href="{{route("networks.index", compact("user"))}}">Models</a></div>
-                <div class="col-6">{{ $user->models_number }}</div>
+                <div class="col-6 text-right align-self-center font-weight-bold"><a href="{{route("networks.index", compact("user"))}}">Models</a></div>
+                <div class="col-6 align-self-center">{{ $user->models_number }}</div>
             </div>
             <div class="row">
-            <div class="col-6 text-right"><a href="{{route("datasets.index", compact("user"))}}">Datasets</a></div>
-                <div class="col-6">{{ $user->datasets_number }}</div>
+            <div class="col-6 text-right align-self-center font-weight-bold"><a href="{{route("datasets.index", compact("user"))}}">Datasets</a></div>
+                <div class="col-6 align-self-center">{{ $user->datasets_number }}</div>
             </div>
             <div class="row">
-                <div class="col-6 text-right">Available space</div>
-                <div class="col-6"> 
+                <div class="col-6 text-right align-self-center font-weight-bold">Available space</div>
+                <div class="col-6 align-self-center"> 
                     @php
                         if($user->available_space/1024 < 1000) 
                             echo round($user->available_space/1024, 2)." KB";
@@ -75,12 +75,12 @@
                 </div>
             </div> 
             <div class="row">
-                <div class="col-6 text-right">Last login</div>
+                <div class="col-6 text-right align-self-center font-weight-bold">Last login</div>
                 <div class="col-6">{{ $user->last_signed_on }}</div>
             </div>
             <div class="row">
-                <div class="col-6 text-right">Account created on</div>
-                <div class="col-6">{{ $user->created_at }}</div>
+                <div class="col-6 text-right align-self-center font-weight-bold">Account created on</div>
+                <div class="col-6 align-self-center">{{ $user->created_at }}</div>
             </div>
             
             <!-- Edit button -->
