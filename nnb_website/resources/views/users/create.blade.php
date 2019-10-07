@@ -9,7 +9,7 @@
 
 @section('content')
 	<div class="container col-md-5">
-		<h2 class="mb-5">Create new User</h2>
+		<h2 class="mb-5 mt-3 text-center">Create new User</h2>
 		<form method="POST" action="{{route("users.store")}}">
 			@csrf
 			

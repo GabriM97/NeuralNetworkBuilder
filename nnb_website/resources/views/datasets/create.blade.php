@@ -8,7 +8,7 @@
 
 @section('content')
 	<div class="container col-md-5">
-		<h2 class="mb-5">Create new Dataset</h2>
+		<h2 class="mb-5 mt-3 text-center">Create new Dataset</h2>
 		<form method="POST" enctype="multipart/form-data" action="{{route("datasets.store", ['user' => $user])}}">
 			@csrf
 
@@ -95,7 +95,7 @@
 			{{-- Train, Test or Both --}}
 			<fieldset class="form-group">
 				<div class="row">
-					<legend class="col-form-label col-sm-4 text-md-right align-self-center">Data Type</legend>
+					<legend class="col-form-label col-sm-5 text-sm-right align-self-center">Data Type</legend>
 					<div class="col-sm-6">
 						<div class="form-check">
 							<input class="form-check-input @error('dataset_type') is-invalid @enderror" type="radio" name="dataset_type" id="train" value="train" >
@@ -135,7 +135,7 @@
 
 			{{-- Submit button --}}
 			<div class="form-group row mb-0">
-				<div class="col-md-6 offset-md-4">
+				<div class="col-md text-center">
 					<button type="submit" class="btn btn-primary">
 						{{ __('Import Dataset') }}
 					</button>

@@ -10,14 +10,15 @@
 
 @section('content')
 
-<div class="container text-center">
-    <a href="{{route("users.create")}}">
-        <button class="btn btn-info"><strong>+</strong> Create new User</button>
-    </a>
-</div>
-
-<h2 class="ml-5">Users</h2>
     <div class="container text-center">
+        <a href="{{route("users.create")}}">
+            <button class="btn btn-info"><strong>+</strong> Create new User</button>
+        </a>
+    </div>
+
+
+    <div class="container text-center">
+        <h2 class="text-left mb-3 mt-3 text-left">Users</h2>
         <div class="row border border-secondary text-center font-weight-bold">    <!-- TITLE ROW -->
             <div class="col-md-1 align-self-center">ID</div>
             <div class="col-md-1 align-self-center">Username</div>

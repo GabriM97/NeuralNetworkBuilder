@@ -62,8 +62,8 @@ class DatasetsController extends Controller
             'dataset_file' => ['file', 'required'],
             'title' => ['required', 'max:50', 'string'],
             'description' => ['max:255', 'string', 'nullable'],
-            'input_shape' => ['numeric', 'between:1,1000', 'required', 'string'],
-            'output_classes' => ['numeric', 'between:1,1000', 'required', 'string'],
+            'input_shape' => ['numeric', 'between:1,1000', 'required'],
+            'output_classes' => ['numeric', 'between:1,1000', 'required'],
             'dataset_type' => ['in:train,test,generic', 'required', 'string'],
         ]);
 

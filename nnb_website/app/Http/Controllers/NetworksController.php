@@ -53,7 +53,22 @@ class NetworksController extends Controller
      */
     public function store(Request $request, User $user)
     {
-        //
+        if((Auth::user()->id != $user->id))
+            return redirect(route("home"));
+
+        // validate data
+        $validateData = $request->validate([
+            'model_type' => ['string', 'required', 'in:Sequential,Functional'],
+            'title' => ['required', 'max:50', 'string'],
+            'description' => ['max:255', 'string', 'nullable'],
+            'input_shape' => ['numeric', 'between:1,1000', 'required'],
+            'output_classes' => ['numeric', 'between:1,1000', 'required'],
+            'layers_number' => ['numeric', 'between:1,100', 'required'],
+            'neurons_number' => ['array', 'min:1', 'required'],
+            'neurons_number.*' => ['numeric', 'between:1,500', 'required'],
+            'activ_funct' => ['array', 'min:1', 'required'],
+            'activ_funct.*' => ['string', 'required', 'in:relu,sigmoid,tanh,linear,softmax'],
+        ]);
     }
 
     /**
