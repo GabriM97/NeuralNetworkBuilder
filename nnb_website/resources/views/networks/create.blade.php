@@ -6,6 +6,10 @@
 
 @section('page-title', $title)
 
+@section('scripts')
+	<script src="{{ asset('js/generate_layers.js') }}"></script>
+@endsection
+
 @section('content')
 	<form method="POST" action="{{route("networks.store", ['user' => $user])}}">
 		@csrf
@@ -84,7 +88,7 @@
 				{{-- Layers number --}}
                 <div class="col-md-4 text-md-right">
                     <label for="layers_number" class="col-form-label align-self-center">{{ __('Layers number') }}</label><br>
-                    <input id="layers_number" type="number" class="col-xl-8 form-control float-right @error('layers_number') is-invalid @enderror" name="layers_number" required value="1" step="1" min="1" max="100">
+                    <input id="layers_number" type="number" class="col-xl-8 form-control float-right @error('layers_number') is-invalid @enderror" name="layers_number" required value="3" step="1" min="1" max="100">
                     @error('layers_number')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
@@ -95,78 +99,9 @@
 		</div>
 
 		<div class="container-fluid">
-			{{-- Layers --}}
-			<div class="form-group row mx-3 my-5">
-					
-				{{-- Layer - NEW --}}
-				<div class="col border border-secondary mr-2 ml-2 p-4 rounded-pill">
-					<div class="row">
-						<div class="col text-center font-weight-bold">Layer 1</div>
-					</div>
-					<div class="row">
-						<div class="col">
-							<label class="col-form-label" for="neurons_number[]">Neurons</label>
-							<input class="form-control" type="number" name="neurons_number[]" min="1" max="500" value="4">
-						</div>
-						<div class="col">
-							<label class="col-form-label" for="activ_funct[]">Activation function</label>
-							<select class="form-control" name="activ_funct[]">
-								<option value="relu" selected="">ReLU</option>
-								<option value="sigmoid">Sigmoid</option>
-								<option value="tanh">Tanh</option>
-								<option value="linear">Linear</option>
-								<option value="softmax">Softmax</option>
-							</select>
-						</div>
-					</div>
-				</div>
-
-				{{-- Layer - NEW --}}
-				<div class="col border border-secondary mr-2 ml-2 p-4 rounded-pill">
-					<div class="row">
-						<div class="col text-center font-weight-bold">Layer 1</div>
-					</div>
-					<div class="row">
-						<div class="col">
-							<label class="col-form-label" for="neurons_number[]">Neurons</label>
-							<input class="form-control" type="number" name="neurons_number[]" min="1" max="100" value="4">
-						</div>
-						<div class="col">
-							<label class="col-form-label" for="activ_funct[]">Activation function</label>
-							<select class="form-control" name="activ_funct[]">
-								<option value="relu" selected="">ReLU</option>
-								<option value="sigmoid">Sigmoid</option>
-								<option value="tanh">Tanh</option>
-								<option value="linear">Linear</option>
-								<option value="softmax">Softmax</option>
-							</select>
-						</div>
-					</div>
-				</div>
-
-				{{-- Layer - NEW --}}
-				<div class="col border border-secondary mr-2 ml-2 p-4 rounded-pill">
-					<div class="row">
-						<div class="col text-center font-weight-bold">Layer 1</div>
-					</div>
-					<div class="row">
-						<div class="col">
-							<label class="col-form-label" for="neurons_number[]">Neurons</label>
-							<input class="form-control" type="number" name="neurons_number[]" min="1" max="100" value="4">
-						</div>
-						<div class="col">
-							<label class="col-form-label" for="activ_funct[]">Activation function</label>
-							<select class="form-control" name="activ_funct[]">
-								<option value="relu" selected="">ReLU</option>
-								<option value="sigmoid">Sigmoid</option>
-								<option value="tanh">Tanh</option>
-								<option value="linear">Linear</option>
-								<option value="softmax">Softmax</option>
-							</select>
-						</div>
-					</div>
-				</div>
-
+			
+			<div id="layers_container" class="form-group mx-3 my-5">
+				{{-- Layers --}}
 			</div>
 
 
