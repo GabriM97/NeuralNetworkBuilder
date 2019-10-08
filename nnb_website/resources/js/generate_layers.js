@@ -64,7 +64,7 @@ function renderLayers(layers_num) {
 }
 
 function addLayer_col(cols, current_main_row, layer_number_cnt) {
-	var layer_container = $("<div class='border border-secondary mx-2 my-4 p-4 rounded-pill col-" + cols + "'></div>");
+	var layer_container = $("<div class='border border-secondary my-4 p-4 rounded-pill col-" + cols + "'></div>");
 	$(layer_container).append("");
 
 	//Layer number

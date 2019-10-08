@@ -76,12 +76,21 @@ class UsersController extends Controller
         ]);
 
         $hashed_user = hash("md5", $user->id); 
-        $user_dir_datasets = "public/users/$hashed_user/datasets";
-        $user_dir_models = "public/users/$hashed_user/models";
-        $user_dir_trainings = "public/users/$hashed_user/trainings";
+        $user_dir_datasets = "users/$hashed_user/datasets";
+        $user_dir_models = "users/$hashed_user/models";
+        $user_dir_trainings = "users/$hashed_user/trainings";
+        
+        // make private directories
         Storage::makeDirectory($user_dir_datasets);
         Storage::makeDirectory($user_dir_models);
         Storage::makeDirectory($user_dir_trainings);
+
+        // make public directories
+        Storage::makeDirectory("public/$user_dir_datasets");
+        Storage::makeDirectory("public/$user_dir_models");
+        Storage::makeDirectory("public/$user_dir_trainings");
+        
+        $user->save();
 
         $return_status = 0;
         $return_msg = "User $user->username created!";
@@ -274,6 +283,7 @@ class UsersController extends Controller
         if(Auth::user()->rank == -1){
             $user->delete();            
             Storage::deleteDirectory("public/users/".hash("md5", $user->id));
+            Storage::deleteDirectory("users/".hash("md5", $user->id));
             return redirect(route("users.index"));
         }else{
             return redirect(route("home"));

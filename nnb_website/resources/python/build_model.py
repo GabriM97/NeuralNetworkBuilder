@@ -102,7 +102,7 @@ def buildMethod():
         saveModel(model, filename)
 
     except Exception as err:
-        print("ERROR: " + err)
+        print("ERROR: " + str(err))
         raise Exception("errore mio")
 
 

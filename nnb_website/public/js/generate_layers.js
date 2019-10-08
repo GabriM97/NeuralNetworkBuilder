@@ -155,7 +155,7 @@ function renderLayers(layers_num) {
 }
 
 function addLayer_col(cols, current_main_row, layer_number_cnt) {
-  var layer_container = $("<div class='border border-secondary mx-2 my-4 p-4 rounded-pill col-" + cols + "'></div>");
+  var layer_container = $("<div class='border border-secondary my-4 p-4 rounded-pill col-" + cols + "'></div>");
   $(layer_container).append(""); //Layer number
 
   $(layer_container).append("<div class='row'><div class='col text-center font-weight-bold'>Layer " + layer_number_cnt + "</div></div>"); // Container Row for Neurons and Activ Function
