@@ -64,7 +64,7 @@
                 </form>
 
                 {{-- DOWNLOAD BUTTON --}}
-                <a href="{{ route("networks.download", ['user' => $user, 'networks' => $model]) }}">
+                <a href="{{ route("networks.download", ['user' => $user, 'network' => $model]) }}">
                     <button class="btn btn-outline-dark">Download</button>
                 </a>
             </div>

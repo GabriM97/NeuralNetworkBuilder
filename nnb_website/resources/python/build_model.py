@@ -6,8 +6,9 @@ import json
 from keras.models import Sequential, load_model
 from keras.layers import Dense
 
+
 def buildModel(layers_number, neurons_per_layer, activ_functions, data_shape, model_type="Sequential", get_info=False):
-    
+
     if(model_type != "Sequential" and model_type != "Functional"):
         print(model_type)
         print("\nSyntax model type ERROR! Set to default model type: Sequential")
@@ -20,23 +21,25 @@ def buildModel(layers_number, neurons_per_layer, activ_functions, data_shape, mo
         model = Sequential()
         for layer in range(layers_number):
             if(layer == 0):
-                model.add(Dense(neurons_per_layer[0], activation=activ_functions[0], input_shape=data_shape))
+                model.add(Dense(
+                    neurons_per_layer[0], activation=activ_functions[0], input_shape=data_shape))
             else:
-                model.add(Dense(neurons_per_layer[layer], activation=activ_functions[layer]))
+                model.add(
+                    Dense(neurons_per_layer[layer], activation=activ_functions[layer]))
 
     elif(model_type == "func"):
         print("\nNOT SUPPORTED YET - WORK IN PROGRESS...")
 
     if get_info:
         print(model.summary())
-    
+
     return model
 
 
 def getLayersInfo(filepath):
-    #filepath = /storage/app/users/$hashed_user/models/model_xx
+    # ../storage/app/users/$hashed_user/models/model_xx_layers_config.json
     filename = filepath + "_layers_config.json"
-    
+
     try:
         with open(filename, "r") as inp:
             data = json.load(inp)
@@ -62,38 +65,45 @@ def saveModel(model, filename):
 
 
 def importModel(modelPath):
-    model = -1
-
-    model = load_model(modelPath)
-    if(model == -1):
+    
+    try:
+        model = load_model(modelPath)
+        return model
+    except Exception as err:
         print("Error importing the model.")
-    return model
+        raise err
+        
+    
 
-#----------------------------------------------
+# ----------------------------------------------
 
 def buildMethod():
     model_id = sys.argv[1]
     model_type = sys.argv[2]
     layers_number = int(sys.argv[3])
-    local_dir = sys.argv[4]     # /storage/app/users/$hashed_user/models/
+    local_dir = sys.argv[4]     	# users/$hashed_user/models/
     data_shape = (int(sys.argv[5]),)
     get_info = True
 
+    path_prefix = "../storage/app/"
     try:
-        neurons_per_layer, activ_functions = getLayersInfo(local_dir + "model_" + model_id)
+        # ../storage/app/users/$hashed_user/models/model_xx
+        neurons_per_layer, activ_functions = getLayersInfo(
+            path_prefix + local_dir + "model_" + model_id)
         model = buildModel(layers_number,
-                            neurons_per_layer,
-                            activ_functions,
-                            data_shape,
-                            model_type,
-                            get_info)
+                           neurons_per_layer,
+                           activ_functions,
+                           data_shape,
+                           model_type,
+                           get_info)
 
-        filename = local_dir + "model_" + model_id + ".h5"   # PHP SCRIPT
-        #filename = "./saves/personal_model.h5"          # CMD SCRIPT
+        # ../storage/app/public/users/$hashed_user/models/model_xx.h5
+        filename = path_prefix + "public/" + local_dir + "model_" + model_id + ".h5"
         saveModel(model, filename)
 
     except Exception as err:
-        print(err)
+        print("ERROR: " + err)
+        raise Exception("errore mio")
 
 
 # --- MAIN ---

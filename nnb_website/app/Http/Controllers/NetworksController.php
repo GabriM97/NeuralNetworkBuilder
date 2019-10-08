@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Exception;
 
 class NetworksController extends Controller
 {
@@ -101,36 +102,33 @@ class NetworksController extends Controller
             'local_path' => $local_dir,
             ]);
 
-            //Layers::create([]);
+        //Layers::create([]);
 
-        try {    
+        
+        
+        try {
+            // Build the model
             $model_id = $network->id;
-            $filename = "model_$model_id.h5";
-            $network->local_path = $local_dir.$filename;     //save path+filename
-            $network->save();
-
-            //$model_file->storeAs("public/$local_dir", $filename);    // in python
-            Network::build_h5_model($model_id, $local_dir, $model_type, $layers_num, $input_shape, $neurons_number, $activ_function);
-
-            //$file_size = model filesize
-            //$network->file_size = $file_size;
-
-            //Check user available space
-            //if($user->available_space < $file_size) //first delete the file then redirect
-            //return redirect(route("datasets.index", ["user" => $user]));
-
-            //Update user details
-            //$user->models_number++;
-            //$user->available_space -= $file_size;
-            //$user->save();
-
-            //Storage::setVisibility("public/$local_path", 'public');
-            
+            $model_size = Network::build_h5_model($model_id, $local_dir, $model_type, $layers_num, $input_shape, $neurons_number, $activ_function);
+        
         } catch (\Throwable $th) {
             $network->delete();
-            return $th;
             //$layers->delete();
+            return $th->getMessage();
         }
+
+        //Check user available space and set model file_size
+        if($user->available_space < $model_size)
+            return redirect(route("networks.index", ["user" => $user]));
+
+        $network->local_path = $local_dir."model_$model_id.h5";     //save path+filename
+        $network->file_size = $model_size;
+        $network->save();
+        
+        //Update user details
+        $user->models_number++;
+        $user->available_space -= $model_size;
+        $user->save();
 
         return redirect(route("networks.index", ["user" => $user]));      //to change in ->  return redirect(route("datasets.show"));
     }
@@ -177,11 +175,34 @@ class NetworksController extends Controller
      */
     public function destroy(User $user, Network $network)
     {
-        // PROVVISORIO - DA COMPLETARE
-        $model_folder = substr($network->local_path, 0, strrpos($network->local_path, "/"));
-        Storage::delete($network->local_path);
-        Storage::delete("$model_folder/model_$network->id"." _layers_config.json");
-        $network->delete();
-        return redirect(route("networks.index", ["user" => $user])); 
+        if(Auth::user()->id == $user->id || Auth::user()->rank == -1){
+            $model_folder = substr($network->local_path, 0, strrpos($network->local_path, "/"));
+            Storage::delete("public/$network->local_path");
+            Storage::delete("$model_folder/model_$network->id"."_layers_config.json");
+            
+            $network->delete();
+            $user->models_number--;
+
+            $tot_size = $user->get_tot_files_size();
+            if($user->available_space > 0)  $user->available_space += $network->file_size;
+            else    // avb_spc = 0
+                if($tot_size < $user->get_max_available_space()) 
+                    $user->available_space = $user->get_max_available_space() - $tot_size;
+                else
+                    $user->available_space = 0;
+
+            $user->save();
+            return redirect(route("networks.index", ["user" => $user])); 
+        }else{
+            return redirect(route("home"));
+        }
+    }
+
+    public function download(User $user, Network $network)
+    {
+        if(Auth::user()->id == $user->id || Auth::user()->rank == -1){
+           return Storage::disk('public')->download($network->local_path, "model_$network->model_name.h5");
+        }else
+            return redirect(route("home"));
     }
 }
