@@ -1,6 +1,7 @@
 
 *.csv
-*.json
+nnb_website/storage/app/*.json
+nnb_website/resources/python/saves/*.json
 *.pkl
 *.h5
 nnb_website/node_modules
