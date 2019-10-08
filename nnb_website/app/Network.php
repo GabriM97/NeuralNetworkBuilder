@@ -4,76 +4,53 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
-//$python_path = "C:/Users/Gabriele/AppData/Local/Programs/Python/Python37/python.exe";  //windows
-$python_path = "/usr/bin/python";  //linux
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class Network extends Model
 {
-    protected $fillable = ['user_id', 'model_type', 'input_shape', 'layers_num', 'output_classes', 'model_name', 'model_description', 'file_size', 'local_path'];
+	protected $fillable = ['user_id', 'model_type', 'input_shape', 'layers_number', 'output_classes', 'model_name', 'model_description', 'file_size', 'local_path'];
 
     /* --- BUILD MODEL --- */
-    public function build_h5_model($user_id, $model_id, $local_path, $model_type, $layers_number, $output_classes, $input_shape, $neurons_number, $activ_function){
+    public static function build_h5_model($model_id, $local_dir, $model_type, $layers_number, $input_shape, $neurons_number, $activ_function){
+        $python_path = "/usr/bin/python";  //linux
 
-        //throw new Exception('exception description');
-    
-        global $python_path;
-        $filename = saveLayers($user_id, $model_id, $neurons_number, $activ_function);
-
-        if($filename !== -1){
-            $cmd = escapeshellcmd("$python_path /resources/python/build_model.py $model_type $layers_number $filename $input_shape");
-
-            //echo("\n model_type: $model_type \n layers_number: $layers_number \n input_shape: $input_shape");
-            $exit_status = exec_script($cmd);
-            if($exit_status != 0){
-                throw new Exception('ERROR BUILDING THE MODEL');
-            }
-        }else{
-            throw new Exception('ERROR. Failed to save layers configuration');
-        }
-        return $exit_status;
+		try {
+			// Save layers config
+			$layers_filepath = Network::saveLayers($model_id, $local_dir, $neurons_number, $activ_function);
+			
+			// Exec script
+			$local_dir = "../storage/app/".$local_dir;	//	../storage/app/users/$hashed_user/models/
+			$app_path = base_path();																	
+			$process = new Process("python $app_path/resources/python/build_model.py $model_id $model_type $layers_number \"$local_dir\" $input_shape");
+			$process->mustRun();
+			
+		} catch (\Throwable $th) {
+			// Catch errors
+			Storage::delete($layers_filepath);
+			return $th;
+			throw new Exception('ERROR BUILDING THE MODEL.');
+		}
     }
 
-    function saveLayers($user_id, $model_id, $neurons_number, $activ_function){
+	// SAVE LAYERS FUNCTION
+    public static function saveLayers($model_id, $local_dir, $neurons_number, $activ_function){
+		// Build json file
         $layers = array("neurons_number" => $neurons_number,
-                        "activ_function" => $activ_function);
+						"activ_function" => $activ_function);
         $json_config = json_encode($layers);
-
-        $hashed_user = hash("md5", $user_id);
-        $filepath = "users/$hashed_user/layers_config/";
-        $filename = $filepath . "model_$model_id"."_layers_config.json";
-
-        if($myfile = fopen($filename, "w")){
-            fwrite($myfile, $json_config);
-            fclose($myfile);
-            return $filename;
-        }else{
-            return -1;
-        }
+		
+		try {
+			// Save file
+			$filename = $local_dir . "model_$model_id"."_layers_config.json";
+			Storage::put($filename, $json_config, 'private');
+			return $filename;
+		} catch (\Throwable $th) {
+			throw $th;
+		}
     }
-
-    function exec_script($cmd){
-        while (@ ob_end_flush());   // end all output buffers if any
-        $proc = popen($cmd, 'r');
-    
-        $live_output = "";
-        $all_output = "";
-        echo "<pre class='pre-content'>";
-    
-        while(!feof($proc)){
-            $live_output = fread($proc, 1);     //read each 1 Byte
-            $all_output = $all_output . $live_output;
-            echo $live_output;
-            //echo "<script type='text/javascript'> consoleText('$live_output', 'pre'); </script>";
-            @ flush();
-        }
-        echo "</pre>";
-        pclose($proc);
-    
-        if($exit_status = strstr($all_output, "exit_status"))
-          return substr($exit_status, -2, -1);
-        else
-          return -1;
-      }
-
 }
+
+// LAYERS CONFIG E MODEL VANNO IN CARTELLE SEPARATE. MODEL VA IN PUBLIC, LAYERS_CONFIG NO
+// DA CAMBIARE I PATH!! 	FIXARE ANCHE NETWORKS.DESTROY

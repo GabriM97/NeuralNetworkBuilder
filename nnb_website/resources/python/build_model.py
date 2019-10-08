@@ -1,19 +1,22 @@
+#!/usr/bin/python
+
 import sys
 import pickle
 import json
 from keras.models import Sequential, load_model
 from keras.layers import Dense
 
-def buildModel(layers_number, neurons_per_layer, activ_functions, data_shape, model_type="Seq", get_info=False):
-    model_type = model_type.lower()
-    if(model_type != "seq" and model_type != "func"):
+def buildModel(layers_number, neurons_per_layer, activ_functions, data_shape, model_type="Sequential", get_info=False):
+    
+    if(model_type != "Sequential" and model_type != "Functional"):
+        print(model_type)
         print("\nSyntax model type ERROR! Set to default model type: Sequential")
-        model_type = "seq"
-    elif(model_type == "func"):
+        model_type = "Sequential"
+    elif(model_type == "Functional"):
         print("\nFunctional model not supported yet! Set to default model type: Sequential")
-        model_type = "seq"
+        model_type = "Sequential"
 
-    if(model_type == "seq"):
+    if(model_type == "Sequential"):
         model = Sequential()
         for layer in range(layers_number):
             if(layer == 0):
@@ -26,35 +29,36 @@ def buildModel(layers_number, neurons_per_layer, activ_functions, data_shape, mo
 
     if get_info:
         print(model.summary())
-    else:
-        print("\nModel builded!")
     
     return model
 
 
-def getLayersInfo(filename):
+def getLayersInfo(filepath):
+    #filepath = /storage/app/users/$hashed_user/models/model_xx
+    filename = filepath + "_layers_config.json"
+    
     try:
         with open(filename, "r") as inp:
             data = json.load(inp)
-    except IOError:
+
+        neurons_per_layer = []
+        for neur in data["neurons_number"]:
+            neurons_per_layer.append(int(neur))
+        activ_functions = data["activ_function"]
+
+        return neurons_per_layer, activ_functions
+
+    except IOError as err:
         print("\nError trying to load layers structure from", filename)
-        return -1
-
-    neurons_per_layer = []
-    for neur in data["neurons_number"]:
-        neurons_per_layer.append(int(neur))
-    activ_functions = data["activ_function"]
-
-    return neurons_per_layer, activ_functions
+        raise err
 
 
 def saveModel(model, filename):
     try:
         model.save(filename)
-        return 0
-    except Exception as e:
-        print("Error saving the model:", e)
-        return -1
+    except Exception as err:
+        print("Error saving the model:", err)
+        raise err
 
 
 def importModel(modelPath):
@@ -68,23 +72,28 @@ def importModel(modelPath):
 #----------------------------------------------
 
 def buildMethod():
-    model_type = sys.argv[1]
-    layers_number = int(sys.argv[2])
-    neurons_per_layer, activ_functions = getLayersInfo(sys.argv[3])
-    data_shape = (int(sys.argv[4]),)
+    model_id = sys.argv[1]
+    model_type = sys.argv[2]
+    layers_number = int(sys.argv[3])
+    local_dir = sys.argv[4]     # /storage/app/users/$hashed_user/models/
+    data_shape = (int(sys.argv[5]),)
     get_info = True
 
-    model = buildModel(layers_number,
-                       neurons_per_layer,
-                       activ_functions,
-                       data_shape,
-                       model_type,
-                       get_info)
+    try:
+        neurons_per_layer, activ_functions = getLayersInfo(local_dir + "model_" + model_id)
+        model = buildModel(layers_number,
+                            neurons_per_layer,
+                            activ_functions,
+                            data_shape,
+                            model_type,
+                            get_info)
 
-    filename = "./python/saves/personal_model.h5"   # PHP SCRIPT
-    #filename = "./saves/personal_model.h5"          # CMD SCRIPT
-    exit = saveModel(model, filename)
-    print("exit_status:", exit)
+        filename = local_dir + "model_" + model_id + ".h5"   # PHP SCRIPT
+        #filename = "./saves/personal_model.h5"          # CMD SCRIPT
+        saveModel(model, filename)
+
+    except Exception as err:
+        print(err)
 
 
 # --- MAIN ---

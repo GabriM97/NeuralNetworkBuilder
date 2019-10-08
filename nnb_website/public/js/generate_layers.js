@@ -145,6 +145,7 @@ function renderLayers(layers_num) {
   $(last_layer_selector).val(out_val);
   $("#output_classes").change(function () {
     var value = $(this).val();
+    var last_layer_selector = "#layers_container [id*='_" + (content_cnt - 1) + "'] [name*='neurons_number']";
     $(last_layer_selector).val(value);
   });
   $(last_layer_selector).change(function () {

@@ -84,6 +84,10 @@ class NetworksController extends Controller
         $hashed_user = hash("md5", $user_id);  
         $local_dir = "users/$hashed_user/models/";
         
+        //check output_classes = last_layer_neurons
+        if($output_classes != $neurons_number[$layers_num-1])
+            return redirect(route("networks.create", compact("user")));
+        
         // Add network record
         $network = Network::create([
             'user_id' => $user_id,
@@ -100,18 +104,13 @@ class NetworksController extends Controller
             //Layers::create([]);
 
         try {    
-            $id = $network->id;
-            $filename = "model_$id.h5";
-            $local_path = $local_dir.$filename;
-            
-            $local_path = "FILE NOT EXISTS"; // temporary
-
-            $network->local_path = $local_path;     //save path+filename
+            $model_id = $network->id;
+            $filename = "model_$model_id.h5";
+            $network->local_path = $local_dir.$filename;     //save path+filename
             $network->save();
 
             //$model_file->storeAs("public/$local_dir", $filename);    // in python
-            
-            //Network::build_h5_model($user_id, $model_id, $local_path, $model_type, $layers_num, $output_classes, $input_shape, $neurons_number, $activ_function);
+            Network::build_h5_model($model_id, $local_dir, $model_type, $layers_num, $input_shape, $neurons_number, $activ_function);
 
             //$file_size = model filesize
             //$network->file_size = $file_size;
@@ -128,7 +127,8 @@ class NetworksController extends Controller
             //Storage::setVisibility("public/$local_path", 'public');
             
         } catch (\Throwable $th) {
-            //$network->delete();
+            $network->delete();
+            return $th;
             //$layers->delete();
         }
 
@@ -177,6 +177,11 @@ class NetworksController extends Controller
      */
     public function destroy(User $user, Network $network)
     {
-        //
+        // PROVVISORIO - DA COMPLETARE
+        $model_folder = substr($network->local_path, 0, strrpos($network->local_path, "/"));
+        Storage::delete($network->local_path);
+        Storage::delete("$model_folder/model_$network->id"." _layers_config.json");
+        $network->delete();
+        return redirect(route("networks.index", ["user" => $user])); 
     }
 }
