@@ -19,7 +19,7 @@
             <div class="form-group row"> {{-- Model type --}}
                 <label for="model_type" class="col-md-4 col-form-label text-md-right">Model type</label>
                 <div class="col-md-8">
-                    <select class="form-control @error('model_type') is-invalid @enderror" id="model_type" name="model_type" disabled>
+                    <select class="form-control @error('model_type') is-invalid @enderror" id="model_type" name="model_type" readonly>
                         <option>Sequential</option>
                     </select>
 

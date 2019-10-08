@@ -19,7 +19,7 @@ class CreateNetworksTable extends Migration
             $table->foreign('user_id')
                     ->references('id')->on('users')
                     ->onDelete('cascade');
-            $table->string('model_type')->default("sequential");
+            $table->enum('model_type', ['Sequential', 'Functional'])->default("Sequential");
             $table->integer('input_shape');
             $table->integer('layers_number')->default(1);   // min 1 = output_layer
             $table->integer('output_classes');

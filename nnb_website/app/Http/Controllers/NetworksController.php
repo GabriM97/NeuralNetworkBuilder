@@ -69,6 +69,70 @@ class NetworksController extends Controller
             'activ_funct' => ['array', 'min:1', 'required'],
             'activ_funct.*' => ['string', 'required', 'in:relu,sigmoid,tanh,linear,softmax'],
         ]);
+
+        //Get model info
+        $user_id = $user->id;
+        $model_type = $request->model_type;
+        $title = $request->title;
+        $description = $request->description;
+        $input_shape = $request->input_shape;
+        $output_classes = $request->output_classes;
+        $layers_num = $request->layers_number;
+        $neurons_number = $request->neurons_number;
+        $activ_function = $request->activ_funct;
+
+        $hashed_user = hash("md5", $user_id);  
+        $local_dir = "users/$hashed_user/models/";
+        
+        // Add network record
+        $network = Network::create([
+            'user_id' => $user_id,
+            'model_type' => $model_type,
+            'input_shape' => $input_shape,
+            'layers_number' => $layers_num,
+            'output_classes' => $output_classes,
+            'model_name' => $title,
+            'model_description' => $description,
+            'file_size' => 0,       //to set after buildModel()
+            'local_path' => $local_dir,
+            ]);
+
+            //Layers::create([]);
+
+        try {    
+            $id = $network->id;
+            $filename = "model_$id.h5";
+            $local_path = $local_dir.$filename;
+            
+            $local_path = "FILE NOT EXISTS"; // temporary
+
+            $network->local_path = $local_path;     //save path+filename
+            $network->save();
+
+            //$model_file->storeAs("public/$local_dir", $filename);    // in python
+            
+            //Network::build_h5_model($user_id, $model_id, $local_path, $model_type, $layers_num, $output_classes, $input_shape, $neurons_number, $activ_function);
+
+            //$file_size = model filesize
+            //$network->file_size = $file_size;
+
+            //Check user available space
+            //if($user->available_space < $file_size) //first delete the file then redirect
+            //return redirect(route("datasets.index", ["user" => $user]));
+
+            //Update user details
+            //$user->models_number++;
+            //$user->available_space -= $file_size;
+            //$user->save();
+
+            //Storage::setVisibility("public/$local_path", 'public');
+            
+        } catch (\Throwable $th) {
+            //$network->delete();
+            //$layers->delete();
+        }
+
+        return redirect(route("networks.index", ["user" => $user]));      //to change in ->  return redirect(route("datasets.show"));
     }
 
     /**
