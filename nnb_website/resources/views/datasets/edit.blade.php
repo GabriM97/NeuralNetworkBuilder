@@ -62,7 +62,7 @@
                     <div class="col"><input type="number" name="x_input" value="{{$dataset->x_shape}}" min="1" max="1000" step="1"></div>
                 </div>
             </div>
-            <div class="col-2">     {{-- col-sm-3 col-md-2 --}}
+            <div class="col-2">
                 <div class="row text-left font-weight-bold">
                     <div class="col">Output classes (Y_labels)</div>
                 </div>
@@ -75,7 +75,7 @@
         <div class="row">  {{-- CONFIRM BUTTON --}}
             <div class="col text-right"><button class="btn btn-primary" type="submit">Confirm</button></div>
 
-            {{-- CANCEL BUTTON DOESN'T WORK --}}
+            {{-- CANCEL BUTTON --}}
             <div class="col text-left">
                 <a href="{{ route("datasets.show", compact("user", "dataset")) }}">
                     <button type="button" class="btn btn-secondary">Cancel</button>

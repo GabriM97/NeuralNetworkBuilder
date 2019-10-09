@@ -42,10 +42,6 @@
                     <div class="col-5 align-self-center text-left">{{$network->model_type}}</div>
                 </div>
                 <div class="row my-2">
-                    <div class="col-7 align-self-center text-right font-weight-bold">Layers number</div>
-                    <div class="col-5 align-self-center text-left">{{$network->layers_number}}</div>
-                </div>
-                <div class="row my-2">
                     <div class="col-7 align-self-center text-right font-weight-bold">Input shape</div>
                     <div class="col-5 align-self-center text-left">{{$network->input_shape}}</div>
                 </div>
@@ -66,6 +62,20 @@
                         @endphp
                     </div>
                 </div>
+                <div class="row my-2">
+                    <div class="col-7 align-self-center text-right font-weight-bold">Is compiled?</div>
+                    <div class="col-5 align-self-center text-left"> @if ($network->is_compiled) Yes @else No @endif</div>
+                </div>
+                <div class="row my-2">
+                    <div class="col-7 align-self-center text-right font-weight-bold">Is trained?</div>
+                    <div class="col-5 align-self-center text-left"> @if ($network->is_trained) Yes @else No @endif</div>
+                </div>
+                @if ($network->is_trained && $network->accuracy != NULL)
+                    <div class="row my-2">
+                        <div class="col-7 align-self-center text-right font-weight-bold">Accuracy</div>
+                        <div class="col-5 align-self-center text-left">{{$network->accuracy}}</div>
+                    </div>
+                @endif
             </div>
 
             <!-- Right column -->
@@ -109,7 +119,17 @@
             </div>
         </div>
 
-        <div class="row"></div>
+        <div class="row my-5">  {{-- LAYERS --}}
+            {{-- <div class="row"> --}}
+                <div class="col align-self-center text-center h4">
+                    <span class="font-weight-bold">Layers number:</span>
+                    <span class="ml-3">{{$network->layers_number}}</span>
+                </div>
+            {{-- </div> --}}
+            <div class="row">   {{-- RENDER MODEL LAYERS --}}
+                {{-- @extends('layers.show') --}}
+            </div>
+        </div>
 
         <div class="row mt-5">
             <div class="col-6 text-right">   {{-- EDIT BUTTON --}}         

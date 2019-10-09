@@ -156,7 +156,11 @@ class NetworksController extends Controller
      */
     public function edit(User $user, Network $network)
     {
-        //
+        if((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1))
+            return redirect(route('networks.index', ['user' => Auth::user()]));
+        
+        $title = "Edit model | NeuralNetworkBuilder";
+        return view('networks.edit', compact("title", "user", "network"));
     }
 
     /**
@@ -168,7 +172,7 @@ class NetworksController extends Controller
      */
     public function update(Request $request, User $user, Network $network)
     {
-        //
+        return $request;
     }
 
     /**
