@@ -9,7 +9,6 @@ nnb_website/public/hot
 nnb_website/public/storage
 nnb_website/storage/*.key
 nnb_website/vendor
-nnb_website/.env
 nnb_website/.env.backup
 nnb_website/.phpunit.result.cache
 nnb_website/Homestead.json
