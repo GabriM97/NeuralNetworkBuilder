@@ -141,7 +141,11 @@ class NetworksController extends Controller
      */
     public function show(User $user, Network $network)
     {
-        //
+        if((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1))
+            return redirect(route('networks.index', ['user' => Auth::user()]));
+            
+        $title = "$network->model_name | NeuralNetworkBuilder";
+        return view("networks.show", compact("title", "user", "network"));
     }
 
     /**
