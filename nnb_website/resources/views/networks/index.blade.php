@@ -37,7 +37,13 @@
             <div class="col-md-2 align-self-center">{{$model->model_name}}</div>
             <div class="col-md-1 align-self-center">{{$model->input_shape}}</div>
             <div class="col-md-1 align-self-center">{{$model->output_classes}}</div>
-            <div class="col-md-1 align-self-center">{{$model->accuracy}}</div>
+            <div class="col-md-1 align-self-center">
+                @if($model->is_trained && $model->accuracy != NULL) 
+                    {{$model->accuracy}}
+                @else
+                    <span class="font-italic">Not trained yet</span>
+                @endif
+            </div>
             <div class="col-md-1 align-self-center">@if($model->is_compiled) Yes @else No @endif</div>
             <div class="col-md-1 align-self-center">@if($model->is_trained) Yes @else No @endif</div>
             <div class="col-md-1 align-self-center pl-1 pr-1">  {{-- LAST TIME USED --}}
