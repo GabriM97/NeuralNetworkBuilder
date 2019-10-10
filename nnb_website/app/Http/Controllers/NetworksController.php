@@ -101,9 +101,9 @@ class NetworksController extends Controller
             'file_size' => 0,       //to set after buildModel()
             'local_path' => $local_dir,
             ]);
+        $network->save();
 
-        //Layers::create([]);
-
+        LayersController::create($network->id, $layers_num, $neurons_number, $activ_function);
         
         
         try {
@@ -143,9 +143,10 @@ class NetworksController extends Controller
     {
         if((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1))
             return redirect(route('networks.index', ['user' => Auth::user()]));
-            
+        
+        $layers = LayersController::getModelLayers($network->id);
         $title = "$network->model_name | NeuralNetworkBuilder";
-        return view("networks.show", compact("title", "user", "network"));
+        return view("networks.show", compact("title", "user", "network", "layers"));
     }
 
     /**
@@ -159,8 +160,9 @@ class NetworksController extends Controller
         if((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1))
             return redirect(route('networks.index', ['user' => Auth::user()]));
         
+        $layers = LayersController::getModelLayers($network->id);
         $title = "Edit model | NeuralNetworkBuilder";
-        return view('networks.edit', compact("title", "user", "network"));
+        return view('networks.edit', compact("title", "user", "network", "layers"));
     }
 
     /**

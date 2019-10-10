@@ -120,15 +120,16 @@
         </div>
 
         <div class="row my-5">  {{-- LAYERS --}}
-            {{-- <div class="row"> --}}
-                <div class="col align-self-center text-center h4">
+                <div class="col-12 align-self-center text-center h4">
                     <span class="font-weight-bold">Layers number:</span>
                     <span class="ml-3">{{$network->layers_number}}</span>
                 </div>
-            {{-- </div> --}}
-            <div class="row">   {{-- RENDER MODEL LAYERS --}}
-                {{-- @extends('layers.show') --}}
+
+            <div class="col-8 offset-2 mt-4" >
+                {{-- RENDER MODEL LAYERS --}}
+                @include('layers.show', compact('layers'))
             </div>
+            
         </div>
 
         <div class="row mt-5">

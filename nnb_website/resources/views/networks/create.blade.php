@@ -6,10 +6,6 @@
 
 @section('page-title', $title)
 
-@section('scripts')
-	<script src="{{ asset('js/generate_layers.js') }}"></script>
-@endsection
-
 @section('content')
 	<form method="POST" action="{{route("networks.store", ['user' => $user])}}">
 		@csrf
@@ -99,11 +95,8 @@
 		</div>
 
 		<div class="container-fluid">
-			
-			<div id="layers_container" class="form-group mx-3 my-5">
-				{{-- Layers --}}
-			</div>
-
+			{{-- Layers --}}
+			@include('layers.create')
 
 			{{-- Submit button --}}
 			<div class="form-group row">

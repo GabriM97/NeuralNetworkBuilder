@@ -56,6 +56,10 @@
             </div>
         </div>
 
+        <div class="my-5 form-group"> {{-- LAYERS --}}
+            @include('layers.edit')
+        </div>
+
         <div class="row">  {{-- CONFIRM BUTTON --}}
             <div class="col text-right"><button class="btn btn-primary" type="submit">Confirm</button></div>
 
