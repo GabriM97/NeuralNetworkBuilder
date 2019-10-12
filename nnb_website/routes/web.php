@@ -12,15 +12,20 @@
 */
 
 Route::get('/', function (){    return view('welcome');     })->name('welcome');
-
-Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
 
+// Auth and Users routes
+Auth::routes();
 Route::resource('/users', 'UsersController');
 
+// Datasets routes
 Route::resource('/users/{user}/datasets', 'DatasetsController');
-Route::get('/users/{user}/datasets/{dataset}/download/', 'DatasetsController@download')->name("datasets.download");
+Route::get('/users/{user}/datasets/{dataset}/download', 'DatasetsController@download')->name("datasets.download");
 
+// Models routes
 Route::resource('/users/{user}/networks', 'NetworksController');
-Route::get('/users/{user}/networks/{network}/download/', 'NetworksController@download')->name("networks.download");
+Route::get('/users/{user}/networks/{network}/download', 'NetworksController@download')->name("networks.download");
+
+// Compilations routes
+Route::get('/users/{user}/networks/{network}/compile', 'CompilationsController@create')->name("compilations.create");
+Route::post('/users/{user}/networks/{network}/compile', 'CompilationsController@store')->name("compilations.store");
