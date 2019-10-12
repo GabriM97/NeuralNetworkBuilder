@@ -139,15 +139,17 @@
                         </form>
                     </div>
                 @else
-                    <!-- Remove Admin button - ADMIN ONLY-->
-                    <div class="col">
-                        <form class="form-removeadmin d-inline-block" method="POST" action="{{route("users.update", ["user" => $user])}}">
-                            @csrf
-                            @method("PATCH")
-                            <input type="hidden" name="process" value="removeadmin">
-                            <button class='btn btn-outline-danger btn-sm' type="submit">REMOVE ADMIN</button>
-                        </form>
-                    </div>
+                    @if ($user->id != Auth::user()->id)
+                        <!-- Remove Admin button - ADMIN ONLY-->
+                        <div class="col">
+                            <form class="form-removeadmin d-inline-block" method="POST" action="{{route("users.update", ["user" => $user])}}">
+                                @csrf
+                                @method("PATCH")
+                                <input type="hidden" name="process" value="removeadmin">
+                                <button class='btn btn-outline-danger btn-sm' type="submit">REMOVE ADMIN</button>
+                            </form>
+                        </div>
+                    @endif
                 @endif
             @endif
             </div>  {{-- tag row edit/admin button closed --}}
