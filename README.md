@@ -14,7 +14,5 @@ To run the Laravel app:
 * composer install
 * composer update
 * php artisan serve
-
-(if needed)
 * npm install
 * npm run watch
