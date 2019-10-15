@@ -22,7 +22,7 @@ class Network extends Model
 			
 			// Exec script	
 			$app_path = base_path();																									
-			$process = new Process("python $app_path/resources/python/build_model.py $model_id $model_type $layers_number \"$local_dir\" $input_shape");
+			$process = new Process("python3 $app_path/resources/python/build_model.py $model_id $model_type $layers_number \"$local_dir\" $input_shape");
 			$process->mustRun();
 
 			Storage::setVisibility("public/$local_dir/model_$model_id.h5", 'public');
