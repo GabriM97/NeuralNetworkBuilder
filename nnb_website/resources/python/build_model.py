@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import sys
 import pickle
@@ -55,26 +55,6 @@ def getLayersInfo(filepath):
         print("\nError trying to load layers structure from", filename)
         raise err
 
-
-def saveModel(model, filename):
-    try:
-        model.save(filename)
-    except Exception as err:
-        print("Error saving the model:", err)
-        raise err
-
-
-def importModel(modelPath):
-    
-    try:
-        model = load_model(modelPath)
-        return model
-    except Exception as err:
-        print("Error importing the model.")
-        raise err
-        
-    
-
 # ----------------------------------------------
 
 def buildMethod():
@@ -83,13 +63,14 @@ def buildMethod():
     layers_number = int(sys.argv[3])
     local_dir = sys.argv[4]     	# users/$hashed_user/models/
     data_shape = (int(sys.argv[5]),)
-    get_info = True
+    get_info = False
 
     path_prefix = "../storage/app/"
     try:
         # ../storage/app/users/$hashed_user/models/model_xx
         neurons_per_layer, activ_functions = getLayersInfo(
             path_prefix + local_dir + "model_" + model_id)
+            
         model = buildModel(layers_number,
                            neurons_per_layer,
                            activ_functions,
@@ -99,11 +80,11 @@ def buildMethod():
 
         # ../storage/app/public/users/$hashed_user/models/model_xx.h5
         filename = path_prefix + "public/" + local_dir + "model_" + model_id + ".h5"
-        saveModel(model, filename)
+        model.save(filename)
 
     except Exception as err:
         print("ERROR: " + str(err))
-        raise Exception("errore mio")
+        raise Exception("COULD NOT BUILD THE MODEL.")
 
 
 # --- MAIN ---

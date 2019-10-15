@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import sys
 from keras import optimizers as opt
 from keras.models import load_model
@@ -15,43 +17,31 @@ def compileModel(model, optim, learning_rate, output_classes, metrics_list):
 
     model.compile(optimizer=optim_obj, loss=loss_func, metrics=metrics_list)
 
-    print("\nModel compiled!")
     return model
-
-
-def saveModel(model):
-    filename = "./python/saves/personal_model.h5"     # PHP SCRIPT
-    #filename = "./saves/personal_model.h5"            # CMD SRIPT
-    try:
-        model.save(filename)
-        return 0
-    except Exception as e:
-        print("Error saving the model:", e)
-        return -1
-
-def importModel():
-    filename = "./python/saves/personal_model.h5"     # PHP SCRIPT
-    #filename = "./saves/personal_model.h5"            # CMD SRIPT
-    model = -1
-    model = load_model(filename)
-    if(model == -1):
-        print("Error importing the model.")
-
-    return model
-
+        
 #--------------------------------------------------------
+
 def compile():
 
-    model = importModel()
-    optimizer = sys.argv[1]
-    learning_rate = float(sys.argv[2])
-    output_classes = int(sys.argv[3])
-    #metrics_list = sys.argv[4]
-    metrics_list = ["accuracy"]
+    local_path = sys.argv[1]     # users/$hashed_user/models/model_ID.h5
+    optimizer = sys.argv[2]
+    learning_rate = float(sys.argv[3])
+    output_classes = int(sys.argv[4])
+    
+    try:
+        metrics_list = [sys.argv[5]]
+    except Exception:
+        metrics_list = ""
 
-    model = compileModel(model, optimizer, learning_rate, output_classes, metrics_list)
-    exit = saveModel(model)
-    print("exit_status:", exit)
+    filename = "../storage/app/public/" + local_path
+    try:
+        model = load_model(filename)
+        model = compileModel(model, optimizer, learning_rate, output_classes, metrics_list)
+        model.save(filename)
+
+    except Exception as err:
+        print("ERROR: " + str(err))
+        raise Exception("COULD NOT COMIPLE THE MODEL.")
 
 # --- MAIN ---
 compile()

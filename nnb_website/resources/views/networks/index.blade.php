@@ -62,12 +62,10 @@
                     <button class="btn btn-primary">Details</button>
                 </a>
                 
-                {{-- DELETE BUTTON --}}
-                <form class="form-delete d-inline-block" method="POST" action="{{route('networks.destroy', ['user' => $user, 'network' => $model])}}">
-                    @csrf
-                    @method("DELETE")
-                    <button class="btn btn-danger" type="submit">Delete</button>
-                </form>
+                {{-- COMPILE BUTTON --}}
+                <a href="{{ route("compilations.create", ['user' => $user, 'network' => $model]) }}">
+                    <button class="btn btn-warning">Compile</button>
+                </a>
 
                 {{-- DOWNLOAD BUTTON --}}
                 <a href="{{ route("networks.download", ['user' => $user, 'network' => $model]) }}">

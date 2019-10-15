@@ -21,7 +21,7 @@ class CreateCompilationsTable extends Migration
                     ->onDelete('cascade');             //parameters to define
             $table->double('learning_rate', 8, 4)->default(0.01);
             $table->enum('optimizer', ['adam', 'sgd']);
-            $table->enum('metrics', ['accuracy'])->default('accuracy');
+            $table->enum('metrics', ['accuracy'])->nullable();
             $table->timestamps();
         });
     }

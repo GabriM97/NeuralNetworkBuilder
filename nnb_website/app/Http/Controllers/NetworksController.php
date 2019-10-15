@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Network;
 use App\User;
+use App\Compilation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -98,13 +99,17 @@ class NetworksController extends Controller
             'output_classes' => $output_classes,
             'model_name' => $title,
             'model_description' => $description,
-            'file_size' => 0,       //to set after buildModel()
+            'file_size' => 0,
             'local_path' => $local_dir,
             ]);
-        $network->save();
 
-        LayersController::create($network->id, $layers_num, $neurons_number, $activ_function);
-        
+        // Add layers records
+        LayersController::create(
+            $network->id, 
+            $layers_num, 
+            $neurons_number, 
+            $activ_function
+        );
         
         try {
             // Build the model
@@ -114,12 +119,15 @@ class NetworksController extends Controller
         } catch (\Throwable $th) {
             $network->delete();
             //$layers->delete();
-            return $th->getMessage();
+            return $th->getMessage();       //return to networks.index with error message "could not build the model: $th->getMessage()"
         }
 
         //Check user available space and set model file_size
-        if($user->available_space < $model_size)
-            return redirect(route("networks.index", ["user" => $user]));
+        if($user->available_space < $model_size){
+            Storage::delete("public/$network->local_path");
+            $network->delete();
+            return redirect(route("networks.index", ["user" => $user]));       // redirect with error message "no space available"
+        }
 
         $network->local_path = $local_dir."model_$model_id.h5";     //save path+filename
         $network->file_size = $model_size;
@@ -130,7 +138,7 @@ class NetworksController extends Controller
         $user->available_space -= $model_size;
         $user->save();
 
-        return redirect(route("networks.index", ["user" => $user]));      //to change in ->  return redirect(route("datasets.show"));
+        return redirect(route("networks.show", ["user" => $user, "network" => $network->id]));
     }
 
     /**
@@ -145,8 +153,9 @@ class NetworksController extends Controller
             return redirect(route('networks.index', ['user' => Auth::user()]));
         
         $layers = LayersController::getModelLayers($network->id);
+        $compile = Compilation::where('model_id', $network->id)->get()->first();
         $title = "$network->model_name | NeuralNetworkBuilder";
-        return view("networks.show", compact("title", "user", "network", "layers"));
+        return view("networks.show", compact("title", "user", "network", "layers", isset($compile) ? "compile" : NULL));
     }
 
     /**
@@ -174,7 +183,8 @@ class NetworksController extends Controller
      */
     public function update(Request $request, User $user, Network $network)
     {
-        return $request;
+        if(Auth::user()->rank == -1)
+            return $request;
     }
 
     /**

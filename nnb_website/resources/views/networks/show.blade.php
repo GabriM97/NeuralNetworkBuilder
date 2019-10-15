@@ -63,13 +63,13 @@
                     </div>
                 </div>
                 <div class="row my-2">
-                    <div class="col-7 align-self-center text-right font-weight-bold">Is compiled?</div>
-                    <div class="col-5 align-self-center text-left"> @if ($network->is_compiled) Yes @else No @endif</div>
-                </div>
-                <div class="row my-2">
-                    <div class="col-7 align-self-center text-right font-weight-bold">Is trained?</div>
+					<div class="col-7 align-self-center text-right font-weight-bold">Is trained?</div>
                     <div class="col-5 align-self-center text-left"> @if ($network->is_trained) Yes @else No @endif</div>
                 </div>
+				<div class="row my-2">
+					<div class="col-7 align-self-center text-right font-weight-bold">Is compiled?</div>
+					<div class="col-5 align-self-center text-left"> @if ($network->is_compiled) Yes @else No @endif</div>
+				</div>
                 @if ($network->is_trained && $network->accuracy != NULL)
                     <div class="row my-2">
                         <div class="col-7 align-self-center text-right font-weight-bold">Accuracy</div>
@@ -115,15 +115,19 @@
                 <div class="row my-2">
                     <div class="col-4 align-self-center text-right font-weight-bold">Uploaded at</div>
                     <div class="col-8 align-self-center text-left">{{$network->created_at}}</div>
-                </div>
-            </div>
-        </div>
+				</div>
+			</div>            
+		</div>
+		
+		{{-- Compilations Details --}}
+		@include('compilations.show')
 
-        <div class="row my-5">  {{-- LAYERS --}}
-                <div class="col-12 align-self-center text-center h4">
-                    <span class="font-weight-bold">Layers number:</span>
-                    <span class="ml-3">{{$network->layers_number}}</span>
-                </div>
+		<hr>
+        <div class="row my-4">  {{-- LAYERS --}}
+            <div class="col-12 align-self-center text-center h4">
+                <span class="font-weight-bold">Layers number:</span>
+                <span class="ml-3">{{$network->layers_number}}</span>
+            </div>
 
             <div class="col-8 offset-2 mt-4" >
                 {{-- RENDER MODEL LAYERS --}}

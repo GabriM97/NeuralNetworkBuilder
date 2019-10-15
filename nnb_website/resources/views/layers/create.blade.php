@@ -4,5 +4,5 @@
 
 
 <div id="layers_container" class="form-group mx-3 my-5">
-    {{-- Layers with js --}}
+    {{-- Generate layers with js --}}
 </div>
