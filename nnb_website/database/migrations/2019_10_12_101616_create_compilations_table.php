@@ -18,7 +18,7 @@ class CreateCompilationsTable extends Migration
             $table->unsignedBigInteger('model_id');
             $table->foreign('model_id')
                     ->references('id')->on('networks')
-                    ->onDelete('cascade');             //parameters to define
+                    ->onDelete('cascade');
             $table->double('learning_rate', 8, 4)->default(0.01);
             $table->enum('optimizer', ['adam', 'sgd']);
             $table->enum('metrics', ['accuracy'])->nullable();

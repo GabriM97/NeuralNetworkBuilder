@@ -29,3 +29,6 @@ Route::get('/users/{user}/networks/{network}/download', 'NetworksController@down
 // Compilations routes
 Route::get('/users/{user}/networks/{network}/compile', 'CompilationsController@create')->name("compilations.create");
 Route::post('/users/{user}/networks/{network}/compile', 'CompilationsController@store')->name("compilations.store");
+
+// Training routes
+Route::resource('/users/{user}/trainings', 'TrainingsController');
