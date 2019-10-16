@@ -45,7 +45,7 @@
                                     <a class="nav-link" href="{{ route('datasets.index', ["user" => Auth::user()]) }}">{{ __('Datasets') }}</a>
                             </li>
                             <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('welcome') }}">{{ __('Tainings') }}</a>
+                                    <a class="nav-link" href="{{ route('trainings.index', ["user" => Auth::user()]) }}">{{ __('Tainings') }}</a>
                             </li>
 
                             @if (Auth::user()->rank == -1)

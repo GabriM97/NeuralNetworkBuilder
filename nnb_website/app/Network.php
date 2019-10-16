@@ -13,7 +13,7 @@ class Network extends Model
 {
 	protected $fillable = ['user_id', 'model_type', 'input_shape', 'layers_number', 'output_classes', 'model_name', 'model_description', 'file_size', 'local_path'];
 
-    /* --- BUILD MODEL --- */					
+    /* --- BUILD MODEL --- */				
     public static function build_h5_model($model_id, $local_dir, $model_type, $layers_number, $input_shape, $neurons_number, $activ_function){
 											// $local_dir = users/$hashed_user/models/
 		try {

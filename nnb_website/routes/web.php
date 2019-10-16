@@ -27,8 +27,14 @@ Route::resource('/users/{user}/networks', 'NetworksController');
 Route::get('/users/{user}/networks/{network}/download', 'NetworksController@download')->name("networks.download");
 
 // Compilations routes
-Route::get('/users/{user}/networks/{network}/compile', 'CompilationsController@create')->name("compilations.create");
-Route::post('/users/{user}/networks/{network}/compile', 'CompilationsController@store')->name("compilations.store");
+//Route::get('/users/{user}/networks/{network}/compile', 'CompilationsController@create')->name("compilations.create");
+//Route::post('/users/{user}/networks/{network}/compile', 'CompilationsController@store')->name("compilations.store");
+Route::resource('/users/{user}/networks/{network}/compilations', 'CompilationsController', [
+    'only' => ['create', 'store']
+]);
+
 
 // Training routes
-Route::resource('/users/{user}/trainings', 'TrainingsController');
+Route::resource('/users/{user}/trainings', 'TrainingsController', [
+    'except' => ['edit']
+]);

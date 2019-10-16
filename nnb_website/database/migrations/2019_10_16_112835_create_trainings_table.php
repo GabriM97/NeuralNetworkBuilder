@@ -16,6 +16,11 @@ class CreateTrainingsTable extends Migration
         Schema::create('trainings', function (Blueprint $table) {
             $table->bigIncrements('id');
             
+            // user
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')
+                    ->references('id')->on('users');
+
             // model
             $table->unsignedBigInteger('model_id');
             $table->foreign('model_id')
