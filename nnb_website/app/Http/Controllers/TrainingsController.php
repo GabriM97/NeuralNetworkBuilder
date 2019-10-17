@@ -7,6 +7,7 @@ use App\Network;
 use App\Dataset;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Exception;
@@ -59,9 +60,39 @@ class TrainingsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
-        //
+        if((Auth::user()->id != $user->id))
+            return redirect(route("home"));
+
+        // validate data
+        $validateData = $request->validate([
+            'model_id' => ['numeric', 'required', 'gt:0', 
+                Rule::exists('networks','id')->where(function($query) use ($user){
+                    $query->where("user_id", $user->id)
+                        ->where("is_compiled", 1);
+                    })],
+
+            'training_dataset' => ['numeric', 'required', 'gt:0', 
+                Rule::exists('datasets','id')->where(function($query) use ($user){
+                    $query->where("user_id", $user->id)
+                        ->where("is_train", 1)
+                        ->orWhere("is_generic", 1);
+                    })],
+                
+            'test_dataset' => ['numeric', 'required', 'gt:0', 'nullable',
+                Rule::exists('datasets','id')->where(function($query) use ($user){
+                    $query->where("user_id", $user->id)
+                        ->where("is_test", 1)
+                        ->orWhere("is_generic", 1);
+                    })],
+
+            'epochs' => ['numeric', 'between:1,10000', 'required'],
+            'batch_size' => ['numeric', 'between:1,10000', 'required'],
+            'validation_split' => ['numeric', 'between:0,0.99', 'required'],
+        ]);
+
+        return $validateData;
     }
 
     /**
