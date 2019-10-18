@@ -28,19 +28,55 @@
         <div class="col-md-1 align-self-center">Batch size</div>
         <div class="col-md-1 align-self-center">Validation split</div>
         <div class="col-md-1 align-self-center">Train status</div>
-        <div class="col-md-2 align-self-center">Last start</div>
+        <div class="col-md-2 align-self-center">Action</div>
     </div>
 
     @foreach ($trainings as $train)
+        @php
+            $model = App\Network::find($train->model_id);
+            $training_dataset = App\Dataset::find($train->dataset_id_training);
+            $test_dataset = App\Dataset::find($train->dataset_id_test);
+        @endphp
+
         <div class="row border border-secondary text-center">
-            <div class="col-md-2 align-self-center">{{ Network::where("id", $train->model_id)->get()->model_name }}</div>
-            <div class="col-md-2 align-self-center">{{ Dataset::where("id", $train->dataset_id_training)->get()->data_name }}</div>
-            <div class="col-md-2 align-self-center">{{ Dataset::where("id", $train->dataset_id_test)->get()->data_name }}</div>
+            <div class="col-md-2 align-self-center">
+                <a href="{{route("networks.show", ['user' => $user, 'network' => $model])}}">
+                    {{ $model->model_name }}
+                </a>
+            </div>
+            <div class="col-md-2 align-self-center">
+                <a href="{{route("datasets.show", ['user' => $user, 'dataset' => $training_dataset])}}">    
+                    {{ $training_dataset->data_name }}
+                </a>
+            </div>
+            <div class="col-md-2 align-self-center">
+                @if ($test_dataset)
+                    <a href="{{route("networks.show", ['user' => $user, 'dataset' => $test_dataset])}}">
+                        {{ $test_dataset->data_name }}
+                    </a>
+                @else
+                    <span class="font-italic">Training not evaluated</span>
+                @endif
+                
+            </div>
             <div class="col-md-1 align-self-center">{{ $train->epochs }}</div>
             <div class="col-md-1 align-self-center">{{ $train->batch_size }}</div>
             <div class="col-md-1 align-self-center">{{ $train->validation_split }}</div>
-            <div class="col-md-1 align-self-center">{{ $train->training_status }}</div>
-            <div class="col-md-2 align-self-center">{{ $train->updated_at }}</div>
+            <div class="col-md-1 align-self-center">
+                @if (!$train->training_status)
+                    <span class="font-italic">Not in progress</span>
+                @elseif ($train->training_status < 0.99)
+                    <span class="font-italic">In progress</span>
+                @else
+                    <span class="font-italic">Completed</span>
+                @endif
+            </div>
+            <div class="col-md-2 align-self-center">
+                {{-- DETAILS BUTTON --}}
+                <a href="{{ route('trainings.show', ['user' => $user, 'training' => $train]) }}">
+                    <button class="btn btn-primary">Details</button>
+                </a>
+            </div>
 
             {{--
             <div class="col-md-3 align-self-center">

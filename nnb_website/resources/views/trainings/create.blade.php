@@ -15,7 +15,7 @@
 	<form method="POST" action="{{route("trainings.store", ['user' => $user])}}">
 		@csrf
 		<div class="container col-md-6">
-			<h2 class="mb-5 text-center">Start new training</h2>
+			<h2 class="mb-5 text-center">Make new training</h2>
 
 			{{-- Model selection --}}
             <div class="form-group row my-4"> 
@@ -100,7 +100,7 @@
 					@enderror
                 </div>
 				
-				{{-- Layers number --}}
+				{{-- Validation split field --}}
                 <div class="col-md-4 text-md-center">
                     <label for="validation_split" class="col-form-label align-self-center">{{ __('Validation split') }}</label><br>
                     <input id="validation_split" type="number" class="col-xl-8 form-control float-right @error('validation_split') is-invalid @enderror" name="validation_split" required value="0.0" step="0.01" min="0.0" max="0.99">
@@ -112,11 +112,38 @@
                 </div>
 			</div>
 		
+			{{-- Save best only --}}
+			<div class="form-check row mt-5 mb-4">
+				<div class="col text-center">
+					<div class="row">
+						<div class="col-10 offset-1">
+							<span class="font-weight-bold">During training, do you want to save the best model only?</span><br>
+							<span>NOTE: If you stop and then resume the training, it will resume from the last saved model (that could be a very old checkpoint)</span>
+						</div>
+					</div>
+					<div class="row my-2">
+						<div class="col-6 text-right pr-4">
+							<input class="form-check-input @error('save_best') is-invalid @enderror" type="radio" id="save_best_yes" name="save_best" value="1">
+							<label class="form-check-label" for="save_best_yes">Yes</label>
+						</div>
+						<div class="col-6 text-left pl-4">
+							<input class="form-check-input @error('save_best') is-invalid @enderror" type="radio" id="save_best_no" name="save_best" value="0" checked>
+							<label class="form-check-label" for="save_best_no">No</label>
+						</div>
+					</div>
+					@error('save_best')
+						<span class="invalid-feedback" role="alert">
+							<strong>{{ $message }}</strong>
+						</span>
+					@enderror
+				</div>
+			</div>
+
 			{{-- Submit button --}}
 			<div class="form-group row my-4">
 				<div class="col text-center">
 					<button type="submit" class="btn btn-primary">
-						{{ __('Start Training') }}
+						{{ __('Make Training') }}
 					</button>
 				</div>
 			</div>
