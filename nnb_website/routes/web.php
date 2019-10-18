@@ -38,3 +38,4 @@ Route::resource('/users/{user}/networks/{network}/compilations', 'CompilationsCo
 Route::resource('/users/{user}/trainings', 'TrainingsController', [
     'except' => ['edit']
 ]);
+Route::get('/users/{user}/trainings/{training}/start', 'TrainingsController@start')->name("trainings.start");

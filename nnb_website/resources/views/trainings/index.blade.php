@@ -61,7 +61,7 @@
             </div>
             <div class="col-md-1 align-self-center">{{ $train->epochs }}</div>
             <div class="col-md-1 align-self-center">{{ $train->batch_size }}</div>
-            <div class="col-md-1 align-self-center">{{ $train->validation_split }}</div>
+            <div class="col-md-1 align-self-center">{{ $train->validation_split*100 }}%</div>
             <div class="col-md-1 align-self-center">
                 @if (!$train->training_status)
                     <span class="font-italic">Not in progress</span>
