@@ -150,7 +150,7 @@ class TrainingsController extends Controller
         $dataset_training->update();
         $dataset_test->update();
 
-        return $training;
+        return redirect(route("trainings.show", compact("user", "training")));
     }
 
     /**
@@ -203,5 +203,12 @@ class TrainingsController extends Controller
     public function destroy(Training $training)
     {
         //
+    }
+
+    public function start(User $user, Training $training)
+    {
+
+        
+        return $training;
     }
 }

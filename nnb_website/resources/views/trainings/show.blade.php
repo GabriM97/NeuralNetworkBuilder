@@ -170,13 +170,13 @@
         </div>
 
         <div class="row my-5">
-            <div class="col-6 text-right">   {{-- EDIT BUTTON --}}         
-                <a href="{{ route('trainings.start', compact("user", "training", "network", "dataset_train", $dataset_test ? 'dataset_test' : NULL)) }}">
-                    <button class="btn btn-primary disabled" disabled>Edit</button>
+            <div class="col-6 text-right">   {{-- START BUTTON --}}         
+                <a href="{{ route('trainings.start', compact("user", "training")) }}">
+                    <button class="btn btn-warning">Start Training</button>
                 </a>
             </div>
             <div class="col-6 text-left">   {{-- DELETE BUTTON --}}
-                <form class="form-delete d-inline-block" method="POST" action="{{route('networks.destroy', compact("user", "network"))}}">
+                <form class="form-delete d-inline-block" method="POST" action="{{route('trainings.destroy', compact("user", "training"))}}">
                     @csrf
                     @method("DELETE")
                     <button class="btn btn-danger" type="submit">Delete</button>
