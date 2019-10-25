@@ -145,18 +145,6 @@ class TrainingsController extends Controller
         $training->filepath_epochs_log = "$training_path/epochs_log.txt";
         $training->update();
 
-        $model = Network::find($model_id);
-        $dataset_training = Dataset::find($train_data_id);
-        $dataset_test = Dataset::find($test_data_id);
-
-        $model->last_time_used = Carbon::now();
-        $dataset_training->last_time_used = Carbon::now();
-        $dataset_test->last_time_used = Carbon::now();
-        
-        $model->update();
-        $dataset_training->update();
-        $dataset_test->update();
-
         return redirect(route("trainings.show", compact("user", "training")));
     }
 
@@ -214,9 +202,15 @@ class TrainingsController extends Controller
 
     public function start(User $user, Training $training)
     {
-        $trainingJob = (new TrainingJob($training));
-        dispatch($trainingJob)->onQueue("low");
+        // $user = from_parameter
+        $network = Network::find($training->model_id);
+        $dataset_train = Dataset::find($training->dataset_id_training);
+        $dataset_test = Dataset::find($training->dataset_id_test);
 
-        return $training;
+        $trainingJob = (new TrainingJob($training, $user, $network, $dataset_train, $training->is_evaluated ? $dataset_test : NULL));
+        dispatch($trainingJob)
+            ->onQueue($user->getRank());
+
+        return redirect(route("trainings.show", compact("user", "training")));
     }
 }

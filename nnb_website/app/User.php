@@ -67,4 +67,11 @@ class User extends Authenticatable
         $tot_size = $tot_datasets_size + $tot_models_size;
         return $tot_size;
     }
+
+    public function getRank(){
+        if($this->rank == -1)   return "admin";
+        if($this->rank == 0)   return "base";
+        if($this->rank == 1)   return "advanced";
+        if($this->rank == 2)   return "professional";
+    }
 }
