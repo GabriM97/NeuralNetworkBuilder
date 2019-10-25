@@ -11,7 +11,7 @@ gnome-terminal --tab --command="npm run watch"  		#start watch (js and css files
 
 #gnome-terminal --tab --command="sudo pkill supervisord"
 gnome-terminal --tab --command="sudo supervisord -c /etc/supervisor/supervisord.conf"
-gnome-terminal --tab --command="sudo supervisorctl"
+gnome-terminal --tab --command="sleep 5 && sudo supervisorctl"
 
 cd /PATH/TO/REPO/NeuralNetworkBuilder/nnb_website
 clear
