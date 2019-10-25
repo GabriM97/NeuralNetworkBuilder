@@ -39,10 +39,10 @@
                                 <a class="nav-link" href="{{ route('home') }}">{{ __('Dashboard') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('networks.index', ["user" => Auth::user()]) }}">{{ __('Models') }}</a>
+                                    <a class="nav-link" href="{{ route('datasets.index', ["user" => Auth::user()]) }}">{{ __('Datasets') }}</a>
                             </li>
                             <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('datasets.index', ["user" => Auth::user()]) }}">{{ __('Datasets') }}</a>
+                                <a class="nav-link" href="{{ route('networks.index', ["user" => Auth::user()]) }}">{{ __('Models') }}</a>
                             </li>
                             <li class="nav-item">
                                     <a class="nav-link" href="{{ route('trainings.index', ["user" => Auth::user()]) }}">{{ __('Trainings') }}</a>

@@ -17,6 +17,20 @@
 		<div class="container col-md-6">
 			<h2 class="mb-5 text-center">Make new training</h2>
 
+			{{-- Description field --}}
+			<div class="form-group row my-4">
+				<label for="description" class="col-md-4 col-form-label align-self-center text-md-right">{{ __('Description') }}</label>
+				<div class="col-md-8">
+					<textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" placeholder="Insert training description">{{ old('description') }}</textarea>
+
+					@error('description')
+						<span class="invalid-feedback" role="alert">
+							<strong>{{ $message }}</strong>
+						</span>
+					@enderror
+				</div>
+			</div>
+			
 			{{-- Model selection --}}
             <div class="form-group row my-4"> 
                 <label for="model_id" class="col-md-4 col-form-label text-md-right">Model</label>

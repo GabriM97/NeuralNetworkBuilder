@@ -25,6 +25,22 @@
             <div class="col align-self-center text-center"> {{-- TRAINING DETAILS --}}
                 <h2 class="content-title mt-0 mb-2">Training details</h2>
             </div>
+            
+            <div class="w-100"></div> {{-- break to a new line --}}
+
+            <div class="col">
+                <div class="row my-3">
+                    <div class="col-3 offset-2 align-self-center text-right font-weight-bold">Description</div>
+                    <div class="col-5 align-self-center border text-left">
+                        @if($training->train_description)     {{-- description != NULL --}}
+                            {{$training->train_description}}
+                        @else
+                            <span class="font-italic">No description</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
             <div class="w-100"></div> {{-- break to a new line --}}
 
             <!-- Left column -->
@@ -47,7 +63,17 @@
             <div class="col-5">
                 <div class="row my-2">
                     <div class="col-5 align-self-center text-right font-weight-bold">Training status</div>
-                    <div class="col-7 align-self-center text-left">{{ $training->training_status*100 }} %</div>
+                    <div class="col-7 align-self-center text-left">
+                            @if ($training->status == 'started')
+                            <span class="text">In progress | {{$training->training_percentage*100}}%</span>
+                        @elseif ($training->status == 'paused')
+                            <span class="text">In Pause | {{$training->training_percentage*100}}%</span>
+                        @elseif ($training->status == 'stopped' && $training->training_percentage == 1)  {{-- training completed --}}
+                            <span class="font-italic">Completed</span>
+                        @else   {{-- stopped or error --}}
+                            <span class="font-italic">Not in progress</span>
+                        @endif  
+                    </div>
                 </div>
                 <div class="row my-2">
                     <div class="col-5 align-self-center text-right font-weight-bold">Save best only model</div>

@@ -34,13 +34,18 @@ class CreateTrainingsTable extends Migration
             // test dataset
             $table->unsignedBigInteger('dataset_id_test')->nullable();
             $table->foreign('dataset_id_test')
-            ->references('id')->on('datasets');
+                    ->references('id')->on('datasets');
                     
+            // training info
+            $table->string("train_description")->nullable();
             $table->boolean('is_evaluated');
             $table->integer('epochs');
             $table->integer('batch_size');
             $table->float('validation_split', 4, 2)->default(0);
-            $table->float('training_status', 2, 2)->default(0);     // percentage of training. A value between 0.0 and 1.0
+
+            // training status
+            $table->float('training_percentage', 2, 2)->default(0);     // A value between 0.0 and 1.0
+            $table->enum('status', ['stopped', 'paused', 'started', 'error'])->default('stopped');
 
             // info model checkpoints
             $table->string('checkpoint_filepath')->nullable();

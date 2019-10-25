@@ -6,11 +6,15 @@ use App\Training;
 use App\Network;
 use App\Dataset;
 use App\User;
-use Carbon\Carbon;
+use App\Jobs\TrainingJob;
+
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+//use Illuminate\Support\Facades\Bus;
+
+use Carbon\Carbon;
 use Exception;
 
 class TrainingsController extends Controller
@@ -98,6 +102,7 @@ class TrainingsController extends Controller
                             ]);
                     })],
 
+            'description' => ['max:255', 'string', 'nullable'],
             'epochs' => ['numeric', 'between:1,10000', 'required'],
             'batch_size' => ['numeric', 'between:1,10000', 'required'],
             'validation_split' => ['numeric', 'between:0,0.99', 'required'],
@@ -109,6 +114,7 @@ class TrainingsController extends Controller
         $model_id = $request->model_id;
         $train_data_id = $request->training_dataset;
         $test_data_id = $request->test_dataset;
+        $description = $request->description;
         $epochs = $request->epochs;
         $batch_size = $request->batch_size;
         $valid_split = $request->validation_split;
@@ -119,6 +125,7 @@ class TrainingsController extends Controller
             'model_id' => $model_id,
             'dataset_id_training' => $train_data_id,
             'dataset_id_test' => $test_data_id ? $test_data_id : NULL,
+            'train_description' => $description,
             'is_evaluated' => $test_data_id ? True : False,
             'epochs' => $epochs,
             'batch_size' => $batch_size,
@@ -207,8 +214,9 @@ class TrainingsController extends Controller
 
     public function start(User $user, Training $training)
     {
+        $trainingJob = (new TrainingJob($training));
+        dispatch($trainingJob)->onQueue("low");
 
-        
         return $training;
     }
 }

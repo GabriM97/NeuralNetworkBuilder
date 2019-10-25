@@ -63,12 +63,14 @@
             <div class="col-md-1 align-self-center">{{ $train->batch_size }}</div>
             <div class="col-md-1 align-self-center">{{ $train->validation_split*100 }}%</div>
             <div class="col-md-1 align-self-center">
-                @if (!$train->training_status)
-                    <span class="font-italic">Not in progress</span>
-                @elseif ($train->training_status < 0.99)
-                    <span class="font-italic">In progress</span>
-                @else
+                @if ($train->status == 'started')
+                    <span class="font-italic">In progress {{$train->training_percentage*100}}%</span>
+                @elseif ($train->status == 'paused')
+                    <span class="font-italic">In Pause {{$train->training_percentage*100}}%</span>
+                @elseif ($train->status == 'stopped' && $train->training_percentage == 1)  {{-- training completed --}}
                     <span class="font-italic">Completed</span>
+                @else   {{-- stopped or error --}}
+                    <span class="font-italic">Not in progress</span>
                 @endif
             </div>
             <div class="col-md-2 align-self-center">

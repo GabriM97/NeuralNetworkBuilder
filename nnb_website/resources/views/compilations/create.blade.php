@@ -68,7 +68,7 @@
 					<legend class="col-form-label col-sm-4 offset-2 text-sm-right align-self-center">Metrics list</legend>
 					<div class="col-sm-4 py-2">
 						<div class="form-check">
-							<input class="form-check-input @error('metrics_list') is-invalid @enderror" type="checkbox" name="metrics_list[]" id="accuracy" value="accuracy" {{($compile && $compile->metrics) ? "checked" : ""}}>
+							<input class="form-check-input @error('metrics_list') is-invalid @enderror" type="checkbox" name="metrics_list[]" id="accuracy" value="accuracy" {{(($compile && $compile->metrics) || (!$compile)) ? "checked" : ""}}>
 							<label class="form-check-label" for="accuracy">Accuracy</label>
 						</div>
 						
