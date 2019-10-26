@@ -56,5 +56,22 @@ class Network extends Model
 		} catch (\Throwable $th) {
 			throw $th;
 		}
-    }
+	}
+	
+	// EVALUATE THE MODEL
+	public function evaluateModel(Dataset $dataset){
+		//$metrics = $this->get_metrics_list();
+		$output_classes = $this->output_classes;
+
+		try {
+			$app_path = base_path();
+			//$process = new Process("python3 $app_path/resources/python/evaluate_model.py \"$dataset->local_path\" $output_classes");
+			//$process->mustRun();
+			
+			// UPDATE THE NEW ACCURACY OF THE MODEL
+
+		} catch (\Throwable $th) {
+			throw $th;
+		}
+	}
 }

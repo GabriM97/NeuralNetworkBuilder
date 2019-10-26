@@ -1,10 +1,11 @@
 import sys
 import pickle
 import json
-import pandas as pd   #for csv files
+import pandas as pd  # for csv files
 import numpy as np
 from keras.utils import to_categorical
 from keras.models import load_model
+
 
 def trainModel(model, x, y, num_epochs, batch_dim=32, verb=0, valid_split=0.0):
     print("\nStart training.\n")
@@ -21,10 +22,12 @@ def trainModel(model, x, y, num_epochs, batch_dim=32, verb=0, valid_split=0.0):
         print("Error training the model:", e)
         return -1
 
-#---------------------------------
+# ---------------------------------
+
+
 def saveModel(model):
     filename = "./python/saves/personal_model.h5"     # PHP SCRIPT
-    #filename = "./saves/personal_model.h5"            # CMD SRIPT
+    # filename = "./saves/personal_model.h5"            # CMD SRIPT
     try:
         model.save(filename)
         return 0
@@ -35,7 +38,7 @@ def saveModel(model):
 
 def importModel():
     filename = "./python/saves/personal_model.h5"     # PHP SCRIPT
-    #filename = "./saves/personal_model.h5"            # CMD SRIPT
+    # filename = "./saves/personal_model.h5"            # CMD SRIPT
     model = -1
     model = load_model(filename)
     if(model == -1):
@@ -43,54 +46,65 @@ def importModel():
 
     return model
 
-def loadLocalDataset(filename):
-    path = "./python/saves/" + filename     # PHP SCRIPT
-    #path = "./saves/" + filename            # CMD SRIPT
 
+def loadLocalDataset(filename):
     try:
-        if(filename.find(".pkl", -5) != -1):
-            with open(path, "rb") as inp:
+        if(filename.find(".pkl", -5) != -1 or filename.find(".pickle", -8) != -1):
+            with open(filename, "rb") as inp:
                 data = pickle.load(inp)
         elif(filename.find(".json", -6) != -1):
-            with open(path, "r") as inp:
+            with open(filename, "r") as inp:
                 data = json.load(inp)
         elif(filename.find(".csv", -5) != -1):
-            data = pd.read_csv(path)
+            data = pd.read_csv(filename)
             #print("\nLocal Dataset", filename, "loaded!")
             train_x = data["train_x"].tolist()
             train_y = data["train_y"].tolist()
             return train_x, train_y
 
         #print("\nLocal Dataset", filename, "loaded!")
-    except Exception as e:
-        print("\n", e, "Error trying to Load data from", filename)
-        return -1, -1
+    except Exception as err:
+        print("\nError trying to Load data from", filename)
+        raise err
 
     train_x = data["train_x"]
     train_y = data["train_y"]
     return train_x, train_y
 
+
 def train():
-    filename = sys.argv[1]
-    train_x, train_y = loadLocalDataset(filename)
-    model = importModel()
+    data_train_path = sys.argv[1]
     epochs = int(sys.argv[2])
     batch_size = int(sys.argv[3])
     valid_split = float(sys.argv[4])
     output_classes = int(sys.argv[5])
+    #checkpoint_path = sys.argv[6]
+    #save_best = int(sys.argv[7])
+    #epochs_log = sys.argv[8]
     verbose = 2
 
-    if(output_classes > 2):
-        train_y = to_categorical(train_y)
+    try:
+        path_prefix = "../../storage/app/"
 
-    model = trainModel(model, train_x, train_y, epochs, batch_size, verbose, valid_split)
-    if(model == -1):
-        exit = -1
-    else:
-        exit = saveModel(model)
+        if(output_classes > 2):
+            train_y = to_categorical(train_y)
 
-    print("exit_status:", exit)
+        train_x, train_y = loadLocalDataset(data_train_path)
+        model = importModel()
+        
+        model = trainModel(model, train_x, train_y, epochs,
+                        batch_size, verbose, valid_split)
+        if(model == -1):
+            exit = -1
+        else:
+            exit = saveModel(model)
+
+        print("exit_status:", exit)
+    except Exception as err:
+        print("\nCOULD NOT TRAIN THE MODEL - ERROR: " + str(err))
+        raise err
 
 # --- MAIN ---
+
 
 train()

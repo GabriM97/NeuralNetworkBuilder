@@ -65,8 +65,9 @@ def buildMethod():
     data_shape = (int(sys.argv[5]),)
     get_info = False
 
-    path_prefix = "../storage/app/"
     try:
+        path_prefix = "../storage/app/"
+        
         # ../storage/app/users/$hashed_user/models/model_xx
         neurons_per_layer, activ_functions = getLayersInfo(
             path_prefix + local_dir + "model_" + model_id)
@@ -83,9 +84,8 @@ def buildMethod():
         model.save(filename)
 
     except Exception as err:
-        print("ERROR: " + str(err))
-        raise Exception("COULD NOT BUILD THE MODEL.")
-
+        print("COULD NOT BUILD THE MODEL - ERROR: " + str(err))
+        raise err
 
 # --- MAIN ---
 

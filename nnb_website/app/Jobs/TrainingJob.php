@@ -62,63 +62,88 @@ class TrainingJob implements ShouldQueue
     public function handle()
     {
         try {
+            // check for errors
+            if($this->training->status == "error")  throw new Exception("Cannot start/resume: Training is on error status.", self::THROW_ONERROR);
+            if($this->training->status == "started") throw new Exception("Cannot start/resume: Training already started.", self::THROW_ALREADYSTARTED);
+
+            // Update "last_time_used"
             $this->model->last_time_used = Carbon::now();
-            $this->dataset_training->last_time_used = Carbon::now();
-            if($this->dataset_test)     $this->dataset_test->last_time_used = Carbon::now();
-            
             $this->model->update();
+
+            $this->dataset_training->last_time_used = Carbon::now();
             $this->dataset_training->update();
-            if($this->dataset_test)     $this->dataset_test->update();
 
-            if($this->training->status == "error")  throw new Exception("Cannot start/resume:", self::THROW_ONERROR);
-            if($this->training->status == "started") throw new Exception("Cannot start/resume:", self::THROW_ALREADYSTARTED);
-            
-            if($this->training->status == "stopped")
-                $this->training->training_percentage = 0;
-                
-            $this->training->status = "started";
-            $this->training->return_message = "Training started.";
-            $this->training->update();
-
-            /*$process = new Process("timeout 30 tail -f /home/gabri/Desktop/to-do.txt");
-            $process->mustRun();*/
-            for ($i=0; $i<10; $i++) { 
-                sleep(1);
-                $this->training->training_percentage += 0.1;
-                $this->training->update();
+            if($this->dataset_test){
+                $this->dataset_test->last_time_used = Carbon::now();
+                $this->dataset_test->update();
             }
             
+            // Check if it's a new start and set its percentage to 0%
+            if($this->training->status == "stopped")
+                $this->training->training_percentage = 0;
+            
+            // Set status and return message
+            $this->training->status = "started";
+            $this->training->return_message = "Training in progress...";
+            $this->training->update();
+
+            // Start the training
+            $this->training->startTraining($this->model, $this->dataset_training);
+
+            // Evaluate the model
+            if($this->training->is_evaluated)
+                $this->model->evaluateModel($this->dataset_test);
+
+
+            // Update status and return message
             $this->training->status = "stopped";
             $this->training->return_message = "Training successfully completed.";
             $this->training->update();
 
+            $this->model->is_trained = true;
+            // DO NOT FORGET TO SET THE ACCURACY (set accuracy after each epochs or at training stops?)
+
         } catch (\Throwable $th) {
-            throw $th;
+            $this->on_fail($th);
         }
     }
 
+
     /**
-     * The job failed to process.
+     * Handle job on fail.
      *
      * @param  Exception  $exception
      * @return void
      */
-    public function failed(Exception $exception)
+    public function on_fail(Exception $exception)
     {
+        // Training already started Exception
         if($exception->getCode() == self::THROW_ALREADYSTARTED){
-            $this->training->return_message = "$exception->getMessage() Training already started. If you want to start a new training, stop this or create a new one.";
+            $this->training->return_message = $exception->getMessage()." If you want to start a new training, stop this or create a new one.";
             $this->training->update();
-            return;
+            throw $exception;
         }
+
+        // Training on error status Exception
         if($exception->getCode() == self::THROW_ONERROR){
-            $this->training->return_message = "$exception->getMessage() Training is on error status. If you want you can create a new training.";
+            
+            // substr from "ERROR MESSAGE:" till end of string
+            if(strpos($this->training->return_message, "ERROR MESSAGE:"))
+                $old_err_msg = strstr($this->training->return_message, "ERROR MESSAGE:");
+            else
+                $old_err_msg = "\nERROR MESSAGE: ".$this->training->return_message;
+
+            $this->training->return_message = $exception->getMessage()." If you want you can create a new training. $old_err_msg";
             $this->training->update();
-            return;
+            throw $exception;
         }
+
+        // Other Exceptions
         if($exception->getCode() == self::THROW_DEFAULT){
-            $this->training->return_message = "$exception->getMessage()";
+            $this->training->return_message = $exception->getMessage();
+            $this->training->status = "error";
             $this->training->update();
-            return;
+            throw $exception;
         }
     }
 }

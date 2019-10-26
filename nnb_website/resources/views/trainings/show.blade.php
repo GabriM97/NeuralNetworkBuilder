@@ -20,8 +20,10 @@
         <div class="container text-center alert {{$msg_class}}" role="alert">{{$training->return_message}}</div>
         
         @php
-            $training->return_message = NULL;
-            $training->update();
+            if($training->status != 'started' && $training->status != 'error'){
+                $training->return_message = NULL;
+                $training->update();
+            }
         @endphp
 
     @endif
@@ -75,14 +77,16 @@
                     <div class="col-5 align-self-center text-right font-weight-bold">Training status</div>
                     <div class="col-7 align-self-center text-left">
                             @if ($training->status == 'started')
-                            <span class="text">In progress | {{$training->training_percentage*100}}%</span>
+                            <span class="text-primary font-weight-bold">In progress | {{$training->training_percentage*100}}%</span>
                         @elseif ($training->status == 'paused')
-                            <span class="text">In Pause | {{$training->training_percentage*100}}%</span>
+                            <span class="text-info font-weight-bold">In Pause | {{$training->training_percentage*100}}%</span>
                         @elseif ($training->status == 'stopped' && $training->training_percentage >= 1)  {{-- training completed --}}
-                            <span class="text">Completed | 100%</span>
-                        @else   {{-- stopped or error --}}
+                            <span class="text-success font-weight-bold">Completed | 100%</span>
+                        @elseif ($training->status == 'error')
+                            <span class="text-danger font-weight-bold">ERROR</span>
+                        @else
                             <span class="font-italic">Not in progress</span>
-                        @endif  
+                        @endif
                     </div>
                 </div>
                 <div class="row my-2">

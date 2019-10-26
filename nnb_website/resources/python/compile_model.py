@@ -40,8 +40,8 @@ def compile():
         model.save(filename)
 
     except Exception as err:
-        print("ERROR: " + str(err))
-        raise Exception("COULD NOT COMIPLE THE MODEL.")
+        print("COULD NOT COMIPLE THE MODEL - ERROR: " + str(err))
+        raise err
 
 # --- MAIN ---
 compile()
