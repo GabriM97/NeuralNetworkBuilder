@@ -71,7 +71,7 @@
                 </div>
                 <div class="col-md-1 align-self-center">{{$usr->models_number}}</div>
                 <div class="col-md-1 align-self-center">{{$usr->datasets_number}}</div>
-                <div class="col-md-1 align-self-center"> // </div>
+                <div class="col-md-1 align-self-center"> {{$usr->getTrainingNumbers()}} </div>
                 <div class="col-md-1 align-self-center pl-1 pr-1">{{$usr->last_signed_on}}</div>
                 <div class="col-md-2 align-self-center">
                     <a href="{{ route('users.show', ['user' => $usr]) }}">

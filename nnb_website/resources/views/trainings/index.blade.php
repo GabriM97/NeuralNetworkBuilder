@@ -40,22 +40,32 @@
 
         <div class="row border border-secondary text-center">
             <div class="col-md-2 align-self-center">
-                <a href="{{route("networks.show", ['user' => $user, 'network' => $model])}}">
-                    {{ $model->model_name }}
-                </a>
+                @if ($model)
+                    <a href="{{route("networks.show", ['user' => $user, 'network' => $model])}}">
+                        {{ $model->model_name }}
+                    </a>
+                @else
+                    <span class="font-weight-bold text-danger">MODEL NOT FOUND</span>
+                @endif
             </div>
             <div class="col-md-2 align-self-center">
-                <a href="{{route("datasets.show", ['user' => $user, 'dataset' => $training_dataset])}}">    
-                    {{ $training_dataset->data_name }}
-                </a>
+                @if ($training_dataset)
+                    <a href="{{route("datasets.show", ['user' => $user, 'dataset' => $training_dataset])}}">    
+                        {{ $training_dataset->data_name }}
+                    </a>
+                @else
+                    <span class="font-weight-bold text-danger">DATASET NOT FOUND</span>
+                @endif
             </div>
             <div class="col-md-2 align-self-center">
                 @if ($test_dataset)
-                    <a href="{{route("networks.show", ['user' => $user, 'dataset' => $test_dataset])}}">
+                    <a href="{{route("datasets.show", ['user' => $user, 'dataset' => $test_dataset])}}">
                         {{ $test_dataset->data_name }}
                     </a>
-                @else
+                @elseif (!$train->is_evaluated)
                     <span class="font-italic">Training not evaluated</span>
+                @else
+                    <span class="font-weight-bold text-danger">DATASET NOT FOUND</span>
                 @endif
                 
             </div>
@@ -67,8 +77,8 @@
                     <span class="font-italic">In progress {{$train->training_percentage*100}}%</span>
                 @elseif ($train->status == 'paused')
                     <span class="font-italic">In Pause {{$train->training_percentage*100}}%</span>
-                @elseif ($train->status == 'stopped' && $train->training_percentage == 1)  {{-- training completed --}}
-                    <span class="font-italic">Completed</span>
+                @elseif ($train->status == 'stopped' && $train->training_percentage >= 1)  {{-- training completed --}}
+                    <span class="font-italic">Completed 100%</span>
                 @else   {{-- stopped or error --}}
                     <span class="font-italic">Not in progress</span>
                 @endif

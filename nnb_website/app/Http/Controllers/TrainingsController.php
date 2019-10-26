@@ -195,9 +195,17 @@ class TrainingsController extends Controller
      * @param  \App\Training  $training
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Training $training)
+    public function destroy(User $user, Training $training)
     {
-        //
+        if(Auth::user()->id == $user->id || Auth::user()->rank == -1){
+            $training_folder = substr($training->filepath_epochs_log, 0, strrpos($training->filepath_epochs_log, "/"));
+            Storage::deleteDirectory($training_folder);
+
+            $training->delete();
+            return redirect(route("trainings.index", ["user" => $user])); 
+        }else{
+            return redirect(route("home"));
+        }
     }
 
     public function start(User $user, Training $training)

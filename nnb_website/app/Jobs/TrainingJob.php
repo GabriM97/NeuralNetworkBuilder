@@ -22,6 +22,10 @@ class TrainingJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    const THROW_DEFAULT = 0;
+    const THROW_ALREADYSTARTED = 1;
+    const THROW_ONERROR = 2;
+
     /**
      * Delete the job if its models no longer exist. 
      */
@@ -66,18 +70,26 @@ class TrainingJob implements ShouldQueue
             $this->dataset_training->update();
             if($this->dataset_test)     $this->dataset_test->update();
 
-            $this->training->status = "started";
-            $this->training->update();
+            if($this->training->status == "error")  throw new Exception("Cannot start/resume:", self::THROW_ONERROR);
+            if($this->training->status == "started") throw new Exception("Cannot start/resume:", self::THROW_ALREADYSTARTED);
             
+            if($this->training->status == "stopped")
+                $this->training->training_percentage = 0;
+                
+            $this->training->status = "started";
+            $this->training->return_message = "Training started.";
+            $this->training->update();
+
             /*$process = new Process("timeout 30 tail -f /home/gabri/Desktop/to-do.txt");
             $process->mustRun();*/
-            for ($i=0; $i < 11; $i++) { 
+            for ($i=0; $i<10; $i++) { 
                 sleep(1);
-                $this->training->training_percentage += 0.09;
+                $this->training->training_percentage += 0.1;
                 $this->training->update();
             }
             
             $this->training->status = "stopped";
+            $this->training->return_message = "Training successfully completed.";
             $this->training->update();
 
         } catch (\Throwable $th) {
@@ -93,9 +105,20 @@ class TrainingJob implements ShouldQueue
      */
     public function failed(Exception $exception)
     {
-        // Send user notification of failure, etc...
-        $this->training->train_description = $exception->getMessage();
-        $this->training->status = "error";
-        $this->training->update();
+        if($exception->getCode() == self::THROW_ALREADYSTARTED){
+            $this->training->return_message = "$exception->getMessage() Training already started. If you want to start a new training, stop this or create a new one.";
+            $this->training->update();
+            return;
+        }
+        if($exception->getCode() == self::THROW_ONERROR){
+            $this->training->return_message = "$exception->getMessage() Training is on error status. If you want you can create a new training.";
+            $this->training->update();
+            return;
+        }
+        if($exception->getCode() == self::THROW_DEFAULT){
+            $this->training->return_message = "$exception->getMessage()";
+            $this->training->update();
+            return;
+        }
     }
 }

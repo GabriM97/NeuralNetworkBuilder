@@ -5,7 +5,10 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+
 use App\Dataset;
+use App\Network;
+use App\Training;
 
 class User extends Authenticatable
 {
@@ -73,5 +76,9 @@ class User extends Authenticatable
         if($this->rank == 0)   return "base";
         if($this->rank == 1)   return "advanced";
         if($this->rank == 2)   return "professional";
+    }
+
+    public function getTrainingNumbers(){
+        return Training::where("user_id", $this->id)->count();
     }
 }

@@ -48,19 +48,23 @@
         @if ((Auth::user()->id == $user->id) || (Auth::user()->rank == -1))
             {{-- logged user can visualize its FULL details  --}}
 
-            <div class="row">
+            <div class="row my-2">
                 <div class="col-6 text-right text-break align-self-center font-weight-bold">Email</div>
                 <div class="col-6 align-self-center">{{ $user->email }} <span>{{ $user->email_verified_at ? "(Verified)" : "(Not verified)" }}</span></div>
             </div>
-            <div class="row">
+            <div class="row my-2">
+                <div class="col-6 text-right align-self-center font-weight-bold"><a href="{{route("datasets.index", compact("user"))}}">Datasets</a></div>
+                <div class="col-6 align-self-center">{{ $user->datasets_number }}</div>
+            </div>
+            <div class="row my-2">
                 <div class="col-6 text-right align-self-center font-weight-bold"><a href="{{route("networks.index", compact("user"))}}">Models</a></div>
                 <div class="col-6 align-self-center">{{ $user->models_number }}</div>
             </div>
-            <div class="row">
-            <div class="col-6 text-right align-self-center font-weight-bold"><a href="{{route("datasets.index", compact("user"))}}">Datasets</a></div>
-                <div class="col-6 align-self-center">{{ $user->datasets_number }}</div>
+            <div class="row my-2">
+                <div class="col-6 text-right align-self-center font-weight-bold"><a href="{{route("trainings.index", compact("user"))}}">Trainings</a></div>
+                <div class="col-6 align-self-center">{{ $user->getTrainingNumbers() }}</div>
             </div>
-            <div class="row">
+            <div class="row my-2">
                 <div class="col-6 text-right align-self-center font-weight-bold">Available space</div>
                 <div class="col-6 align-self-center"> 
                     @php
@@ -74,11 +78,11 @@
                     <span class="available-space-bar"></span>
                 </div>
             </div> 
-            <div class="row">
+            <div class="row my-2">
                 <div class="col-6 text-right align-self-center font-weight-bold">Last login</div>
                 <div class="col-6">{{ $user->last_signed_on }}</div>
             </div>
-            <div class="row">
+            <div class="row my-2">
                 <div class="col-6 text-right align-self-center font-weight-bold">Account created on</div>
                 <div class="col-6 align-self-center">{{ $user->created_at }}</div>
             </div>

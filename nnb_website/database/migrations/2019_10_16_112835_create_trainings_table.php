@@ -19,32 +19,37 @@ class CreateTrainingsTable extends Migration
             // user
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')
-                    ->references('id')->on('users');
+                    ->references('id')->on('users')
+                    ->onDelete('cascade');
 
             // model
-            $table->unsignedBigInteger('model_id');
+            $table->unsignedBigInteger('model_id')->nullable();
             $table->foreign('model_id')
-                    ->references('id')->on('networks');
+                    ->references('id')->on('networks')
+                    ->onDelete('set null');
 
             // training dataset
-            $table->unsignedBigInteger('dataset_id_training');
+            $table->unsignedBigInteger('dataset_id_training')->nullable();
             $table->foreign('dataset_id_training')
-                    ->references('id')->on('datasets');
+                    ->references('id')->on('datasets')
+                    ->onDelete('set null');
 
             // test dataset
             $table->unsignedBigInteger('dataset_id_test')->nullable();
             $table->foreign('dataset_id_test')
-                    ->references('id')->on('datasets');
+                    ->references('id')->on('datasets')
+                    ->onDelete('set null');
                     
             // training info
             $table->string("train_description")->nullable();
+            $table->string("return_message")->nullable()->default("Press the button below to start the training.");
             $table->boolean('is_evaluated');
             $table->integer('epochs');
             $table->integer('batch_size');
-            $table->float('validation_split', 4, 2)->default(0);
+            $table->float('validation_split', 3, 2)->default(0);    // A value between 0.0 and 1.0
 
             // training status
-            $table->float('training_percentage', 2, 2)->default(0);     // A value between 0.0 and 1.0
+            $table->float('training_percentage', 3, 2)->default(0);     // A value between 0.0 and 1.0
             $table->enum('status', ['stopped', 'paused', 'started', 'error'])->default('stopped');
 
             // info model checkpoints
