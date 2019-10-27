@@ -151,9 +151,19 @@
                     <div class="row my-2">
                         <div class="col-4 align-self-center text-right font-weight-bold">Is trained</div>
                         <div class="col-8 align-self-center text-left">
-                            {{ App\Network::find($network->id)->is_trained ? "Yes" : "No"}}
+                            {{ $network->is_trained ? "Yes" : "No" }}
                         </div>
                     </div>
+                    @if ($network->is_trained && $network->accuracy != NULL && $network->loss != NULL)
+                        <div class="row my-2">
+                            <div class="col-4 align-self-center text-right font-weight-bold">Accuracy</div>
+                            <div class="col-8 align-self-center text-left">{{$network->accuracy*100}}%</div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-4 align-self-center text-right font-weight-bold">Loss</div>
+                            <div class="col-8 align-self-center text-left">{{$network->loss*100}}%</div>
+                        </div>
+                    @endif
                 </div>
             @else
                 <div class="col my-2 font-weight-bold text-danger text-center">
@@ -240,7 +250,18 @@
         <div class="row my-5">
             <div class="col-6 text-right">   {{-- START BUTTON --}}         
                 <a href="{{ route('trainings.start', compact("user", "training")) }}">
-                    <button class="btn btn-warning" {{ (!$network || !$dataset_train || ($training->is_evaluated && !isset($dataset_test))) ? "disabled" : NULL}}>Start Training</button>
+                    @php
+                        if( !$network ||
+                            !$dataset_train ||
+                            ($training->is_evaluated && !isset($dataset_test)) ||
+                            ($training->status == 'error' || $training->status == 'started')
+                        )
+                            $btn_satatus = "disabled";
+                        else
+                            $btn_satatus = NULL;
+
+                    @endphp
+                    <button class="btn btn-warning" {{ $btn_satatus }}>Start Training</button>
                 </a>
             </div>
             <div class="col-6 text-left">   {{-- DELETE BUTTON --}}

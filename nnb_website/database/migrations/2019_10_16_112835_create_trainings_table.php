@@ -42,7 +42,7 @@ class CreateTrainingsTable extends Migration
                     
             // training info
             $table->string("train_description")->nullable();
-            $table->string("return_message")->nullable()->default("Press the button below to start the training.");
+            $table->mediumText("return_message")->nullable()->default("Press the button below to start the training.");
             $table->boolean('is_evaluated');
             $table->integer('epochs');
             $table->integer('batch_size');
@@ -51,6 +51,7 @@ class CreateTrainingsTable extends Migration
             // training status
             $table->float('training_percentage', 3, 2)->default(0);     // A value between 0.0 and 1.0
             $table->enum('status', ['stopped', 'paused', 'started', 'error'])->default('stopped');
+            $table->boolean('in_queue')->default(false);
 
             // info model checkpoints
             $table->string('checkpoint_filepath')->nullable();

@@ -68,7 +68,9 @@ class Network extends Model
 			//$process = new Process("python3 $app_path/resources/python/evaluate_model.py \"$dataset->local_path\" $output_classes");
 			//$process->mustRun();
 			
-			// UPDATE THE NEW ACCURACY OF THE MODEL
+			// UPDATE THE NEW ACCURACY AND LOSS OF THE MODEL
+			//$this->accuracy = $new_acc_val;
+			//$model->loss = 0.3;
 
 		} catch (\Throwable $th) {
 			throw $th;

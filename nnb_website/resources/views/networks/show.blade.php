@@ -70,10 +70,14 @@
 					<div class="col-7 align-self-center text-right font-weight-bold">Is compiled?</div>
 					<div class="col-5 align-self-center text-left"> @if ($network->is_compiled) Yes @else No @endif</div>
 				</div>
-                @if ($network->is_trained && $network->accuracy != NULL)
+                @if ($network->is_trained && $network->accuracy != NULL && $network->loss != NULL)
                     <div class="row my-2">
                         <div class="col-7 align-self-center text-right font-weight-bold">Accuracy</div>
-                        <div class="col-5 align-self-center text-left">{{$network->accuracy}}</div>
+                        <div class="col-5 align-self-center text-left">{{$network->accuracy*100}}%</div>
+                    </div>
+                    <div class="row my-2">
+                        <div class="col-7 align-self-center text-right font-weight-bold">Loss</div>
+                        <div class="col-5 align-self-center text-left">{{$network->loss*100}}%</div>
                     </div>
                 @endif
             </div>

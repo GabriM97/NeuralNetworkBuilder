@@ -218,7 +218,8 @@ class TrainingsController extends Controller
         $trainingJob = (new TrainingJob($training, $user, $network, $dataset_train, $training->is_evaluated ? $dataset_test : NULL));
         dispatch($trainingJob)
             ->onQueue($user->getRank());
-
+        $training->in_queue = true;
+        
         return redirect(route("trainings.show", compact("user", "training")));
     }
 }

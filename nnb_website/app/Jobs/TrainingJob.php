@@ -85,26 +85,25 @@ class TrainingJob implements ShouldQueue
             // Set status and return message
             $this->training->status = "started";
             $this->training->return_message = "Training in progress...";
+            $this->model->is_trained = false;
+            $this->model->update();
             $this->training->update();
 
             // Start the training
-            $this->training->startTraining($this->model, $this->dataset_training);
+            $this->training->startTraining($this->user, $this->model, $this->dataset_training);
 
             // Evaluate the model
             if($this->training->is_evaluated)
                 $this->model->evaluateModel($this->dataset_test);
 
-
             // Update status and return message
             $this->training->status = "stopped";
             $this->training->return_message = "Training successfully completed.";
+            $this->in_queue = false;
             $this->training->update();
 
-            $this->model->is_trained = true;
-            // DO NOT FORGET TO SET THE ACCURACY (set accuracy after each epochs or at training stops?)
-
-        } catch (\Throwable $th) {
-            $this->on_fail($th);
+        } catch (Exception $err) {
+            $this->on_fail($err);
         }
     }
 
@@ -117,23 +116,23 @@ class TrainingJob implements ShouldQueue
      */
     public function on_fail(Exception $exception)
     {
-        // Training already started Exception
+        // Training ALREADY STARTED Exception
         if($exception->getCode() == self::THROW_ALREADYSTARTED){
             $this->training->return_message = $exception->getMessage()." If you want to start a new training, stop this or create a new one.";
             $this->training->update();
             throw $exception;
         }
 
-        // Training on error status Exception
+        // Training ON ERROR status Exception
         if($exception->getCode() == self::THROW_ONERROR){
-            
-            // substr from "ERROR MESSAGE:" till end of string
+            // Read ERROR MESSAGE
             if(strpos($this->training->return_message, "ERROR MESSAGE:"))
                 $old_err_msg = strstr($this->training->return_message, "ERROR MESSAGE:");
             else
                 $old_err_msg = "\nERROR MESSAGE: ".$this->training->return_message;
 
             $this->training->return_message = $exception->getMessage()." If you want you can create a new training. $old_err_msg";
+            $this->training->in_queue = false;
             $this->training->update();
             throw $exception;
         }
@@ -142,6 +141,7 @@ class TrainingJob implements ShouldQueue
         if($exception->getCode() == self::THROW_DEFAULT){
             $this->training->return_message = $exception->getMessage();
             $this->training->status = "error";
+            $this->training->in_queue = false;
             $this->training->update();
             throw $exception;
         }

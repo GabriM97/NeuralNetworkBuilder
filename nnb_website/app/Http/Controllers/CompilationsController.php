@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Compilation;
-use App\Network;
 use App\User;
+use App\Network;
+use App\Compilation;
+use App\Training;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,7 +41,6 @@ class CompilationsController extends Controller
     {
         if((Auth::user()->id != $user->id) || $network->user_id != Auth::user()->id)
             return redirect(route("home"));
-
         
         // validate data
         $validateData = $request->validate([
@@ -75,6 +76,22 @@ class CompilationsController extends Controller
             return $th->getMessage();       //return to networks.index with error message "could not build the model: $th->getMessage()"
         }
 
+        // Reset params
+        $network->is_trained = false;
+        $network->accuracy = NULL;
+        $network->loss = NULL;
+        $trainings = Training::where([
+                ["model_id", $network->id],
+                ["status", "<>", "error"]
+            ])->get();
+        foreach ($trainings as $train) {
+            $train->status = "stopped";
+            $train->return_message = "New Model compilation. Start now your training!";
+            $train->training_percentage = 0;
+            $train->update();
+        }
+
+        // Update user available_space
         $size_diff = $new_model_size - $network->file_size;
         $network->file_size = $new_model_size;
         if($user->available_space < $size_diff)
@@ -82,8 +99,8 @@ class CompilationsController extends Controller
         else
             $user->available_space -= $size_diff;
 
-        $user->save();
-        $network->save();
+        $user->update();
+        $network->update();
         return redirect(route('networks.show', compact("user", "network")));
     }
 }

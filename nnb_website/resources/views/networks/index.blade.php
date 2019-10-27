@@ -39,7 +39,7 @@
             <div class="col-md-1 align-self-center">{{$model->output_classes}}</div>
             <div class="col-md-1 align-self-center">
                 @if($model->is_trained && $model->accuracy != NULL) 
-                    {{$model->accuracy}}
+                    {{$model->accuracy*100}}%
                 @else
                     <span class="font-italic">Not trained yet</span>
                 @endif

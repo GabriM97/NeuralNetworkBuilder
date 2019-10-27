@@ -26,6 +26,7 @@ class CreateNetworksTable extends Migration
             $table->boolean('is_compiled')->default(false);
             $table->boolean('is_trained')->default(false);
             $table->float('accuracy', 4, 2)->nullable();
+            $table->float('loss', 4, 2)->nullable();
             $table->string('model_name')->default("Model");
             $table->string('model_description')->nullable();
             $table->unsignedInteger('file_size');	//	in Bytes

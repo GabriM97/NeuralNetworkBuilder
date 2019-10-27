@@ -8,7 +8,7 @@ from keras.models import load_model
 
 
 def trainModel(model, x, y, num_epochs, batch_dim=32, verb=0, valid_split=0.0):
-    print("\nStart training.\n")
+    #print("\n***** Start training *****\n")
 
     try:
         model.fit(x, y,
@@ -16,36 +16,14 @@ def trainModel(model, x, y, num_epochs, batch_dim=32, verb=0, valid_split=0.0):
                   batch_size=batch_dim,
                   verbose=verb,
                   validation_split=valid_split)
-        print("\nTraining completed.")
+                  
+        #print("\n***** Training completed *****")
         return model
-    except Exception as e:
-        print("Error training the model:", e)
-        return -1
+
+    except Exception as err:
+        raise err
 
 # ---------------------------------
-
-
-def saveModel(model):
-    filename = "./python/saves/personal_model.h5"     # PHP SCRIPT
-    # filename = "./saves/personal_model.h5"            # CMD SRIPT
-    try:
-        model.save(filename)
-        return 0
-    except Exception as e:
-        print("Error saving the model:", e)
-        return -1
-
-
-def importModel():
-    filename = "./python/saves/personal_model.h5"     # PHP SCRIPT
-    # filename = "./saves/personal_model.h5"            # CMD SRIPT
-    model = -1
-    model = load_model(filename)
-    if(model == -1):
-        print("Error importing the model.")
-
-    return model
-
 
 def loadLocalDataset(filename):
     try:
@@ -73,38 +51,41 @@ def loadLocalDataset(filename):
 
 
 def train():
-    data_train_path = sys.argv[1]
-    epochs = int(sys.argv[2])
-    batch_size = int(sys.argv[3])
-    valid_split = float(sys.argv[4])
-    output_classes = int(sys.argv[5])
-    #checkpoint_path = sys.argv[6]
-    #save_best = int(sys.argv[7])
-    #epochs_log = sys.argv[8]
+    app_path = sys.argv[1]
+    data_train_path = sys.argv[2]
+    model_path = sys.argv[3]
+    epochs = int(sys.argv[4])
+    batch_size = int(sys.argv[5])
+    valid_split = float(sys.argv[6])
+    output_classes = int(sys.argv[7])
+    checkpoint_path = sys.argv[8]
+    save_best_model = int(sys.argv[9])
+    epochs_log = sys.argv[10]
     verbose = 2
 
     try:
-        path_prefix = "../../storage/app/"
+        path_prefix = app_path + "/storage/app/"
 
         if(output_classes > 2):
             train_y = to_categorical(train_y)
 
-        train_x, train_y = loadLocalDataset(data_train_path)
-        model = importModel()
-        
+        # Get Training Dataset
+        train_x, train_y = loadLocalDataset(path_prefix + "public/" + data_train_path)
+
+        # Load the model to train
+        model = load_model(path_prefix + "public/" + model_path)
+
+        # Start training
         model = trainModel(model, train_x, train_y, epochs,
                         batch_size, verbose, valid_split)
-        if(model == -1):
-            exit = -1
-        else:
-            exit = saveModel(model)
 
-        print("exit_status:", exit)
+        # Save trained model
+        model.save(path_prefix + "public/" + model_path)
+
     except Exception as err:
         print("\nCOULD NOT TRAIN THE MODEL - ERROR: " + str(err))
         raise err
 
 # --- MAIN ---
-
 
 train()
