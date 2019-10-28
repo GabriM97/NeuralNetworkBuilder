@@ -1,9 +1,8 @@
 $(document).ready(function(){
-    if(!$('input[name="_method"]').length)      //if not edit-training
-        disableDataset($("#model_id"));
+        disableDataset($("#model_id"), true);
 
     $("#model_id").change(function(){
-        disableDataset(this);
+        disableDataset(this, false);
         
         //if not exists dataset training selected option
         if(!$("#training_dataset option:selected").length){
@@ -19,7 +18,7 @@ $(document).ready(function(){
     });
 });
 
-function disableDataset(model){
+function disableDataset(model, first_run){
     var selectedModel = $(model).children("option:selected");
     x = $(selectedModel).attr("x_inp");
     y = $(selectedModel).attr("y_out");
@@ -31,9 +30,20 @@ function disableDataset(model){
         if(x_data != x || y_data != y){
             $(this).attr('disabled', true);
             $(this).attr('selected', false);
-        }else{
-            $(this).attr('disabled', false);
-            $(this).attr('selected', true);
+        }else{  // x_data == x && y_data == y
+            if(!$('input[name="_method"]').length){     // new training
+                $("#training_dataset").children("option:selected").attr('selected', false); //remove previously selected option
+                $(this).attr('disabled', false);
+                $(this).attr('selected', true);
+            }else{      // edit training
+                if(first_run)
+                    $(this).attr('disabled', false);
+                else{   // model on change
+                    $("#training_dataset").children("option:selected").attr('selected', false); //remove previously selected option
+                    $(this).attr('disabled', false);
+                    $(this).attr('selected', true);
+                }
+            }
         }
     });    
 
@@ -46,9 +56,20 @@ function disableDataset(model){
         if(x_data != x || y_data != y){
             $(this).attr('disabled', true);
             $(this).attr('selected', false);
-        }else{
-            $(this).attr('disabled', false);
-            $(this).attr('selected', true);
+        }else{  // x_data == x && y_data == y
+            if(!$('input[name="_method"]').length){     // new training
+                $("#test_dataset").children("option:selected").attr('selected', false); //remove previously selected option
+                $(this).attr('disabled', false);
+                $(this).attr('selected', true);
+            }else{      // edit training
+                if(first_run)
+                    $(this).attr('disabled', false);
+                else{   // model on change
+                    $("#test_dataset").children("option:selected").attr('selected', false); //remove previously selected option
+                    $(this).attr('disabled', false);
+                    $(this).attr('selected', true);
+                }
+            }
         }
     });
 }
