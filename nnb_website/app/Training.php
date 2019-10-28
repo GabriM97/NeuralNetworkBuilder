@@ -80,7 +80,7 @@ class Training extends Model
                         }
 
                         // validation info
-                        if($this->valid_split){
+                        if($this->validation_split){
                             // val_accuracy
                             if(isset($epochs_info[3])){
                                 $current_val_accuracy = $epochs_info[3];

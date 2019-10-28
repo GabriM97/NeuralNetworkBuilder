@@ -43,7 +43,8 @@
                         if( !$network ||
                             !$dataset_train ||
                             ($training->is_evaluated && !isset($dataset_test)) ||
-                            ($training->status == 'error' || $training->status == 'started')
+                            ($training->status == 'error' || $training->status == 'started') ||
+                            $training->in_queue
                         )
                             $btn_satatus = "disabled";
                         else
@@ -291,7 +292,7 @@
             <div class="col-6 text-right">   {{-- EDIT BUTTON --}}         
                 <a href="{{ route('trainings.edit', compact("user", "training")) }}">
                     @php
-                        if($training->status == 'started')
+                        if($training->in_queue)
                             $btn_satatus = "disabled";
                         else
                             $btn_satatus = NULL;
