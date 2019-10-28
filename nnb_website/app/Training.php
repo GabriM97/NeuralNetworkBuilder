@@ -42,6 +42,8 @@ class Training extends Model
             $model_size_before = Storage::size("public/$model_path");
 
             $process = new Process("python3 $app_path/resources/python/train_model.py \"$app_path\" \"$data_train_path\" \"$model_path\" $epochs $batch_size $valid_split $output_classes \"$checkpoint_path\" $save_best \"$epochs_log_path\"");
+            $process->setTimeout(86400);    // 24 hours
+            $process->setIdleTimeout(600);  // 10 mins (time since the last output)
             $process->mustRun(
                 function ($type, $buffer) use ($user, $model) {
                     if (Process::ERR === $type) {
@@ -76,6 +78,26 @@ class Training extends Model
                             $model->update();
                             print_r("Loss: $current_loss".PHP_EOL);
                         }
+
+                        // validation info
+                        if($this->valid_split){
+                            // val_accuracy
+                            if(isset($epochs_info[3])){
+                                $current_val_accuracy = $epochs_info[3];
+                                $model->accuracy = round($current_val_accuracy, 2);
+                                $model->update();
+                                print_r("Val_accuracy: $current_val_accuracy".PHP_EOL);
+                            }
+
+                            // val_loss
+                            if(isset($epochs_info[4])){
+                                $current_val_loss = $epochs_info[4];
+                                $model->loss = round($current_val_loss, 2);
+                                $model->update();
+                                print_r("Val_loss: $current_val_loss".PHP_EOL);
+                            }
+                        }
+
                     }
                 }
             );

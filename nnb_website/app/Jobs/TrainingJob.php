@@ -30,7 +30,7 @@ class TrainingJob implements ShouldQueue
      * Delete the job if its models no longer exist. 
      */
     public $deleteWhenMissingModels = true;
-    public $timeout = 86400; // 24 hours
+    public $timeout = 86390; // almost 24 hours
 
     protected $training;
     protected $user;
@@ -43,16 +43,14 @@ class TrainingJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Training $training, User $user, Network $network, Dataset $dataset_train, Dataset $dataset_test)
+    public function __construct(Training $training, User $user, Network $network, Dataset $dataset_train, Dataset $dataset_test = NULL)
     {
         $this->training = $training;
         $this->user = $user;
         $this->model = $network;
         $this->dataset_training = $dataset_train;
-        if(isset($dataset_test))
+        if($dataset_test)
             $this->dataset_test = $dataset_test;
-        else 
-            $this->dataset_test = NULL;
     }
 
     /**
@@ -62,6 +60,7 @@ class TrainingJob implements ShouldQueue
      */
     public function handle()
     {
+        
         try {
             // check for errors
             if($this->training->status == "error")  throw new Exception("Cannot start/resume: Training is on error status.", self::THROW_ONERROR);

@@ -36,9 +36,9 @@ function getData(updateDataUrl) {
 function setData(data){
     $("#in_queue").attr("value", data["in_queue"]);
     $("#train_status").text(getStatus(data["status"]));
-    $("#train_perc").text(data["train_perc"]*100)
-    $("#acc_val").text(data["accuracy"]*100);
-    $("#loss_val").text(data["loss"]*100);
+    $("#train_perc").text(Math.round(data["train_perc"]*100))
+    $("#acc_val").text(Math.round(data["accuracy"]*100));
+    $("#loss_val").text(Math.round(data["loss"]*100));
 }
 
 function getStatus(status) {
