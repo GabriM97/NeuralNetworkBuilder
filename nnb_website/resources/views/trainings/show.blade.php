@@ -37,22 +37,58 @@
                 <h2 class="content-title mt-0 mb-2">Training details</h2>
             </div>
             
-            <div class="col text-left mb-3">   {{-- START BUTTON --}}         
-                <a href="{{ route('trainings.start', compact("user", "training")) }}">
+            <div class="col-1 text-left mb-3">   {{-- START/STOP BUTTON --}}
+                @php
+                    if($training->status == "started" || $training->status == "paused"){
+                        $action = route('trainings.stop', compact("user", "training"));
+                        $method = "stop";
+                    }else{
+                        $action = route('trainings.start', compact("user", "training"));
+                        $method = "start";
+                    }
+                @endphp    
+                <form method="POST" action="{{ $action }}">
+                    @csrf
+                    <input type="hidden" name="_type" value="{{ $method }}">
                     @php
-                        if( !$network ||
-                            !$dataset_train ||
-                            ($training->is_evaluated && !isset($dataset_test)) ||
-                            ($training->status == 'error' || $training->status == 'started') ||
-                            $training->in_queue
-                        )
+                        $btn_satatus = NULL;
+
+                        if($training->status == "stopped" && 
+                            ($training->in_queue || !$network || !$dataset_train || 
+                                ($training->is_evaluated && !isset($dataset_test)))
+                        ){
+                            $btn_satatus = "disabled";
+                        }
+                        else
+                            if($training->status == "paused" || $training->status == "error")
+                                $btn_satatus = "disabled";
+                    @endphp
+                    <button class="btn btn-warning" {{ $btn_satatus }}>{{ ucfirst($method) }}</button>
+                </form>
+            </div>
+
+            <div class="col text-left mb-3">   {{-- PAUSE/RESUME BUTTON --}}    
+                @php
+                    if($training->status == "paused"){
+                        $action = route('trainings.resume', compact("user", "training"));
+                        $method = "resume";
+                    }else{
+                        $action = route('trainings.pause', compact("user", "training"));
+                        $method = "pause";
+                    }
+                @endphp
+                <form method="POST" action="{{ $action }}">
+                    @csrf
+                    <input type="hidden" name="_type" value="{{ $method }}">
+                    @php
+                        if($training->status != 'paused' && $training->status != 'started')
                             $btn_satatus = "disabled";
                         else
                             $btn_satatus = NULL;
 
                     @endphp
-                    <button class="btn btn-warning" {{ $btn_satatus }}>Start</button>
-                </a>
+                    <button class="btn btn-info {{ ($training->status != "started" && $training->status != "paused") ? "d-none" : NULL }}" {{ $btn_satatus }}>{{ ucfirst($method) }}</button>
+                </form>
             </div>
             
             <div class="w-100"></div> {{-- break to a new line --}}
@@ -101,30 +137,30 @@
                     <div class="col-7 align-self-center text-left font-weight-bold">
                         @if ($training->status == 'started')
                             <span class="text-primary">
-                                <span id="train_status">In Progress</span> | 
+                            <span id="train_status" value="{{$training->status}}">In Progress</span> | 
                                 <span id="train_perc">{{$training->training_percentage*100}}</span>%
                             </span>
 
                         @elseif ($training->status == 'paused')
                             <span class="text-info">
-                                <span id="train_status">In Pause</span> | 
+                                <span id="train_status" value="{{$training->status}}">In Pause</span> | 
                                 <span id="train_perc">{{$training->training_percentage*100}}</span>%
                             </span>
 
                         @elseif ($training->status == 'stopped' && $training->training_percentage >= 1)  {{-- training completed --}}
                             <span class="text-success">
-                                <span id="train_status">Completed</span> | 
+                                <span id="train_status" value="{{$training->status}}">Completed</span> | 
                                 <span id="train_perc">{{$training->training_percentage*100}}</span>%
                             </span>
                         
                         @elseif ($training->status == 'error')
-                            <span class="text-danger">
+                            <span class="text-danger" value="{{$training->status}}">
                                 <span id="train_status">ERROR</span> 
                             </span>
                         
                         @else
                             <span class="text-secondary">
-                                <span id="train_status">Not in progress</span> | 
+                                <span id="train_status" value="{{$training->status}}">Not in progress</span> | 
                                 <span id="train_perc">{{$training->training_percentage*100}}</span>%
                             </span>
                         @endif
@@ -151,7 +187,11 @@
                 <div class="col-4 offset-2">
                     <div class="row my-2">
                         <div class="col-4 align-self-center text-right font-weight-bold">Title</div>
-                        <div class="col-8 align-self-center text-left">{{ $network->model_name }}</div>
+                        <div class="col-8 align-self-center text-left">
+                            <a href="{{route("networks.show", compact("user", "network"))}}">
+                                {{ $network->model_name }}
+                            </a>
+                        </div>
                     </div>
                     <div class="row my-2">
                         <div class="col-4 align-self-center text-right font-weight-bold">Description</div>
@@ -228,7 +268,11 @@
                 @if ($dataset_train)
                     <div class="row my-2">
                         <div class="col-4 align-self-center text-right font-weight-bold">Title</div>
-                        <div class="col-8 align-self-center text-left">{{ $dataset_train->data_name }}</div>
+                        <div class="col-8 align-self-center text-left">
+                            <a href="{{route("datasets.show", ['user' => $user, 'dataset' => $dataset_train])}}">      
+                                {{ $dataset_train->data_name }}
+                            </a>
+                        </div>
                     </div>
                     <div class="row my-2">
                         <div class="col-4 align-self-center text-right font-weight-bold">Description</div>
@@ -260,7 +304,11 @@
                 @if (isset($dataset_test))
                     <div class="row my-2">
                         <div class="col-4 align-self-center text-right font-weight-bold">Title</div>
-                        <div class="col-8 align-self-center text-left">{{ $dataset_test->data_name }}</div>
+                        <div class="col-8 align-self-center text-left">
+                            <a href="{{route("datasets.show", ['user' => $user, 'dataset' => $dataset_test])}}">
+                                {{ $dataset_test->data_name }}
+                            </a>
+                        </div>
                     </div>
                     <div class="row my-2">
                         <div class="col-4 align-self-center text-right font-weight-bold">Description</div>
@@ -304,7 +352,7 @@
                 <form class="form-delete d-inline-block" method="POST" action="{{route('trainings.destroy', compact("user", "training"))}}">
                     @csrf
                     @method("DELETE")
-                    <button class="btn btn-danger" type="submit">Delete</button>
+                    <button class="btn btn-danger" type="submit" {{ ($training->in_queue) ? "disabled" : NULL }}>Delete</button>
                 </form>
             </div>
         </div>
