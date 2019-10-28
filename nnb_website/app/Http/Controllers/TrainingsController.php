@@ -9,10 +9,11 @@ use App\User;
 use App\Jobs\TrainingJob;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\File;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 //use Illuminate\Support\Facades\Bus;
 
 use Carbon\Carbon;
@@ -303,9 +304,43 @@ class TrainingsController extends Controller
         }
     }
 
-    public function start(User $user, Training $training)
+    /**
+     * Send training data to fetch() js request.
+     *
+     * @param  Illuminate\Http\Request $request, \App\User $user, \App\Training  $training
+     * @return \Illuminate\Http\Response
+     */
+    public function getTrainingInfo(Request $request, User $user, Training $training)
     {
-        if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $training->status == 'started' || $training->status == 'error')
+        if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $request->_type != 'update_data')
+            return redirect(route('trainings.index', ['user' => Auth::user()]));
+
+        // Get training model
+        $model = Network::find($training->model_id);
+
+        // build response with updated values
+        $response = array(
+            "return_message" => $training->return_message,
+            "in_queue" => $training->in_queue,
+            "status" => $training->status,
+            "train_perc" => $training->training_percentage,
+            /* "model_is_trained" => $model->is_trained, */
+            "accuracy" => $model->accuracy,
+            "loss" => $model->loss
+        );
+
+        return $response;
+    }
+
+    /**
+     * Start the specified training.
+     *
+     * @param  \App\User $user, \App\Training  $training
+     * @return \Illuminate\Http\Response
+     */
+    public function start(Request $request, User $user, Training $training)
+    {
+        if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $training->status == 'started' || $training->status == 'error' || $request->_type != 'start')
             return redirect(route('trainings.show', compact("user", "training")));
 
         // $user = from_parameter
@@ -328,26 +363,59 @@ class TrainingsController extends Controller
 
         return redirect(route("trainings.show", compact("user", "training")));
     }
-
-    public function getTrainingInfo(Request $request, User $user, Training $training)
+    
+    /**
+     * Pause the specified training.
+     *
+     * @param  \App\User $user, \App\Training  $training
+     * @return \Illuminate\Http\Response
+     */
+    public function pause(Request $request, User $user, Training $training)
     {
-        if((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1))
-            return redirect(route('trainings.index', ['user' => Auth::user()]));
+        if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $training->status != 'started' || $request->_type != 'pause')
+            return redirect(route('trainings.show', compact("user", "training")));
 
-        // Get training model
-        $model = Network::find($training->model_id);
+        try {
+            $training_pid = $training->process_pid;
+            if(!posix_kill($training_pid, SIGTERM))
+                throw new Exception("Error sending Pause signal.");
 
-        // build response with updated values
-        $response = array(
-            "return_message" => $training->return_message,
-            "in_queue" => $training->in_queue,
-            "status" => $training->status,
-            "train_perc" => $training->training_percentage,
-            /* "model_is_trained" => $model->is_trained, */
-            "accuracy" => $model->accuracy,
-            "loss" => $model->loss
-        );
+        } catch (Exception $err) {
+            $training->return_message = $err->getMessage()." Could not pause the training.";
+            $training->update();
+            //throw $err;
+        }
+        return redirect(route("trainings.show", compact("user", "training")));
+    }
 
-        return $response;
+    /**
+     * Stop the specified training.
+     *
+     * @param  \App\User $user, \App\Training  $training
+     * @return \Illuminate\Http\Response
+     */
+    public function stop(Request $request, User $user, Training $training)
+    {
+        if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $request->_type != 'stop' || ($training->status != 'started' && $training->status != 'paused'))
+            return redirect(route('trainings.show', compact("user", "training")));
+            
+        if($training->status == 'started'){
+            try {
+                $training_pid = $training->process_pid;
+                if(!posix_kill($training_pid, SIGKILL))
+                    throw new Exception("Error sending Pause signal.");
+
+            } catch (Exception $err) {
+                $training->return_message = $err->getMessage()." Could not stop the training.";
+                $training->update();
+            }
+        }else
+            if($training->status == 'paused'){
+                $training->status = "stopped";
+                $training->return_message = "Training stopped sucesfully.";
+                $training->update();
+            }
+
+        return redirect(route("trainings.show", compact("user", "training")));
     }
 }

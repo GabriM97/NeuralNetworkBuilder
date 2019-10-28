@@ -24,7 +24,7 @@
         <div class="container text-center alert {{$msg_class}}" role="alert">{{$training->return_message}}</div>
         
         @php
-            if($training->status != 'started' && $training->status != 'error'){
+            if($training->status != 'started' && $training->status != 'error' && $training->status != 'paused'){
                 $training->return_message = NULL;
                 $training->update();
             }
@@ -60,7 +60,7 @@
                             $btn_satatus = "disabled";
                         }
                         else
-                            if($training->status == "paused" || $training->status == "error")
+                            if($training->status == "error")
                                 $btn_satatus = "disabled";
                     @endphp
                     <button class="btn btn-warning" {{ $btn_satatus }}>{{ ucfirst($method) }}</button>

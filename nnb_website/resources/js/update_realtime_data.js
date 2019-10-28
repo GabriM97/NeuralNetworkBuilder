@@ -17,7 +17,10 @@ function getData(updateDataUrl) {
             'Content-Type': 'application/json',  // sent request
             'Accept':       'application/json'   // expected data sent back
           },
-        body: JSON.stringify({_token: csrf_token,})
+        body: JSON.stringify({
+            _token: csrf_token,
+            _type: 'update_data',
+        })
     })
     .then((res) => res.json())
     .then((data) => setData(data))

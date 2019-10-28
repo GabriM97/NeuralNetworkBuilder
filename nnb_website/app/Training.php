@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Exception\ProcessSignaledException;
 use Symfony\Component\Process\Process;
 
 class Training extends Model
@@ -20,6 +21,9 @@ class Training extends Model
         'user_id', 'model_id', 'dataset_id_training', 'dataset_id_test', 'is_evaluated', 'train_description', 'epochs', 'batch_size', 'validation_split',
         'checkpoint_filepath', 'save_best_only', 'filepath_epochs_log',
     ];
+
+    const THROW_SETPAUSE = 3;
+    const THROW_STOPPROCESS = 4;
 
     // Start training function
     public function startTraining(User $user, Network $model, Dataset $dataset_training){
@@ -45,12 +49,14 @@ class Training extends Model
             $process->setTimeout(86400);    // 24 hours
             $process->setIdleTimeout(600);  // 10 mins (time since the last output)
             $process->mustRun(
-                function ($type, $buffer) use ($user, $model) {
+                function ($type, $buffer) use ($user, $model, $process) {
                     if (Process::ERR === $type) {
                         echo '--- ERR --- > '.$buffer;
                     } else {
-                        // Print user and training info
-                        echo(PHP_EOL."User $user->id: $user->username | Training_id: $this->id".PHP_EOL);   // PHP_EOL = \n
+                        // Print pid, training and user info
+                        $process_pid = $process->getPid();
+                        $this->process_pid = $process_pid;
+                        echo(PHP_EOL."PID: $process_pid - Training_id: $this->id | User $user->id: $user->username".PHP_EOL);   // PHP_EOL = \n
 
                         // Get epoch
                         $epochs_info = $this->getEpochInfo($buffer);
@@ -59,7 +65,6 @@ class Training extends Model
                         if(isset($epochs_info[0])){
                             $current_epoch = $epochs_info[0]+1;
                             $this->training_percentage = round($current_epoch/$this->epochs, 2);
-                            $this->update();
                             print_r("Epochs: $current_epoch/$this->epochs".PHP_EOL);
                         }
 
@@ -67,7 +72,6 @@ class Training extends Model
                         if(isset($epochs_info[1])){
                             $current_accuracy = $epochs_info[1];
                             $model->accuracy = round($current_accuracy, 2);
-                            $model->update();
                             print_r("Accuracy: $current_accuracy".PHP_EOL);
                         }
 
@@ -75,7 +79,6 @@ class Training extends Model
                         if(isset($epochs_info[2])){
                             $current_loss = $epochs_info[2];
                             $model->loss = round($current_loss, 2);
-                            $model->update();
                             print_r("Loss: $current_loss".PHP_EOL);
                         }
 
@@ -85,7 +88,6 @@ class Training extends Model
                             if(isset($epochs_info[3])){
                                 $current_val_accuracy = $epochs_info[3];
                                 $model->accuracy = round($current_val_accuracy, 2);
-                                $model->update();
                                 print_r("Val_accuracy: $current_val_accuracy".PHP_EOL);
                             }
 
@@ -93,11 +95,11 @@ class Training extends Model
                             if(isset($epochs_info[4])){
                                 $current_val_loss = $epochs_info[4];
                                 $model->loss = round($current_val_loss, 2);
-                                $model->update();
                                 print_r("Val_loss: $current_val_loss".PHP_EOL);
                             }
                         }
-
+                        $this->update();
+                        $model->update();
                     }
                 }
             );
@@ -114,11 +116,22 @@ class Training extends Model
 
             $user->update();
             $model->update();
+
         } catch (ProcessFailedException $err) {
             throw new Exception($process->getErrorOutput());
+
+        } catch (ProcessSignaledException $err){
+            if($process->getTermSignal() == SIGTERM)
+                throw new Exception("Training paused. Click 'Resume' button to resume your training from the last saved model.", self::THROW_SETPAUSE);
+            else 
+                if($process->getTermSignal() == SIGKILL)
+                    throw new Exception("Training stopped. You cannot resume the training.", self::THROW_STOPPROCESS);
+                else
+                    throw new Exception($process->getErrorOutput());
         }
     }
 
+    // Get Epoch Info from log file
     private function getEpochInfo(string $buffer){
         $epochs_info = array();
         
@@ -129,57 +142,5 @@ class Training extends Model
         }
 
         return $epochs_info;
-
-        /*
-        $buffer_epoch = strstr($buffer, "Epoch");
-        $buffer_loss = strstr($buffer, "loss");
-        $buffer_acc = strstr($buffer, "accuracy");
-        $buffer_epoch ? $buffer_epoch : "";
-        $buffer_loss ? $buffer_loss : "";
-        $buffer_acc ? $buffer_acc : "";
-
-        //       ====>     0 1 2 3 4 5 6 7 8                           
-        //       ====>     E p o c h _ 9 0 / 1 0 0
-        // get Epoch 
-        $start_pos = strpos($buffer_epoch, "Epoch");    // 0
-        if($start_pos !== FALSE){
-            $start_pos += strlen("Epoch")+1;            // 0+6 = 6
-            $end_pos = strpos($buffer_epoch, "/");      // 8
-            if($end_pos !== FALSE){
-                $chars_len = $end_pos - $start_pos;     // 8 - 6 = 2
-                $epoch_val = (int)(substr($buffer_epoch, $start_pos, $chars_len));
-                $epochs_info[0] = $epoch_val;
-            }
-        }
-
-        //       ====>     0 1 2 3 4 5 6 7 8 9 10                         
-        //       ====>     l o s s : _ 0 . 5 _ -
-        // get Loss 
-        $start_pos = strpos($buffer_loss, "loss");      // 0
-        if($start_pos !== FALSE){
-            $start_pos += strlen("loss:")+1;            // 0+6 = 6
-            $end_pos = strpos($buffer_loss, "-");       // 10
-            if($end_pos !== FALSE){
-                $chars_len = $end_pos-1 - $start_pos;   // 9 - 6 = 3
-                $loss_val = (float)(substr($buffer_loss, $start_pos, $chars_len));
-                $epochs_info[1] = $loss_val;
-            }
-        }
-
-        //       ====>     0 1 2 3 4 5 6 7 8 9 10 11 12 13                   
-        //       ====>     a c c u r a c y : _ 0  .  5  \0 (EOF)
-        // get Accuracy 
-        $start_pos = strpos($buffer_acc, "accuracy");   // 0
-        if($start_pos !== FALSE){
-            $start_pos += strlen("accuracy:")+1;        // 0+10 = 10
-            $end_pos = strlen($buffer_acc);             // 13
-            
-            $chars_len = $end_pos - $start_pos;         // 13 - 10 = 3
-            $acc_val = (float)(substr($buffer_acc, $start_pos, $chars_len));
-            $epochs_info[2] = $acc_val;
-        }
-
-        return $epochs_info;
-        */
     }
 }

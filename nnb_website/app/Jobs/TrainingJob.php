@@ -25,6 +25,8 @@ class TrainingJob implements ShouldQueue
     const THROW_DEFAULT = 0;
     const THROW_ALREADYSTARTED = 1;
     const THROW_ONERROR = 2;
+    const THROW_SETPAUSE = 3;
+    const THROW_STOPPROCESS = 4;
 
     /**
      * Delete the job if its models no longer exist. 
@@ -89,6 +91,8 @@ class TrainingJob implements ShouldQueue
 
             // Start the training
             $this->training->startTraining($this->user, $this->model, $this->dataset_training);
+            $this->training->process_pid = NULL;
+            $this->training->update();
 
             // Evaluate the model
             if($this->training->is_evaluated)
@@ -135,11 +139,32 @@ class TrainingJob implements ShouldQueue
             throw $exception;
         }
 
+        // Training SET PAUSE status Exception
+        if($exception->getCode() == self::THROW_SETPAUSE){
+            $this->training->return_message = $exception->getMessage();
+            $this->training->status = "paused";
+            $this->training->in_queue = false;
+            $this->training->process_pid = NULL;
+            $this->training->update();
+            //throw $exception;     // do not fail the job
+        }
+        
+        // Training STOP PROCESS status Exception
+        if($exception->getCode() == self::THROW_STOPPROCESS){
+            $this->training->return_message = $exception->getMessage();
+            $this->training->status = "stopped";
+            $this->training->in_queue = false;
+            $this->training->process_pid = NULL;
+            $this->training->update();
+            //throw $exception;     // do not fail the job
+        }
+
         // Other Exceptions
         if($exception->getCode() == self::THROW_DEFAULT){
             $this->training->return_message = $exception->getMessage();
             $this->training->status = "error";
             $this->training->in_queue = false;
+            $this->training->process_pid = NULL;
             $this->training->update();
             throw $exception;
         }

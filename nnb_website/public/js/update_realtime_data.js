@@ -111,7 +111,8 @@ function getData(updateDataUrl) {
 
     },
     body: JSON.stringify({
-      _token: csrf_token
+      _token: csrf_token,
+      _type: 'update_data'
     })
   }).then(function (res) {
     return res.json();

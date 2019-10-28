@@ -36,5 +36,8 @@ Route::resource('/users/{user}/networks/{network}/compilations', 'CompilationsCo
 
 // Training routes
 Route::resource('/users/{user}/trainings', 'TrainingsController');
-Route::get('/users/{user}/trainings/{training}/start', 'TrainingsController@start')->name("trainings.start");
+Route::post('/users/{user}/trainings/{training}/start', 'TrainingsController@start')->name("trainings.start");
+Route::post('/users/{user}/trainings/{training}/pause', 'TrainingsController@pause')->name("trainings.pause");
+Route::post('/users/{user}/trainings/{training}/resume', 'TrainingsController@resume')->name("trainings.resume");
+Route::post('/users/{user}/trainings/{training}/stop', 'TrainingsController@stop')->name("trainings.stop");
 Route::post('/users/{user}/trainings/{training}/getTrainingInfo', 'TrainingsController@getTrainingInfo')->name("trainings.getInfo");
