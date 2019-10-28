@@ -7,10 +7,10 @@ import pandas as pd  #for csv files
 def getExampleDataset():
     import mnist
 
-    train_images = mnist.train_images()
-    train_labels = mnist.train_labels()
-    test_images = mnist.test_images()
-    test_labels = mnist.test_labels()
+    train_images = mnist.train_images()[1:100]
+    train_labels = mnist.train_labels()[1:100]
+    test_images = mnist.test_images()[1:100]
+    test_labels = mnist.test_labels()[1:100]
 
     # Normalize images: values from [0, 255] to [-0.5, 0.5]
     train_images = (train_images / 255) - 0.5
@@ -105,10 +105,10 @@ def checkType(data):
     test_x = data["test_x"]
     test_y = data["test_y"]
 
-    if(isinstance(train_x, numpy.ndarray)): train_x = train_x.tolist()
-    if(isinstance(train_y, numpy.ndarray)): train_y = train_y.tolist()
-    if(isinstance(test_x, numpy.ndarray)): test_x = test_x.tolist()
-    if(isinstance(test_y, numpy.ndarray)): test_y = test_y.tolist()
+    if(isinstance(train_x, np.ndarray)): train_x = train_x.tolist()
+    if(isinstance(train_y, np.ndarray)): train_y = train_y.tolist()
+    if(isinstance(test_x, np.ndarray)): test_x = test_x.tolist()
+    if(isinstance(test_y, np.ndarray)): test_y = test_y.tolist()
 
     data = {"train_x": train_x,
             "train_y": train_y,
@@ -123,11 +123,13 @@ def get_MNIST_save():
             "train_y": train_y,
             "test_x": test_x,
             "test_y": test_y }
+
     saveDatasetPKL(data)
     #saveDatasetJSON(data)
     #saveDatasetCSV(data)
 
-def load_local(filename = sys.argv[1]):
+# --------------------------------------------------------
+def load_local(filename="saves/local_dataset.pkl"):
     train_x, train_y, test_x, test_y = loadLocalDataset(filename)
     #print("\ntrain_x:", train_x,"\ntrain_y:", train_y, "\ntest_x:", test_x, "\ntest_y:", test_y)
 
@@ -135,11 +137,12 @@ def load_local(filename = sys.argv[1]):
             "train_y": train_y,
             "test_x": test_x,
             "test_y": test_y }
+
     #saveDatasetPKL(data)
-    #saveDatasetJSON(data)
+    saveDatasetJSON(data)
     #saveDatasetCSV(data)
 
 # --- MAIN ---
 
 get_MNIST_save()
-#load_local()
+#load_local(sys.argv[1])

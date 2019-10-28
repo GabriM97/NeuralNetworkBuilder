@@ -35,7 +35,6 @@ Route::resource('/users/{user}/networks/{network}/compilations', 'CompilationsCo
 
 
 // Training routes
-Route::resource('/users/{user}/trainings', 'TrainingsController', [
-    'except' => ['edit']
-]);
+Route::resource('/users/{user}/trainings', 'TrainingsController');
 Route::get('/users/{user}/trainings/{training}/start', 'TrainingsController@start')->name("trainings.start");
+Route::post('/users/{user}/trainings/{training}/getTrainingInfo', 'TrainingsController@getTrainingInfo')->name("trainings.getInfo");

@@ -5,18 +5,26 @@ import pandas as pd  # for csv files
 import numpy as np
 from keras.utils import to_categorical
 from keras.models import load_model
+from keras.callbacks import CSVLogger
+from keras.callbacks import ModelCheckpoint
 
 
-def trainModel(model, x, y, num_epochs, batch_dim=32, verb=0, valid_split=0.0):
+def trainModel(model, x, y, num_epochs, batch_dim=32, verb=0, valid_split=0.0, log_path="", save_best=0, checkpoint_path=""):
     #print("\n***** Start training *****\n")
+
+    # Callbacks
+    callbacks_list = list()
+    callbacks_list.append(CSVLogger(log_path))
+    callbacks_list.append(ModelCheckpoint(filepath=checkpoint_path, save_best_only=save_best))
 
     try:
         model.fit(x, y,
                   epochs=num_epochs,
                   batch_size=batch_dim,
                   verbose=verb,
-                  validation_split=valid_split)
-                  
+                  validation_split=valid_split,
+                  callbacks=callbacks_list)
+
         #print("\n***** Training completed *****")
         return model
 
@@ -24,6 +32,7 @@ def trainModel(model, x, y, num_epochs, batch_dim=32, verb=0, valid_split=0.0):
         raise err
 
 # ---------------------------------
+
 
 def loadLocalDataset(filename):
     try:
@@ -66,18 +75,22 @@ def train():
     try:
         path_prefix = app_path + "/storage/app/"
 
+        # Get Training Dataset
+        train_x, train_y = loadLocalDataset(
+            path_prefix + "public/" + data_train_path)
+
         if(output_classes > 2):
             train_y = to_categorical(train_y)
-
-        # Get Training Dataset
-        train_x, train_y = loadLocalDataset(path_prefix + "public/" + data_train_path)
 
         # Load the model to train
         model = load_model(path_prefix + "public/" + model_path)
 
+        epochs_log = path_prefix + epochs_log               # app/storage/path/to/log.txt
+        checkpoint_path = path_prefix + checkpoint_path     # app/storage/path/to/checkpoint/model_id.h5
         # Start training
         model = trainModel(model, train_x, train_y, epochs,
-                        batch_size, verbose, valid_split)
+                           batch_size, verbose, valid_split, 
+                           epochs_log, save_best_model, checkpoint_path)
 
         # Save trained model
         model.save(path_prefix + "public/" + model_path)
@@ -87,5 +100,6 @@ def train():
         raise err
 
 # --- MAIN ---
+
 
 train()

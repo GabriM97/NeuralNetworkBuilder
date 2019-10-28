@@ -14,4 +14,5 @@ const mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
    .js('resources/js/generate_layers.js', 'public/js')
    .js('resources/js/manage_training.js', 'public/js')
+   .js('resources/js/update_realtime_data.js', 'public/js')
    .sass('resources/sass/app.scss', 'public/css');

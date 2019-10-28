@@ -164,7 +164,7 @@ def create_and_save_NewModel():
 
     evaluateModel(model, test_x, test_y, metrics_list)
 
-    print("exit_status: 0");
+    print("exit_status: 0")
 
 
 def load_Model():

@@ -81,79 +81,83 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./resources/js/manage_training.js":
-/*!*****************************************!*\
-  !*** ./resources/js/manage_training.js ***!
-  \*****************************************/
+/***/ "./resources/js/update_realtime_data.js":
+/*!**********************************************!*\
+  !*** ./resources/js/update_realtime_data.js ***!
+  \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+var interval;
 $(document).ready(function () {
-  if (!$('input[name="_method"]').length) //if not edit-training
-    disableDataset($("#model_id"));
-  $("#model_id").change(function () {
-    disableDataset(this); //if not exists dataset training selected option
-
-    if (!$("#training_dataset option:selected").length) {
-      /*setTimeout(function() { // render HTML before run the alert
-          alert("No matching dataset found! \nImport a new matching dataset or change the model.");
-          },0);*/
-      error_msg = '\
-            <span class="invalid-feedback" role="alert">\
-                <strong>No matching dataset found! Import a new matching dataset or change the model.</strong>\
-            </span>'; //$("#training_dataset").after(error_msg);
-    }
-  });
+  var updateDataUrl = window.location.href + "/getTrainingInfo";
+  if ($("#in_queue").attr("value") === "1") //if training is processing
+    interval = setInterval(getData, 500, updateDataUrl);
 });
 
-function disableDataset(model) {
-  var selectedModel = $(model).children("option:selected");
-  x = $(selectedModel).attr("x_inp");
-  y = $(selectedModel).attr("y_out"); //for each training dataset option
+function getData(updateDataUrl) {
+  //var current_train_perc = $("#train_perc").text();
+  //var current_acc_val = $("#acc_val").text();
+  //var current_loss_val = $("#loss_val").text();
+  var csrf_token = $("input[name='_token']").val();
+  fetch(updateDataUrl, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      // sent request
+      'Accept': 'application/json' // expected data sent back
 
-  $("#training_dataset option").map(function () {
-    x_data = $(this).attr("x_inp");
-    y_data = $(this).attr("y_out");
-
-    if (x_data != x || y_data != y) {
-      $(this).attr('disabled', true);
-      $(this).attr('selected', false);
-    } else {
-      $(this).attr('disabled', false);
-      $(this).attr('selected', true);
-    }
-  }); //for each test dataset option
-
-  $("#test_dataset option").map(function () {
-    if (!$(this).val()) return;
-    x_data = $(this).attr("x_inp");
-    y_data = $(this).attr("y_out");
-
-    if (x_data != x || y_data != y) {
-      $(this).attr('disabled', true);
-      $(this).attr('selected', false);
-    } else {
-      $(this).attr('disabled', false);
-      $(this).attr('selected', true);
-    }
+    },
+    body: JSON.stringify({
+      _token: csrf_token
+    })
+  }).then(function (res) {
+    return res.json();
+  }).then(function (data) {
+    return setData(data);
+  })["catch"](function (error) {
+    return console.log(error);
   });
+
+  if ($("#in_queue").attr("value") === "0") {
+    clearInterval(interval);
+    location.reload(true);
+  }
+}
+
+function setData(data) {
+  $("#in_queue").attr("value", data["in_queue"]);
+  $("#train_status").text(getStatus(data["status"]));
+  $("#train_perc").text(data["train_perc"] * 100);
+  $("#acc_val").text(data["accuracy"] * 100);
+  $("#loss_val").text(data["loss"] * 100);
+}
+
+function getStatus(status) {
+  if (status == "started") {
+    $("#train_status").parent().attr("class", "").addClass("text-primary");
+    return "In Progress";
+  } else if (status == "paused") {
+    $("#train_status").parent().attr("class", "").addClass("text-info");
+    return "In Pause";
+  }
 }
 
 /***/ }),
 
-/***/ 2:
-/*!***********************************************!*\
-  !*** multi ./resources/js/manage_training.js ***!
-  \***********************************************/
+/***/ 3:
+/*!****************************************************!*\
+  !*** multi ./resources/js/update_realtime_data.js ***!
+  \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/gabri/Desktop/NeuralNetworkBuilder/nnb_website/resources/js/manage_training.js */"./resources/js/manage_training.js");
+module.exports = __webpack_require__(/*! /home/gabri/Desktop/NeuralNetworkBuilder/nnb_website/resources/js/update_realtime_data.js */"./resources/js/update_realtime_data.js");
 
 
 /***/ })

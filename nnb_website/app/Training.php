@@ -34,7 +34,7 @@ class Training extends Model
             $valid_split = $this->validation_split;
             $output_classes = $model->output_classes;
 
-            $checkpoint_path = $this->checkpoint_filepath;
+            $checkpoint_path = $this->checkpoint_filepath."model_".$model->id.".h5";
             $save_best = $this->save_best_only;
             $epochs_log_path = $this->filepath_epochs_log;
 
@@ -55,31 +55,30 @@ class Training extends Model
                         
                         // epochs info
                         if(isset($epochs_info[0])){
-                            $current_epoch = $epochs_info[0];
-                            $this->training_percentage = $current_epoch/$this->epochs;
+                            $current_epoch = $epochs_info[0]+1;
+                            $this->training_percentage = round($current_epoch/$this->epochs, 2);
                             $this->update();
                             print_r("Epochs: $current_epoch/$this->epochs".PHP_EOL);
                         }
 
-                        // loss info
-                        if(isset($epochs_info[1])){
-                            $current_loss = $epochs_info[1];
-                            $model->loss = $current_loss;
-                            $model->update();
-                            print_r("Loss: $current_loss".PHP_EOL);
-                        }
-
                         // accuracy info
-                        if(isset($epochs_info[2])){
-                            $current_accuracy = $epochs_info[2];
-                            $model->accuracy = $current_accuracy;
+                        if(isset($epochs_info[1])){
+                            $current_accuracy = $epochs_info[1];
+                            $model->accuracy = round($current_accuracy, 2);
                             $model->update();
                             print_r("Accuracy: $current_accuracy".PHP_EOL);
+                        }
+
+                        // loss info
+                        if(isset($epochs_info[2])){
+                            $current_loss = $epochs_info[2];
+                            $model->loss = round($current_loss, 2);
+                            $model->update();
+                            print_r("Loss: $current_loss".PHP_EOL);
                         }
                     }
                 }
             );
-            $model->is_trained = true;
             
             // Update user->available_space with new model_size
             $model_size_after = Storage::size("public/$model_path");
@@ -100,6 +99,16 @@ class Training extends Model
 
     private function getEpochInfo(string $buffer){
         $epochs_info = array();
+        
+        if (($handle = fopen(storage_path()."/app/".$this->filepath_epochs_log, "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
+                $epochs_info = $data;
+            fclose($handle);
+        }
+
+        return $epochs_info;
+
+        /*
         $buffer_epoch = strstr($buffer, "Epoch");
         $buffer_loss = strstr($buffer, "loss");
         $buffer_acc = strstr($buffer, "accuracy");
@@ -149,5 +158,6 @@ class Training extends Model
         }
 
         return $epochs_info;
+        */
     }
 }

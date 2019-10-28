@@ -66,7 +66,7 @@
 					<div class="col-7 align-self-center text-right font-weight-bold">Is trained?</div>
                     <div class="col-5 align-self-center text-left"> @if ($network->is_trained) Yes @else No @endif</div>
                 </div>
-				@if ($network->is_trained && $network->accuracy != NULL && $network->loss != NULL)
+				@if ($network->is_trained && $network->accuracy !== NULL && $network->loss !== NULL)
                     <div class="row my-2">
                         <div class="col-7 align-self-center text-right font-weight-bold">Accuracy</div>
                         <div class="col-5 align-self-center text-left">{{$network->accuracy*100}}%</div>

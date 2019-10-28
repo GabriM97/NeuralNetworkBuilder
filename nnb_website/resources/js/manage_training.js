@@ -1,5 +1,6 @@
 $(document).ready(function(){
-    disableDataset($("#model_id"));
+    if(!$('input[name="_method"]').length)      //if not edit-training
+        disableDataset($("#model_id"));
 
     $("#model_id").change(function(){
         disableDataset(this);

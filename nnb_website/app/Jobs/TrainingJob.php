@@ -30,6 +30,7 @@ class TrainingJob implements ShouldQueue
      * Delete the job if its models no longer exist. 
      */
     public $deleteWhenMissingModels = true;
+    public $timeout = 86400; // 24 hours
 
     protected $training;
     protected $user;
@@ -85,8 +86,6 @@ class TrainingJob implements ShouldQueue
             // Set status and return message
             $this->training->status = "started";
             $this->training->return_message = "Training in progress...";
-            $this->model->is_trained = false;
-            $this->model->update();
             $this->training->update();
 
             // Start the training
@@ -99,7 +98,7 @@ class TrainingJob implements ShouldQueue
             // Update status and return message
             $this->training->status = "stopped";
             $this->training->return_message = "Training successfully completed.";
-            $this->in_queue = false;
+            $this->training->in_queue = false;
             $this->training->update();
 
         } catch (Exception $err) {

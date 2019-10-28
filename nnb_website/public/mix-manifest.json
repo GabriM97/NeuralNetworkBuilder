@@ -2,5 +2,6 @@
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
     "/js/generate_layers.js": "/js/generate_layers.js",
-    "/js/manage_training.js": "/js/manage_training.js"
+    "/js/manage_training.js": "/js/manage_training.js",
+    "/js/update_realtime_data.js": "/js/update_realtime_data.js"
 }

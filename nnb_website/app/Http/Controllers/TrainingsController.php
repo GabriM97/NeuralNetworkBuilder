@@ -9,6 +9,7 @@ use App\User;
 use App\Jobs\TrainingJob;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\File;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -142,7 +143,9 @@ class TrainingsController extends Controller
 
         // store paths
         $training->checkpoint_filepath = "$training_path/checkpoints/";
-        $training->filepath_epochs_log = "$training_path/epochs_log.txt";
+        $training->filepath_epochs_log = "$training_path/epochs_log.csv";
+        $file_log = fopen(storage_path()."/app/".$training->filepath_epochs_log, "w");
+        fclose($file_log);
         $training->update();
 
         return redirect(route("trainings.show", compact("user", "training")));
@@ -172,9 +175,19 @@ class TrainingsController extends Controller
      * @param  \App\Training  $training
      * @return \Illuminate\Http\Response
      */
-    public function edit(Training $training)
+    public function edit(User $user, Training $training)
     {
-        //
+        if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $training->status == 'started')
+            return redirect(route('trainings.index', ['user' => Auth::user()]));
+    
+        $datasets = Dataset::where("user_id", $user->id)->get();
+        $models = Network::where([
+                ["user_id", "=", $user->id],
+                ["is_compiled", "=", "1"],
+            ])->get();
+
+        $title = "Edit training | NeuralNetworkBuilder";
+        return view('trainings.edit', compact("title", "user", "training", "datasets", "models"));
     }
 
     /**
@@ -184,9 +197,91 @@ class TrainingsController extends Controller
      * @param  \App\Training  $training
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Training $training)
+    public function update(Request $request, User $user, Training $training)
     {
-        //
+        if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $training->status == 'started')
+            return redirect(route('trainings.index', ['user' => Auth::user()]));
+
+        // validate data
+        $validateData = $request->validate([
+            'model_id' => ['numeric', 'required', 'gt:0', 
+                Rule::exists('networks','id')->where(function($query) use ($user){
+                    $query->where("user_id", $user->id)
+                        ->where("is_compiled", 1);
+                    })],
+
+            'training_dataset' => ['numeric', 'required', 'gt:0', 
+                Rule::exists('datasets','id')->where(function($query) use ($user){
+                    $query->where([
+                                ["user_id", $user->id],
+                                ["is_train", 1]
+                            ])
+                            ->orWhere([
+                                ["user_id", $user->id],
+                                ["is_generic", 1]
+                            ]);
+                    })],
+                
+            'test_dataset' => ['numeric', 'gt:0', 'nullable',
+                Rule::exists('datasets','id')->where(function($query) use ($user){
+                    $query->where([
+                                ["user_id", $user->id],
+                                ["is_test", 1]
+                            ])
+                            ->orWhere([
+                                ["user_id", $user->id],
+                                ["is_generic", 1]
+                            ]);
+                    })],
+
+            'description' => ['max:255', 'string', 'nullable'],
+            'epochs' => ['numeric', 'between:1,10000', 'required'],
+            'batch_size' => ['numeric', 'between:1,10000', 'required'],
+            'validation_split' => ['numeric', 'between:0,0.99', 'required'],
+            'save_best' => ['numeric', 'in:0,1', 'required'],
+        ]);
+
+        // Get new training info
+        $training->train_description = $request->description;
+
+        if($training->status != 'paused'){
+            if($training->model_id != $request->model_id){
+                $training->training_percentage = 0;
+                if($training->status == "error"){
+                    $training->status = "stopped";
+                    $training->return_message = "Try to training with this new settings.";
+                }
+            }
+            $training->model_id = $request->model_id;
+        }
+
+        if($training->dataset_id_training != $request->training_dataset){
+            if($training->status == "error"){
+                $training->status = "stopped";
+                $training->return_message = "Try to training with this new settings.";
+            }
+            $training->dataset_id_training = $request->training_dataset;
+        }
+
+        if(!$request->test_dataset)     $training->is_evaluated = false;
+        else    $training->is_evaluated = true;
+        if($training->dataset_id_test != $request->test_dataset){
+            if($training->status == "error"){
+                $training->status = "stopped";
+                $training->return_message = "Try to training with this new settings.";
+            }
+            $training->dataset_id_test = $request->test_dataset;
+        }
+
+        if($training->status != "paused"){
+            $training->epochs = $request->epochs;
+            $training->batch_size = $request->batch_size;
+            $training->validation_split = $request->validation_split;
+        }
+        $training->save_best_only = $request->save_best;
+
+        $training->update();
+        return redirect(route("trainings.show", compact("user", "training")));
     }
 
     /**
@@ -210,6 +305,9 @@ class TrainingsController extends Controller
 
     public function start(User $user, Training $training)
     {
+        if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $training->status == 'started' || $training->status == 'error')
+            return redirect(route('trainings.show', compact("user", "training")));
+
         // $user = from_parameter
         $network = Network::find($training->model_id);
         $dataset_train = Dataset::find($training->dataset_id_training);
@@ -218,8 +316,38 @@ class TrainingsController extends Controller
         $trainingJob = (new TrainingJob($training, $user, $network, $dataset_train, $training->is_evaluated ? $dataset_test : NULL));
         dispatch($trainingJob)
             ->onQueue($user->getRank());
+
         $training->in_queue = true;
-        
+        if(!$network->is_trained){
+            $network->is_trained = true;
+            $network->accuracy = 0;
+            $network->loss = 0;
+        }
+        $training->update();
+        $network->update();
+
         return redirect(route("trainings.show", compact("user", "training")));
+    }
+
+    public function getTrainingInfo(Request $request, User $user, Training $training)
+    {
+        if((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1))
+            return redirect(route('trainings.index', ['user' => Auth::user()]));
+
+        // Get training model
+        $model = Network::find($training->model_id);
+
+        // build response with updated values
+        $response = array(
+            "return_message" => $training->return_message,
+            "in_queue" => $training->in_queue,
+            "status" => $training->status,
+            "train_perc" => $training->training_percentage,
+            /* "model_is_trained" => $model->is_trained, */
+            "accuracy" => $model->accuracy,
+            "loss" => $model->loss
+        );
+
+        return $response;
     }
 }

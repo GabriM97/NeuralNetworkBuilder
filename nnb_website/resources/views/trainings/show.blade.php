@@ -6,6 +6,10 @@
 
 @section('page-title', "Training | NeuralNetworkBuilder")
 
+@section('scripts')
+    <script src="{{ asset('js/update_realtime_data.js') }}"></script>
+@endsection
+
 @section('content')
 
     @if($training->return_message)  <!-- Info message box -->
@@ -25,13 +29,29 @@
                 $training->update();
             }
         @endphp
-
     @endif
 
     <div class="container col-8 text-sm-center">
         <div class="row my-5">
-            <div class="col align-self-center text-center"> {{-- TRAINING DETAILS --}}
+            <div class="col offset-2 align-self-center text-right mb-3"> {{-- TRAINING DETAILS --}}
                 <h2 class="content-title mt-0 mb-2">Training details</h2>
+            </div>
+            
+            <div class="col text-left mb-3">   {{-- START BUTTON --}}         
+                <a href="{{ route('trainings.start', compact("user", "training")) }}">
+                    @php
+                        if( !$network ||
+                            !$dataset_train ||
+                            ($training->is_evaluated && !isset($dataset_test)) ||
+                            ($training->status == 'error' || $training->status == 'started')
+                        )
+                            $btn_satatus = "disabled";
+                        else
+                            $btn_satatus = NULL;
+
+                    @endphp
+                    <button class="btn btn-warning" {{ $btn_satatus }}>Start</button>
+                </a>
             </div>
             
             <div class="w-100"></div> {{-- break to a new line --}}
@@ -73,19 +93,39 @@
 
             <!-- Right column -->
             <div class="col-5">
+                @csrf
+                <div id="in_queue" value="{{$training->in_queue}}" style="display: none"></div>
                 <div class="row my-2">
                     <div class="col-5 align-self-center text-right font-weight-bold">Training status</div>
-                    <div class="col-7 align-self-center text-left">
-                            @if ($training->status == 'started')
-                            <span class="text-primary font-weight-bold">In progress | {{$training->training_percentage*100}}%</span>
+                    <div class="col-7 align-self-center text-left font-weight-bold">
+                        @if ($training->status == 'started')
+                            <span class="text-primary">
+                                <span id="train_status">In Progress</span> | 
+                                <span id="train_perc">{{$training->training_percentage*100}}</span>%
+                            </span>
+
                         @elseif ($training->status == 'paused')
-                            <span class="text-info font-weight-bold">In Pause | {{$training->training_percentage*100}}%</span>
+                            <span class="text-info">
+                                <span id="train_status">In Pause</span> | 
+                                <span id="train_perc">{{$training->training_percentage*100}}</span>%
+                            </span>
+
                         @elseif ($training->status == 'stopped' && $training->training_percentage >= 1)  {{-- training completed --}}
-                            <span class="text-success font-weight-bold">Completed | 100%</span>
+                            <span class="text-success">
+                                <span id="train_status">Completed</span> | 
+                                <span id="train_perc">{{$training->training_percentage*100}}</span>%
+                            </span>
+                        
                         @elseif ($training->status == 'error')
-                            <span class="text-danger font-weight-bold">ERROR</span>
+                            <span class="text-danger">
+                                <span id="train_status">ERROR</span> 
+                            </span>
+                        
                         @else
-                            <span class="font-italic">Not in progress</span>
+                            <span class="text-secondary">
+                                <span id="train_status">Not in progress</span> | 
+                                <span id="train_perc">{{$training->training_percentage*100}}</span>%
+                            </span>
                         @endif
                     </div>
                 </div>
@@ -154,14 +194,14 @@
                             {{ $network->is_trained ? "Yes" : "No" }}
                         </div>
                     </div>
-                    @if ($network->is_trained && $network->accuracy != NULL && $network->loss != NULL)
+                    @if ($network->is_trained && $network->accuracy !== NULL && $network->loss !== NULL)
                         <div class="row my-2">
                             <div class="col-4 align-self-center text-right font-weight-bold">Accuracy</div>
-                            <div class="col-8 align-self-center text-left">{{$network->accuracy*100}}%</div>
+                            <div class="col-8 align-self-center text-left"><span id="acc_val">{{$network->accuracy*100}}</span>%</div>
                         </div>
                         <div class="row my-2">
                             <div class="col-4 align-self-center text-right font-weight-bold">Loss</div>
-                            <div class="col-8 align-self-center text-left">{{$network->loss*100}}%</div>
+                            <div class="col-8 align-self-center text-left"><span id="loss_val">{{$network->loss*100}}</span>%</div>
                         </div>
                     @endif
                 </div>
@@ -248,20 +288,15 @@
         </div>
 
         <div class="row my-5">
-            <div class="col-6 text-right">   {{-- START BUTTON --}}         
-                <a href="{{ route('trainings.start', compact("user", "training")) }}">
+            <div class="col-6 text-right">   {{-- EDIT BUTTON --}}         
+                <a href="{{ route('trainings.edit', compact("user", "training")) }}">
                     @php
-                        if( !$network ||
-                            !$dataset_train ||
-                            ($training->is_evaluated && !isset($dataset_test)) ||
-                            ($training->status == 'error' || $training->status == 'started')
-                        )
+                        if($training->status == 'started')
                             $btn_satatus = "disabled";
                         else
                             $btn_satatus = NULL;
-
                     @endphp
-                    <button class="btn btn-warning" {{ $btn_satatus }}>Start Training</button>
+                    <button class="btn btn-primary" {{ $btn_satatus }}>Edit</button>
                 </a>
             </div>
             <div class="col-6 text-left">   {{-- DELETE BUTTON --}}
