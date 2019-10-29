@@ -132,7 +132,10 @@
 					<div class="row">
 						<div class="col-10 offset-1">
 							<span class="font-weight-bold">During training, do you want to save the best model only?</span><br>
-							<span>NOTE: If you stop and then resume the training, it will resume from the last saved model (that could be a very old checkpoint)</span>
+							<span class="text-left">
+								<span class="font-weight-bold">NOTE:</span> It will work only if Validation Split > 0 <br>
+								<span class="font-weight-bold">NOTE:</span> If you stop and then resume the training, it will resume from the last saved model (that could be a very old checkpoint)
+							</span>
 						</div>
 					</div>
 					<div class="row my-2">

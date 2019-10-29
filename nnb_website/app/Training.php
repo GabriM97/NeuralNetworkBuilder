@@ -26,14 +26,21 @@ class Training extends Model
     const THROW_STOPPROCESS = 4;
 
     // Start training function
-    public function startTraining(User $user, Network $model, Dataset $dataset_training){
+    public function startTraining(User $user, Network $model, Dataset $dataset_training, string $old_status){
         try {
+            echo(PHP_EOL."[Training_id: $this->id - User $user->id: $user->username]".PHP_EOL);   // PHP_EOL = \n
+            if($old_status == "stopped"){
+                echo("--- Starting new training ---".PHP_EOL);
+            }else{ //$old_status == "paused"
+                echo("--- Resuming training ---".PHP_EOL);
+            }
 
             // Get parameters
             $app_path = base_path();
             $data_train_path = $dataset_training->local_path;
             $model_path = $model->local_path;
-            $epochs = $this->epochs;
+            $diff_epochs = $this->epochs - $this->executed_epochs;   // if it's first start, executed_epochs = 0
+            $exec_epochs = $this->executed_epochs;
             $batch_size = $this->batch_size;
             $valid_split = $this->validation_split;
             $output_classes = $model->output_classes;
@@ -45,25 +52,26 @@ class Training extends Model
             // Get model_size before training the model
             $model_size_before = Storage::size("public/$model_path");
 
-            $process = new Process("python3 $app_path/resources/python/train_model.py \"$app_path\" \"$data_train_path\" \"$model_path\" $epochs $batch_size $valid_split $output_classes \"$checkpoint_path\" $save_best \"$epochs_log_path\"");
+            $process = new Process("python3 $app_path/resources/python/train_model.py \"$app_path\" \"$data_train_path\" \"$model_path\" $diff_epochs $batch_size $valid_split $output_classes $old_status \"$checkpoint_path\" $save_best \"$epochs_log_path\"");
             $process->setTimeout(86400);    // 24 hours
             $process->setIdleTimeout(600);  // 10 mins (time since the last output)
             $process->mustRun(
-                function ($type, $buffer) use ($user, $model, $process) {
+                function ($type, $buffer) use ($user, $model, $process, $exec_epochs) {
                     if (Process::ERR === $type) {
-                        echo '--- ERR --- > '.$buffer;
+                        //echo '--- ERR --- > '.$buffer;
                     } else {
                         // Print pid, training and user info
                         $process_pid = $process->getPid();
                         $this->process_pid = $process_pid;
-                        echo(PHP_EOL."PID: $process_pid - Training_id: $this->id | User $user->id: $user->username".PHP_EOL);   // PHP_EOL = \n
+                        echo(PHP_EOL."[PID: $process_pid - Training_id: $this->id - User $user->id: $user->username]".PHP_EOL);   // PHP_EOL = \n
 
                         // Get epoch
                         $epochs_info = $this->getEpochInfo($buffer);
                         
                         // epochs info
                         if(isset($epochs_info[0])){
-                            $current_epoch = $epochs_info[0]+1;
+                            $current_epoch = $epochs_info[0]+1 + $exec_epochs;
+                            $this->executed_epochs = $current_epoch;
                             $this->training_percentage = round($current_epoch/$this->epochs, 2);
                             print_r("Epochs: $current_epoch/$this->epochs".PHP_EOL);
                         }

@@ -18,7 +18,7 @@ class Compilation extends Model
             $model_path = $model->local_path;
             $output_classes = $model->output_classes;
 			$app_path = base_path();																									
-            $process = new Process("python3 $app_path/resources/python/compile_model.py \"$model_path\" $optimizer $learning_rate $output_classes $metrics_list");
+            $process = new Process("python3 $app_path/resources/python/compile_model.py \"$model_path\" $optimizer $learning_rate $output_classes \"$metrics_list\"");
             $process->mustRun();
             
             $model_size = Storage::size("public/$model_path");

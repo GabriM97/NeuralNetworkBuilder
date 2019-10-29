@@ -340,7 +340,7 @@
             <div class="col-6 text-right">   {{-- EDIT BUTTON --}}         
                 <a href="{{ route('trainings.edit', compact("user", "training")) }}">
                     @php
-                        if($training->in_queue)
+                        if($training->in_queue || $training->status == "paused")
                             $btn_satatus = "disabled";
                         else
                             $btn_satatus = NULL;
@@ -352,7 +352,7 @@
                 <form class="form-delete d-inline-block" method="POST" action="{{route('trainings.destroy', compact("user", "training"))}}">
                     @csrf
                     @method("DELETE")
-                    <button class="btn btn-danger" type="submit" {{ ($training->in_queue) ? "disabled" : NULL }}>Delete</button>
+                    <button class="btn btn-danger" type="submit" {{ $btn_satatus }}>Delete</button>
                 </form>
             </div>
         </div>

@@ -80,17 +80,21 @@ class TrainingJob implements ShouldQueue
                 $this->dataset_test->update();
             }
             
-            // Check if it's a new start and set its percentage to 0%
-            if($this->training->status == "stopped")
+            // Check if it's a new start (or it's resume) and set its percentage to 0%
+            if($this->training->status == "stopped"){
                 $this->training->training_percentage = 0;
+                $this->training->executed_epochs = 0;
+            }
             
+            $old_status = $this->training->status;
+
             // Set status and return message
             $this->training->status = "started";
             $this->training->return_message = "Training in progress...";
             $this->training->update();
 
             // Start the training
-            $this->training->startTraining($this->user, $this->model, $this->dataset_training);
+            $this->training->startTraining($this->user, $this->model, $this->dataset_training, $old_status);
             $this->training->process_pid = NULL;
             $this->training->update();
 
@@ -104,11 +108,13 @@ class TrainingJob implements ShouldQueue
             $this->training->in_queue = false;
             $this->training->update();
 
+            //delete model from checkpoint path
+            Storage::delete($this->training->checkpoint_filepath."model_".$this->training->model_id.".h5");
+
         } catch (Exception $err) {
             $this->on_fail($err);
         }
     }
-
 
     /**
      * Handle job on fail.
@@ -166,6 +172,10 @@ class TrainingJob implements ShouldQueue
             $this->training->in_queue = false;
             $this->training->process_pid = NULL;
             $this->training->update();
+
+            //delete model from checkpoint path
+            Storage::delete($this->training->checkpoint_filepath."model_".$this->training->model_id.".h5");
+
             throw $exception;
         }
     }

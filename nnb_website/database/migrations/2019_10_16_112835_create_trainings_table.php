@@ -44,6 +44,7 @@ class CreateTrainingsTable extends Migration
             $table->string("train_description")->nullable();
             $table->boolean('is_evaluated');
             $table->integer('epochs');
+            $table->integer('executed_epochs')->default(0);     // only for resume-training usage
             $table->integer('batch_size');
             $table->float('validation_split', 3, 2)->default(0);    // A value between 0.0 and 1.0
 

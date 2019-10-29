@@ -22,15 +22,24 @@
 
     <div class="container col-8 text-sm-center">
         <div class="row my-5">
-            <div class="col offset-1 align-self-center text-right">
+            <div class="col offset-2 align-self-center text-right">
                 <h2 class="content-title m-0">Model details</h2>
             </div>
 
             {{-- DOWNLOAD BUTTON --}}
-            <div class="col align-self-center text-left">
+            <div class="col-1 align-self-center text-left">
                 <a href="{{ route("networks.download", compact('user', 'network')) }}">
                     <button class="btn btn-sm btn-outline-dark">Download</button>
                 </a>
+            </div>
+
+            <div class="col align-self-center text-left">
+                @if(!$network->is_compiled)
+                    {{-- COMPILE BUTTON --}}
+                    <a href="{{ route("compilations.create", compact('user', 'network')) }}">
+                        <button class="btn btn-sm btn-warning">Compile</button>
+                    </a>
+                @endif
             </div>
         </div>
         

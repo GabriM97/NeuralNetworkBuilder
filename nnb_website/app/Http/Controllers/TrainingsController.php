@@ -353,6 +353,8 @@ class TrainingsController extends Controller
             ->onQueue($user->getRank());
 
         $training->in_queue = true;
+        $training->return_message = "Training is in queue. It will be scheduled as soon as possible based on your Account Type.";   //add "... Account Type ($user->rank)." with it's type-name
+        $training->training_percentage = 0;     // not necessary
         if(!$network->is_trained){
             $network->is_trained = true;
             $network->accuracy = 0;
@@ -415,6 +417,52 @@ class TrainingsController extends Controller
                 $training->return_message = "Training stopped sucesfully.";
                 $training->update();
             }
+
+        // move the model from user checkpoint path to user public dir
+        $model = Network::find($training->model_id);
+        Storage::delete("public/".$model->local_path);
+        Storage::move($training->checkpoint_filepath."model_$training->model_id.h5", "public/".$model->local_path);
+
+        // Update user->available_space with new model_size
+        $model_size_after = Storage::size("public/".$model->local_path);
+
+        $size_diff = $model_size_after - $model->file_size;
+        $model->file_size = $model_size_after;
+
+        if($user->available_space < $size_diff)
+            $user->available_space = 0;
+        else 
+            $user->available_space -= $size_diff;
+        
+        $model->update();
+        $user->update();
+
+        return redirect(route("trainings.show", compact("user", "training")));
+    }
+
+    /**
+     * Resume the specified training.
+     *
+     * @param  \App\User $user, \App\Training  $training
+     * @return \Illuminate\Http\Response
+     */
+    public function resume(Request $request, User $user, Training $training)
+    {
+        if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $training->status != 'paused' || $request->_type != 'resume')
+            return redirect(route('trainings.show', compact("user", "training")));
+
+        // $user = from_parameter
+        $network = Network::find($training->model_id);
+        $dataset_train = Dataset::find($training->dataset_id_training);
+        $dataset_test = Dataset::find($training->dataset_id_test);
+
+        $trainingJob = (new TrainingJob($training, $user, $network, $dataset_train, $training->is_evaluated ? $dataset_test : NULL));
+        dispatch($trainingJob)
+            ->onQueue($user->getRank());
+
+        $training->in_queue = true;
+        $training->return_message = "Training is in queue. It will be scheduled as soon as possible based on your Account Type.";   //add "... Account Type ($user->rank)." with it's type-name
+        $training->update();
 
         return redirect(route("trainings.show", compact("user", "training")));
     }
