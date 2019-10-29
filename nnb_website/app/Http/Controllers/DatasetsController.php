@@ -127,7 +127,7 @@ class DatasetsController extends Controller
             $dataset->delete();
         }
         
-        return redirect(route("datasets.show", ["user" => $user, "dataset" => $dataset]));
+        return route("datasets.show", ["user" => $user, "dataset" => $dataset]);
     }
 
     /**

@@ -6,10 +6,19 @@
 
 @section('page-title', $title)
 
+@section('scripts')
+    <script src="{{ asset('js/dataset_uploader.js') }}"></script>
+@endsection
+
+@section('styles')
+	<link href="{{ asset('css/progress_bar.css') }}" rel="stylesheet">
+@endsection
+
 @section('content')
 	<div class="container col-md-5">
+		<div class="col" id="progressBar"></div>
 		<h2 class="mb-5 mt-3 text-center">Create new Dataset</h2>
-		<form method="POST" enctype="multipart/form-data" action="{{route("datasets.store", ['user' => $user])}}">
+		<form id="main-form" method="POST" enctype="multipart/form-data" action="{{route("datasets.store", ['user' => $user])}}">
 			@csrf
 
 			{{-- Import dataset field --}}
@@ -19,14 +28,15 @@
 				<div class="tooltip tooltip-custom">
 					<img src="{{ asset('img/info_icon.png') }}" alt="info_icon" class="info">
 					<span class="tooltiptext">
-					  Dataset accepted extensions: .csv, .json, .pkl or .pickle<br>
-					  Download the example dataset to understand how your dataset have to be:<br>
-					  <a href="{{ asset('example_dataset/data.csv') }}">CSV</a>,
-					  <a href="{{ asset('example_dataset/data.json') }}">JSON</a>,
-					  <a href="{{ asset('example_dataset/data.pkl') }}">PKL/PICKLE</a>.
+						Dataset accepted extensions: .csv, .json, .pkl or .pickle<br>
+						Download the example dataset to understand how your dataset have to be:<br>
+						<a href="{{ asset('example_dataset/data.csv') }}">CSV</a>,
+						<a href="{{ asset('example_dataset/data.json') }}">JSON</a>,
+						<a href="{{ asset('example_dataset/data.pkl') }}">PKL/PICKLE</a>.
 					</span>
-				  </div>
- 
+				</div>
+				
+				{{-- Upload field --}}
 				<div class="custom-file offset-md-2 mr-3">
 					<input type="file" class="custom-file-input @error('dataset_file') is-invalid @enderror" id="dataset_file" name="dataset_file" accept=".json, .csv, .pickle, .pkl" required>
 					<label class="custom-file-label" for="dataset_file">Choose file</label>
@@ -36,7 +46,7 @@
 							<strong>{{ $message }}</strong>
 						</span>
 					@enderror
-				</div> 
+				</div>
 			</div>
 
 			{{-- Title field --}}

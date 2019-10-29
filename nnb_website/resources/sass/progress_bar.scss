@@ -1,0 +1,18 @@
+#progressBar {
+	width: 0px;
+	height: 10px;
+	background-color: #F44336;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	display: none;
+}
+
+#progressBar.active {
+	display: block;
+	transition: 0s linear width;
+	-webkit-transition: 0s linear width;
+	-moz-transition: 0s linear width;
+	-o-transition: 0s linear width;
+	-ms-transition: 0s linear width;
+}
