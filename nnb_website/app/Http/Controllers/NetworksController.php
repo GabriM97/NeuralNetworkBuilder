@@ -137,7 +137,8 @@ class NetworksController extends Controller
         $user->available_space -= $model_size;
         $user->save();
 
-        return redirect(route("networks.show", ["user" => $user, "network" => $network->id]));
+        return redirect(route("compilations.create", compact("user", "network")));
+        //return redirect(route("networks.show", ["user" => $user, "network" => $network->id]));
     }
 
     /**

@@ -90,6 +90,35 @@
                 <a href="{{ route('trainings.show', ['user' => $user, 'training' => $train]) }}">
                     <button class="btn btn-primary">Details</button>
                 </a>
+
+                {{-- START/STOP BUTTON --}}
+                @php
+                    if($train->status == "started" || $train->status == "paused"){
+                        $action = route('trainings.stop', ["user" => $user, "training" => $train]);
+                        $method = "stop";
+                    }else{
+                        $action = route('trainings.start', ["user" => $user, "training" => $train]);
+                        $method = "start";
+                    }
+                @endphp    
+                <form method="POST" action="{{ $action }}">
+                    @csrf
+                    <input type="hidden" name="_type" value="{{ $method }}">
+                    @php
+                        $btn_satatus = NULL;
+
+                        if($train->status == "stopped" && 
+                            ($train->in_queue || !$model || !$training_dataset || 
+                                ($train->is_evaluated && !isset($test_dataset)))
+                        ){
+                            $btn_satatus = "disabled";
+                        }
+                        else
+                            if($train->status == "error")
+                                $btn_satatus = "disabled";
+                    @endphp
+                    <button class="btn btn-warning" {{ $btn_satatus }}>{{ ucfirst($method) }}</button>
+                </form>
             </div>
 
             {{--
