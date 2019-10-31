@@ -53,7 +53,7 @@ class CompilationsController extends Controller
         //Get compilations info
         $learning_rate = $request->learning_rate;
         $optimizer = $request->optimizer;
-        $metrics_list = "";
+        $metrics_list = NULL;
         if(isset($request->metrics_list))
             $metrics_list = $request->metrics_list[0];  
 
@@ -65,7 +65,8 @@ class CompilationsController extends Controller
             'model_id' => $network->id,
             'learning_rate' => $learning_rate,
             'optimizer' => $optimizer,
-            'metrics' => $metrics_list ? $metrics_list : NULL,
+            //'metrics' => $metrics_list ? $metrics_list : NULL,
+            'metrics' => $metrics_list,
             ]);
 
         try {

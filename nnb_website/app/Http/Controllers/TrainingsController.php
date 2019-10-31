@@ -324,7 +324,7 @@ class TrainingsController extends Controller
             "in_queue" => $training->in_queue,
             "status" => $training->status,
             "train_perc" => $training->training_percentage,
-            /* "model_is_trained" => $model->is_trained, */
+            "evaluation_in_progress" => $training->evaluation_in_progress,
             "accuracy" => $model->accuracy,
             "loss" => $model->loss
         );
@@ -374,7 +374,7 @@ class TrainingsController extends Controller
      */
     public function pause(Request $request, User $user, Training $training)
     {
-        if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $training->status != 'started' || $request->_type != 'pause')
+        if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $training->status != 'started' || $request->_type != 'pause' || $training->evaluation_in_progress)
             return redirect(route('trainings.show', compact("user", "training")));
 
         try {
@@ -387,6 +387,32 @@ class TrainingsController extends Controller
             $training->update();
             //throw $err;
         }
+
+        // move the model from user checkpoint path to user public dir
+        $model = Network::find($training->model_id);
+        Storage::move("public/".$model->local_path, "public/".$model->local_path.".backup");
+
+        try {
+            Storage::move($training->checkpoint_filepath."model_$training->model_id.h5", "public/".$model->local_path);
+            Storage::delete("public/".$model->local_path.".backup");
+        } catch (\Throwable $th) {
+            Storage::move("public/".$model->local_path.".backup", "public/".$model->local_path);
+        }
+
+        // Update user->available_space with new model_size
+        $model_size_after = Storage::size("public/".$model->local_path);
+
+        $size_diff = $model_size_after - $model->file_size;
+        $model->file_size = $model_size_after;
+
+        if($user->available_space < $size_diff)
+            $user->available_space = 0;
+        else 
+            $user->available_space -= $size_diff;
+        
+        $model->update();
+        $user->update();
+
         return redirect(route("trainings.show", compact("user", "training")));
     }
 
@@ -408,6 +434,7 @@ class TrainingsController extends Controller
                     throw new Exception("Error sending Pause signal.");
 
             } catch (Exception $err) {
+                $training->status = "error";
                 $training->return_message = $err->getMessage()." Could not stop the training.";
                 $training->update();
             }
@@ -420,8 +447,14 @@ class TrainingsController extends Controller
 
         // move the model from user checkpoint path to user public dir
         $model = Network::find($training->model_id);
-        Storage::delete("public/".$model->local_path);
-        Storage::move($training->checkpoint_filepath."model_$training->model_id.h5", "public/".$model->local_path);
+        Storage::move("public/".$model->local_path, "public/".$model->local_path.".backup");
+
+        try {
+            Storage::move($training->checkpoint_filepath."model_$training->model_id.h5", "public/".$model->local_path);
+            Storage::delete("public/".$model->local_path.".backup");
+        } catch (\Throwable $th) {
+            Storage::move("public/".$model->local_path.".backup", "public/".$model->local_path);
+        }
 
         // Update user->available_space with new model_size
         $model_size_after = Storage::size("public/".$model->local_path);
@@ -448,7 +481,7 @@ class TrainingsController extends Controller
      */
     public function resume(Request $request, User $user, Training $training)
     {
-        if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $training->status != 'paused' || $request->_type != 'resume')
+        if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $training->status != 'paused' || $request->_type != 'resume' || $training->evaluation_in_progress)
             return redirect(route('trainings.show', compact("user", "training")));
 
         // $user = from_parameter

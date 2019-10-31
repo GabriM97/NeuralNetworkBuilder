@@ -86,22 +86,23 @@ class TrainingJob implements ShouldQueue
                 $this->training->training_percentage = 0;
                 $this->training->executed_epochs = 0;
             }
-            
-            $old_status = $this->training->status;
-
-            // Set status and return message
-            $this->training->status = "started";
-            $this->training->return_message = "Training in progress...";
-            $this->training->update();
 
             // Start the training
-            $this->training->startTraining($this->user, $this->model, $this->dataset_training, $old_status);
-            $this->training->process_pid = NULL;
-            $this->training->update();
+            if(!$this->training->evaluation_in_progress){
+                $this->training->startTraining($this->user, $this->model, $this->dataset_training);
+                $this->training->process_pid = NULL;
+                $this->training->update();
+            }
 
             // Evaluate the model
-            if($this->training->is_evaluated)
-                $this->model->evaluateModel($this->dataset_test);
+            if($this->training->is_evaluated){
+                $this->training->evaluation_in_progress = True;
+                $this->training->update();
+                $this->model->evaluateModel($this->user, $this->training, $this->dataset_test);
+                $this->training->process_pid = NULL;
+                $this->training->evaluation_in_progress = False;
+                $this->training->update();
+            }
 
             // Update status and return message
             $this->training->status = "stopped";
@@ -142,6 +143,7 @@ class TrainingJob implements ShouldQueue
 
             $this->training->return_message = $exception->getMessage()." If you want you can create a new training. $old_err_msg";
             $this->training->in_queue = false;
+            $this->training->evaluation_in_progress = false;
             $this->training->update();
             throw $exception;
         }
@@ -161,6 +163,7 @@ class TrainingJob implements ShouldQueue
             $this->training->return_message = $exception->getMessage();
             $this->training->status = "stopped";
             $this->training->in_queue = false;
+            $this->training->evaluation_in_progress = false;
             $this->training->process_pid = NULL;
             $this->training->update();
             //throw $exception;     // do not fail the job
@@ -171,6 +174,7 @@ class TrainingJob implements ShouldQueue
             $this->training->return_message = $exception->getMessage();
             $this->training->status = "error";
             $this->training->in_queue = false;
+            $this->training->evaluation_in_progress = false;
             $this->training->process_pid = NULL;
             $this->training->update();
 

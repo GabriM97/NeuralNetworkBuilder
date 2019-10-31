@@ -31,7 +31,7 @@ def compile():
     try:
         metrics_list = [sys.argv[5]]
     except Exception:
-        metrics_list = ""
+        metrics_list = None
 
     filename = "../storage/app/public/" + local_path
     try:

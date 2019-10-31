@@ -21,7 +21,7 @@
             //else only ? (instead of last if)
         @endphp
     
-        <div class="container text-center alert {{$msg_class}}" role="alert">{{$training->return_message}}</div>
+        <div id="return-alert" class="container text-center alert {{$msg_class}}" role="alert">{{$training->return_message}}</div>
         
         @php
             if($training->status != 'started' && $training->status != 'error' && $training->status != 'paused'){
@@ -81,13 +81,15 @@
                     @csrf
                     <input type="hidden" name="_type" value="{{ $method }}">
                     @php
-                        if($training->status != 'paused' && $training->status != 'started')
+                        if(($training->status != 'paused' && $training->status != 'started') || $training->evaluation_in_progress){
                             $btn_satatus = "disabled";
-                        else
+                            $class = "d-none";
+                        }else{
                             $btn_satatus = NULL;
-
+                            $class = NULL;
+                        }
                     @endphp
-                    <button class="btn btn-info {{ ($training->status != "started" && $training->status != "paused") ? "d-none" : NULL }}" {{ $btn_satatus }}>{{ ucfirst($method) }}</button>
+                    <button id="pause-resume-btn" class="btn btn-info {{ $class }}" {{ $btn_satatus }}>{{ ucfirst($method) }}</button>
                 </form>
             </div>
             

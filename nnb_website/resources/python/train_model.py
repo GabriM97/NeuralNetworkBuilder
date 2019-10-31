@@ -67,27 +67,22 @@ def train():
     batch_size = int(sys.argv[5])
     valid_split = float(sys.argv[6])
     output_classes = int(sys.argv[7])
-    old_status = sys.argv[8]
-    checkpoint_path = sys.argv[9]
-    save_best_model = int(sys.argv[10])
-    epochs_log = sys.argv[11]
+    checkpoint_path = sys.argv[8]
+    save_best_model = int(sys.argv[9])
+    epochs_log = sys.argv[10]
     verbose = 2
 
     try:
         path_prefix = app_path + "/storage/app/"
 
         # Get Training Dataset
-        train_x, train_y = loadLocalDataset(
-            path_prefix + "public/" + data_train_path)
+        train_x, train_y = loadLocalDataset(path_prefix + "public/" + data_train_path)
 
-        if(output_classes > 2):
+        if(output_classes > 1):
             train_y = to_categorical(train_y)
 
         # Load the model to train
-        if(old_status == "paused"):     # resume the training
-            model = load_model(path_prefix + checkpoint_path)
-        else:    # start new training
-            model = load_model(path_prefix + "public/" + model_path)
+        model = load_model(path_prefix + "public/" + model_path)
 
         epochs_log = path_prefix + epochs_log               # app/storage/path/to/log.txt
         checkpoint_path = path_prefix + checkpoint_path     # app/storage/path/to/checkpoint/model_id.h5

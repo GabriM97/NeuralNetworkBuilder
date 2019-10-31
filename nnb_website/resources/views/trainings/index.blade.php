@@ -101,7 +101,7 @@
                         $method = "start";
                     }
                 @endphp    
-                <form method="POST" action="{{ $action }}">
+                <form method="POST" action="{{ $action }}" class="d-inline-block mx-1">
                     @csrf
                     <input type="hidden" name="_type" value="{{ $method }}">
                     @php

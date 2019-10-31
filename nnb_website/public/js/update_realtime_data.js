@@ -130,6 +130,12 @@ function setData(data) {
   $("#train_perc").text(Math.round(data["train_perc"] * 100));
   $("#acc_val").text(Math.round(data["accuracy"] * 100));
   $("#loss_val").text(Math.round(data["loss"] * 100));
+
+  if (data["evaluation_in_progress"] == 1) {
+    $("#return-alert").text(data["return_message"]);
+    $("#pause-resume-btn").addClass("d-none");
+    $("#pause-resume-btn").attr("disabled", true);
+  }
 }
 
 /***/ }),

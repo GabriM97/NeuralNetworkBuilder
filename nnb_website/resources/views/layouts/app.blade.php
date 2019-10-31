@@ -110,9 +110,11 @@
         </nav>
 
         <main class="my-4">
+            {{--
             <div class="container">
                 <a href="{{ URL::previous() }}"><button class="btn btn-secondary ml-5">Go Back</button></a>
             </div>
+            --}}
             @yield('content')
         </main>
     </div>

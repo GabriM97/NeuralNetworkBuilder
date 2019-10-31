@@ -4,6 +4,7 @@ namespace App;
 
 use App\Dataset;
 use App\Network;
+use App\Compilation;
 use App\User;
 
 use Exception;
@@ -26,66 +27,90 @@ class Training extends Model
     const THROW_STOPPROCESS = 4;
 
     // Start training function
-    public function startTraining(User $user, Network $model, Dataset $dataset_training, string $old_status){
+    public function startTraining(User $user, Network $model, Dataset $dataset_training){
+        $old_status=$this->status;
+
+        echo(PHP_EOL."[Training_id: $this->id - User $user->id: $user->username]".PHP_EOL);   // PHP_EOL = \n
+        if($old_status == "stopped"){
+            echo("--- Starting new training ---".PHP_EOL);
+        }else{ //$old_status == "paused"
+            echo("--- Resuming training ---".PHP_EOL);
+        }
+
+        // Get parameters
+        $app_path = base_path();
+        $data_train_path = $dataset_training->local_path;
+        $model_path = $model->local_path;
+        $diff_epochs = $this->epochs - $this->executed_epochs;   // if it's first start, executed_epochs = 0
+        $exec_epochs = $this->executed_epochs;
+        $batch_size = $this->batch_size;
+        $valid_split = $this->validation_split;
+        $output_classes = $model->output_classes;
+
+        $checkpoint_path = $this->checkpoint_filepath."model_".$model->id.".h5";
+        $save_best = $this->save_best_only;
+        $epochs_log_path = $this->filepath_epochs_log;
+
+        // Get model_size before training the model
+        $model_size_before = Storage::size("public/$model_path");
+
+        // Set index
+        $compile = Compilation::where("model_id", $model->id)->first();
+        $metrics_list = $compile->metrics;
+
+        $epoch_index = 0;
+        if($metrics_list){
+            $acc_index = 1;
+            $loss_index = 2;
+            $val_acc_index = 3;
+            $val_loss_index = 4;
+        }else{
+            $acc_index = -1;
+            $loss_index = 1;
+            $val_acc_index = -1;
+            $val_loss_index = 2;
+        }
+
         try {
-            echo(PHP_EOL."[Training_id: $this->id - User $user->id: $user->username]".PHP_EOL);   // PHP_EOL = \n
-            if($old_status == "stopped"){
-                echo("--- Starting new training ---".PHP_EOL);
-            }else{ //$old_status == "paused"
-                echo("--- Resuming training ---".PHP_EOL);
-            }
-
-            // Get parameters
-            $app_path = base_path();
-            $data_train_path = $dataset_training->local_path;
-            $model_path = $model->local_path;
-            $diff_epochs = $this->epochs - $this->executed_epochs;   // if it's first start, executed_epochs = 0
-            $exec_epochs = $this->executed_epochs;
-            $batch_size = $this->batch_size;
-            $valid_split = $this->validation_split;
-            $output_classes = $model->output_classes;
-
-            $checkpoint_path = $this->checkpoint_filepath."model_".$model->id.".h5";
-            $save_best = $this->save_best_only;
-            $epochs_log_path = $this->filepath_epochs_log;
-
-            // Get model_size before training the model
-            $model_size_before = Storage::size("public/$model_path");
-
-            $process = new Process("python3 $app_path/resources/python/train_model.py \"$app_path\" \"$data_train_path\" \"$model_path\" $diff_epochs $batch_size $valid_split $output_classes $old_status \"$checkpoint_path\" $save_best \"$epochs_log_path\"");
+            // --- START Training Process ---
+            $process = new Process("python3 $app_path/resources/python/train_model.py \"$app_path\" \"$data_train_path\" \"$model_path\" $diff_epochs $batch_size $valid_split $output_classes \"$checkpoint_path\" $save_best \"$epochs_log_path\"");
             $process->setTimeout(86400);    // 24 hours
             $process->setIdleTimeout(600);  // 10 mins (time since the last output)
             $process->mustRun(
-                function ($type, $buffer) use ($user, $model, $process, $exec_epochs) {
+                function ($type, $buffer) use ($user, $model, $process, $exec_epochs, $old_status, $epoch_index, $acc_index, $loss_index, $val_acc_index, $val_loss_index) {
                     if (Process::ERR === $type) {
                         //echo '--- ERR --- > '.$buffer;
                     } else {
-                        // Print pid, training and user info
-                        $process_pid = $process->getPid();
-                        $this->process_pid = $process_pid;
+                        if($old_status == "stopped" || $old_status == "paused"){
+                            $process_pid = $process->getPid();
+                            $this->process_pid = $process_pid;
+                            $this->status = "started";
+                            $this->return_message = "Training in progress...";
+                            $this->update();
+                        }
                         echo(PHP_EOL."[PID: $process_pid - Training_id: $this->id - User $user->id: $user->username]".PHP_EOL);   // PHP_EOL = \n
 
                         // Get epoch
                         $epochs_info = $this->getEpochInfo($buffer);
                         
                         // epochs info
-                        if(isset($epochs_info[0])){
-                            $current_epoch = $epochs_info[0]+1 + $exec_epochs;
+                        if(isset($epochs_info[$epoch_index])){
+                            $current_epoch = $epochs_info[$epoch_index]+1 + $exec_epochs;
                             $this->executed_epochs = $current_epoch;
                             $this->training_percentage = round($current_epoch/$this->epochs, 2);
                             print_r("Epochs: $current_epoch/$this->epochs".PHP_EOL);
                         }
 
                         // accuracy info
-                        if(isset($epochs_info[1])){
-                            $current_accuracy = $epochs_info[1];
+                        if(isset($epochs_info[$acc_index])){
+                            $current_accuracy = $epochs_info[$acc_index];
                             $model->accuracy = round($current_accuracy, 2);
                             print_r("Accuracy: $current_accuracy".PHP_EOL);
                         }
 
                         // loss info
-                        if(isset($epochs_info[2])){
-                            $current_loss = $epochs_info[2];
+                        if(isset($epochs_info[$loss_index])){
+                            $current_loss = $epochs_info[$loss_index];
                             $model->loss = round($current_loss, 2);
                             print_r("Loss: $current_loss".PHP_EOL);
                         }
@@ -93,15 +118,15 @@ class Training extends Model
                         // validation info
                         if($this->validation_split){
                             // val_accuracy
-                            if(isset($epochs_info[3])){
-                                $current_val_accuracy = $epochs_info[3];
+                            if(isset($epochs_info[$val_acc_index])){
+                                $current_val_accuracy = $epochs_info[$val_acc_index];
                                 $model->accuracy = round($current_val_accuracy, 2);
                                 print_r("Val_accuracy: $current_val_accuracy".PHP_EOL);
                             }
 
                             // val_loss
-                            if(isset($epochs_info[4])){
-                                $current_val_loss = $epochs_info[4];
+                            if(isset($epochs_info[$val_loss_index])){
+                                $current_val_loss = $epochs_info[$val_loss_index];
                                 $model->loss = round($current_val_loss, 2);
                                 print_r("Val_loss: $current_val_loss".PHP_EOL);
                             }
@@ -111,6 +136,7 @@ class Training extends Model
                     }
                 }
             );
+            // --- STOP Training Process ---
             
             // Update user->available_space with new model_size
             $model_size_after = Storage::size("public/$model_path");
@@ -136,6 +162,8 @@ class Training extends Model
                     throw new Exception("Training stopped. You cannot resume the training.", self::THROW_STOPPROCESS);
                 else
                     throw new Exception($process->getErrorOutput());
+        } catch (\Throwable $th){
+            throw $th;
         }
     }
 

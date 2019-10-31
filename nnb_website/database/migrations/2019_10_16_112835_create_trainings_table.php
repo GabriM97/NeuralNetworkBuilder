@@ -53,6 +53,7 @@ class CreateTrainingsTable extends Migration
             $table->enum('status', ['stopped', 'paused', 'started', 'error'])->default('stopped');
             $table->mediumText("return_message")->nullable()->default("Press the button below to start the training.");
             $table->boolean('in_queue')->default(false);
+            $table->boolean('evaluation_in_progress')->default(false);
             $table->integer('process_pid')->nullable();
 
             // info model checkpoints
