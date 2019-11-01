@@ -3,6 +3,8 @@
 
 ### Requires:
 * _root permissions (sudo)_
+* _MySQL (create database: neural_network_builder)_
+* _PHP_
 * _python3_
 * _pip3_
 
@@ -23,6 +25,7 @@ Into the directory `utils/supervisor/` you can find supervisor configuration fil
 * ./start.sh
 * php artisan migrate:fresh
 
-> **NOTE**: modify the `upload_max_filesize` and `post_max_size` on your `php.ini` file if you want to upload a **bigger** dataset. (_Linux:_ `/etc/php.ini`) <br/><br/>
+> **NOTE**: Edit the database settings (database name and user) into `.env` file
+> **NOTE**: Modify the `upload_max_filesize` and `post_max_size` on your `php.ini` file if you want to upload a **bigger** dataset. (_Linux:_ `/etc/php.ini`) <br/><br/>
 > **NOTE**: Edit the `utils/start.sh` script with your correct paths. <br/><br/>
 > **NOTE**: If running the script you got an error (such as `unix:///path/to/supervisor.sock no such file`) on supervisroctl tab then don't worry, it will work the same! You can test if everything it's okay running `status` command on supervisorctl tab. If it shows the laravel-workers are in `RUNNING` or `STARTING` status, then it works. If not, try running `reload` command and then `status` again. If you still got this issue or others, then check your supervisor config files or try to unistall and install again.
