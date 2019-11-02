@@ -45,7 +45,7 @@
                         echo round($data->file_size/1073741824, 2)." GB";
                 @endphp
             </div>
-            <div class="col-md-1 align-self-center">{{$data->file_extension}}</div>
+            <div class="col-md-1 align-self-center">{{strtoupper($data->file_extension)}}</div>
             <div class="col-md-1 align-self-center">{{$data->x_shape}}</div>
             <div class="col-md-1 align-self-center">{{$data->y_classes}}</div>
             <div class="col-md-1 align-self-center">    {{-- DATA TYPE --}}

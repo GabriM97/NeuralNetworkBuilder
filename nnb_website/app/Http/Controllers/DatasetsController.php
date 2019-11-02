@@ -189,7 +189,7 @@ class DatasetsController extends Controller
         $dataset->is_test = $isTest;
         $dataset->is_generic = $isGeneric;
 
-        $dataset->save();
+        $dataset->update();
         return redirect(route("datasets.show", compact("user", "dataset")));
     }
 

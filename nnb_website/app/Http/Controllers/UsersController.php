@@ -134,12 +134,17 @@ class UsersController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $process = $request->process;
         if((Auth::user()->id == $user->id) || (Auth::user()->rank == -1)){
-            switch ($process) {
+            $process = $request->process;
 
+            $validateData = $request->validate([
+                'process' => ['in:changeusername,changeemail,changepassword,upgradeaccount,downgradeaccount,makeadmin,removeadmin', 'required', 'string']
+            ]);
+
+            switch ($process) {
                 case 'changeusername':  // CHANGE USERNAME (ADMIN ONLY)
-                    if(Auth::user()->rank == -1){      
+                    if(Auth::user()->rank == -1){   
+                        $validateData = $request->validate(['username' => ['required', 'max:255', 'string']]);
                         $new_username = $request->username;
                         $query = User::where("username", $new_username)->get();
                         if(count($query) == 0){
@@ -154,7 +159,13 @@ class UsersController extends Controller
                     break;
 
                 case 'changeemail':     // CHANGE EMAIL
+                    $validateData = $request->validate([
+                        'new_email' => ['email', 'required', 'max:255','string'],
+                        'confirm_new_email' => ['email', 'required', 'max:255','string'],
+                    ]);
+                    
                     if(Auth::user()->rank != -1){
+                        $validateData = $request->validate(['current_password' => ['min:8', 'required', 'string'],]);
                         if(!(Hash::check($request->current_password, $user->password))){   //if password is wrong
                             $status = -1;
                             $msg = "Password wrong.";
@@ -174,7 +185,13 @@ class UsersController extends Controller
                     break;
 
                 case 'changepassword':      // CHANGE PASSWORD
+                    $validateData = $request->validate([
+                        'new_password' => ['min:8', 'required', 'string'],
+                        'confirm_new_password' => ['min:8', 'required', 'string'],
+                    ]);
+
                     if(Auth::user()->rank != -1){
+                        $validateData = $request->validate(['current_password' => ['min:8', 'required', 'string'],]);
                         if(!(Hash::check($request->current_password, $user->password))){   //if password is wrong
                             $status = -1;
                             $msg = "Current password wrong.";

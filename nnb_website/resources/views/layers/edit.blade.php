@@ -1,4 +1,4 @@
-<div class="col-8 offset-2">
+<div class="col">
     <div class="row border border-secondary text-center font-weight-bold">    <!-- TITLE ROW -->
         <div class="col-md-3 py-1 align-self-center">Layer</div>
         <div class="col-md-3 py-1 align-self-center">Layer type</div>
@@ -9,9 +9,11 @@
     
     @foreach ($layers as $lyr)
         <div class="row border border-secondary text-center">
-            <div class="col-md-3 py-1 align-self-center">{{$loop->iteration}}</div>
+            <div class="col-md-3 py-1 align-self-center">L{{$loop->iteration}}</div>
             <div class="col-md-3 py-1 align-self-center">{{$lyr->layer_type}}</div>
-            <div class="col-md-3 py-1 align-self-center"><input type="number" name="neurons_number[]" value="{{$lyr->neurons_number}}" min="1" max="500" step="1"></div>
+            <div class="col-md-3 py-1 align-self-center">
+                <input class="form-control @error('input_shape') is-invalid @enderror" type="number" name="neurons_number[]" value="{{$lyr->neurons_number}}" min="1" max="500" step="1">
+            </div>
             <div class="col-md-3 py-1 align-self-center">
                 <select class="form-control" name="activ_funct[]">   
                     <option value="relu" @if($lyr->activation_function == 'relu') selected @endif>ReLU</option>

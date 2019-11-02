@@ -152,7 +152,7 @@
         <div class="row mt-5">
             <div class="col-6 text-right">   {{-- EDIT BUTTON --}}         
                 <a href="{{ route('networks.edit', compact("user", "network")) }}">
-                    <button class="btn btn-primary disabled" disabled>Edit</button>
+                    <button class="btn btn-primary">Edit</button>
                 </a>
             </div>
             <div class="col-6 text-left">   {{-- DELETE BUTTON --}}

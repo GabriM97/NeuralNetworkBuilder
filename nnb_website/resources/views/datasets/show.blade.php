@@ -70,7 +70,7 @@
                 </div>
                 <div class="row my-2">
                     <div class="col-7 align-self-center text-right font-weight-bold">File extension</div>
-                    <div class="col-5 align-self-center text-left">{{$dataset->file_extension}}</div>
+                    <div class="col-5 align-self-center text-left">{{strtoupper($dataset->file_extension)}}</div>
                 </div>
             </div>
 

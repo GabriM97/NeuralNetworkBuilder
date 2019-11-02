@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Network;
+use App\Layer;
 use App\User;
 use App\Compilation;
 use Illuminate\Http\Request;
@@ -183,8 +184,35 @@ class NetworksController extends Controller
      */
     public function update(Request $request, User $user, Network $network)
     {
-        if(Auth::user()->rank == -1)
-            return $request;
+        if((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1))
+            return redirect(route('networks.index', ['user' => Auth::user()]));
+
+        // validate data
+        $validateData = $request->validate([
+            'title' => ['required', 'max:50', 'string'],
+            'description' => ['max:255', 'string', 'nullable'],
+            //'input_shape' => ['numeric', 'between:1,1000', 'required'],
+            //'output_classes' => ['numeric', 'between:1,1000', 'required'],
+            //'layers_number' => ['numeric', 'between:1,100', 'required'],
+            //'neurons_number' => ['array', 'min:1', 'required'],
+            //'neurons_number.*' => ['numeric', 'between:1,500', 'required'],
+            //'activ_funct' => ['array', 'min:1', 'required'],
+            //'activ_funct.*' => ['string', 'required', 'in:relu,sigmoid,tanh,linear,softmax'],
+        ]);
+
+        //Get model info
+        $network->model_name = $request->title;
+        $network->model_description = $request->description;
+        //$network->input_shape = $request->input_shape;
+        //$network->output_classes = $request->output_classes;
+        //$network->layers_number = $request->layers_number;
+        $network->update();
+
+        //neurons_number = $request->neurons_number;
+        //$activation_function = $request->activ_funct;
+        //LayersController::edit();
+        
+        return redirect(route("networks.show", compact("user", "network")));
     }
 
     /**

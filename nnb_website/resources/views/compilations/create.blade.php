@@ -20,7 +20,7 @@
 			@endphp
 
             <div class="form-group row"> {{-- Learning rate --}}
-                <label for="learning_rate" class="col-md-4 offset-2 col-form-label text-md-right">Learning Rate</label>
+                <label for="learning_rate" class="col-md-4 offset-2 col-form-label text-md-right font-weight-bold">Learning Rate</label>
                 <div class="col-md-4">
                     <select class="form-control @error('learning_rate') is-invalid @enderror" id="learning_rate" name="learning_rate">
 						<option value="0.0001" @if(isset($status["0.0001"])) selected @endif>0.0001</option>
@@ -46,7 +46,7 @@
 
 	        {{-- Optimizer --}}
 			<div class="form-group row">
-				<label for="optimizer" class="col-md-4 offset-2 col-form-label text-md-right">{{ __('Optimizer') }}</label>
+				<label for="optimizer" class="col-md-4 offset-2 col-form-label text-md-right font-weight-bold">{{ __('Optimizer') }}</label>
 
 				<div class="col-md-4">
 					<select class="form-control @error('optimizer') is-invalid @enderror" id="optimizer" name="optimizer">
@@ -65,7 +65,7 @@
 			{{-- Metrics list --}}
 			<fieldset class="form-group">
 				<div class="row">
-					<legend class="col-form-label col-sm-4 offset-2 text-sm-right align-self-center">Metrics list</legend>
+					<legend class="col-form-label col-sm-4 offset-2 text-sm-right align-self-center font-weight-bold">Metrics list</legend>
 					<div class="col-sm-4 py-2">
 						<div class="form-check">
 							<input class="form-check-input @error('metrics_list') is-invalid @enderror" type="checkbox" name="metrics_list[]" id="accuracy" value="accuracy" {{(($compile && $compile->metrics) || (!$compile)) ? "checked" : ""}}>

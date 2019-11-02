@@ -74,7 +74,11 @@ class LayersController extends Controller
      */
     public function edit(Layer $layer)
     {
-        //
+        $layers = Layer::where("model_id", $network->id)->get();
+        foreach($layers as $layer){
+            $layer->neurons_number = $request->neurons_number;
+            $layer->activation_function = $request->activ_funct;
+        }
     }
 
     /**
