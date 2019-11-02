@@ -55,7 +55,6 @@ def evaluateModel(model, x, y, batch=32, log_path=""):
     try:
         csv_logger = MyCSVLogger(log_path)
         final_values = model.evaluate(x, y, batch_size=batch, callbacks=[csv_logger])
-        time.sleep(2)
 
         try:
             array_len = len(final_values)

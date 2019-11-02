@@ -17,5 +17,6 @@ mix.js('resources/js/app.js', 'public/js')
    .js('resources/js/update_realtime_data.js', 'public/js')
    .js('resources/js/dataset_uploader.js', 'public/js')
    .sass('resources/sass/app.scss', 'public/css')
+   .sass('resources/sass/welcome.scss', 'public/css')
    .sass('resources/sass/progress_bar.scss', 'public/css');
 

@@ -16,14 +16,13 @@
 
 @section('content')
 	<div class="container col-md-5">
-		<div class="col" id="progressBar"></div>
 		<h2 class="mb-5 mt-3 text-center">Create new Dataset</h2>
 		<form id="main-form" method="POST" enctype="multipart/form-data" action="{{route("datasets.store", ['user' => $user])}}">
 			@csrf
 
 			{{-- Import dataset field --}}
 			<div class="form-group row">
-				<div class="offset-md-2">Dataset</div>
+				<div class="offset-md-2 font-weight-bold">Dataset</div>
 				
 				<div class="tooltip tooltip-custom">
 					<img src="{{ asset('img/info_icon.png') }}" alt="info_icon" class="info">
@@ -38,6 +37,7 @@
 				
 				{{-- Upload field --}}
 				<div class="custom-file offset-md-2 mr-3">
+					<div id="progressBar"></div>
 					<input type="file" class="custom-file-input @error('dataset_file') is-invalid @enderror" id="dataset_file" name="dataset_file" accept=".json, .csv, .pickle, .pkl" required>
 					<label class="custom-file-label" for="dataset_file">Choose file</label>
 
@@ -51,7 +51,7 @@
 
 			{{-- Title field --}}
 			<div class="form-group row">
-				<label for="title" class="col-md-4 col-form-label text-md-right">{{ __('Title') }}</label>
+				<label for="title" class="col-md-4 col-form-label text-md-right font-weight-bold">{{ __('Title') }}</label>
 
 				<div class="col-md-8">
 					<input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') }}" placeholder="Insert dataset title" required autofocus>
@@ -66,7 +66,7 @@
 
 			{{-- Description field --}}
 			<div class="form-group row">
-				<label for="description" class="col-md-4 col-form-label align-self-center text-md-right">{{ __('Description') }}</label>
+				<label for="description" class="col-md-4 col-form-label align-self-center text-md-right font-weight-bold">{{ __('Description') }}</label>
 
 				<div class="col-md-8">
 					<textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" placeholder="Insert dataset description">{{ old('description') }}</textarea>
@@ -82,8 +82,9 @@
 			<div class="form-group row">
 				<div class="col-md-6 text-md-right">
 					{{-- X_Shape field --}}
-					<label for="input_shape" class="col-form-label pr-2 align-self-center">{{ __('Input shape') }}</label><br>
+					<label for="input_shape" class="col-form-label pr-2 align-self-center font-weight-bold">{{ __('Input shape ( X_features )') }}</label><br>
 					<input id="input_shape" type="number" class="col-md-6 form-control float-right @error('input_shape') is-invalid @enderror" name="input_shape" required value="1" step="1" min="1" max="1000">
+					
 					@error('input_shape')
 						<span class="invalid-feedback" role="alert">
 							<strong>{{ $message }}</strong>
@@ -92,8 +93,9 @@
 				</div>
 				<div class="col-md-6 text-md-right">
 					{{-- Y_Classes field --}}
-					<label for="output_classes" class="col-form-label pr-2 align-self-center">{{ __('Output classes') }}</label><br>
+					<label for="output_classes" class="col-form-label pr-2 align-self-center font-weight-bold">{{ __('Output classes ( Y_labels )') }}</label><br>
 					<input id="output_classes" type="number" class="col-md-6 form-control float-right @error('output_classes') is-invalid @enderror" name="output_classes" required value="1" step="1" min="1" max="1000">
+					
 					@error('output_classes')
 						<span class="invalid-feedback" role="alert">
 							<strong>{{ $message }}</strong>
@@ -103,9 +105,9 @@
 			</div>
 
 			{{-- Train, Test or Both --}}
-			<fieldset class="form-group">
+			<fieldset class="form-group row">
 				<div class="row">
-					<legend class="col-form-label col-sm-5 text-sm-right align-self-center">Data Type</legend>
+					<legend class="col-form-label col-sm-5 text-sm-right align-self-center font-weight-bold">Data Type</legend>
 					<div class="col-sm-6">
 						<div class="form-check">
 							<input class="form-check-input @error('dataset_type') is-invalid @enderror" type="radio" name="dataset_type" id="train" value="train" >
@@ -147,7 +149,7 @@
 			<div class="form-group row mb-0">
 				<div class="col-md text-center">
 					<button type="submit" class="btn btn-primary">
-						{{ __('Import Dataset') }}
+						{{ __('Upload Dataset') }}
 					</button>
 				</div>
 			</div>
