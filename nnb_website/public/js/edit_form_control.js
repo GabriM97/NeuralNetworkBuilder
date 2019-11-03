@@ -118,10 +118,10 @@ function checkEmailForm() {
 }
 
 function checkPasswordForm() {
-  var new_email = $("#new_password").val();
-  var confirm_new_email = $("#confirm_new_password").val();
+  var new_password = $("#new_password").val();
+  var confirm_new_password = $("#confirm_new_password").val();
 
-  if (new_email != confirm_new_email) {
+  if (new_password != confirm_new_password) {
     $("#new_password").addClass("is-invalid");
     $("#confirm_new_password").addClass("is-invalid");
     setTimeout(function () {

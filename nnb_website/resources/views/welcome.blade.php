@@ -22,8 +22,8 @@
                 <br>Go to your <a class="font-weight-bold" href="{{ url('/home') }}">Home</a>
             @else
                 <br><br>
-                If you are registered, <a href="{{ route('login') }}">Sing in</a> <br><br>
-                Otherwise create a new account and Join Us! <a href="{{ route('register') }}">Register now</a>
+                If you are registered, <a href="{{ route('login') }}" class="font-weight-bold">Sign in</a> <br><br>
+                Otherwise create a new account and Join Us! <a href="{{ route('register') }}" class="font-weight-bold">Register now</a>
             @endauth
         </div>
     </div>

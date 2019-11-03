@@ -1,4 +1,4 @@
-@if((Auth::user()->id != $user->id))
+@if((Auth::user()->id != $user->id && Auth::user()->rank != -1))
     {!! redirect(route("home"))  !!}
 @endif
 

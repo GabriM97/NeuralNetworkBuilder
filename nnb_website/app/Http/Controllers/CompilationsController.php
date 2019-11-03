@@ -24,7 +24,7 @@ class CompilationsController extends Controller
      */
     public function create(User $user, Network $network)
     {
-        if((Auth::user()->id != $user->id) || $network->user_id != Auth::user()->id)
+        if((Auth::user()->id != $user->id) && Auth::user()->rank != -1)
             return redirect(route("home"));
 
         $title = "Compile Model | Neural Network Builder";
@@ -39,7 +39,7 @@ class CompilationsController extends Controller
      */
     public function store(Request $request, User $user, Network $network)
     {
-        if((Auth::user()->id != $user->id) || $network->user_id != Auth::user()->id)
+        if((Auth::user()->id != $user->id) && Auth::user()->rank != -1)
             return redirect(route("home"));
         
         // validate data
