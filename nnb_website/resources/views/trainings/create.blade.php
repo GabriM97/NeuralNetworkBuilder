@@ -12,6 +12,14 @@
 @endsection
 
 @section('content')
+	<div class="container">
+		<div class="row">
+			<div class="col h5">
+				<a href="{{route("trainings.index", compact("user"))}}"><< &nbsp; Trainings</a>
+			</div>
+		</div>
+	</div>
+
 	<form method="POST" action="{{route("trainings.store", ['user' => $user])}}">
 		@csrf
 		<div class="container col-md-6">

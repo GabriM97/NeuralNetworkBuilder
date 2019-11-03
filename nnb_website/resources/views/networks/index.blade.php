@@ -9,6 +9,15 @@
 @section('content')
 
 <div class="container text-center">
+    <div class="row">
+        <div class="col h5">
+            <a href="{{route("datasets.index", compact("user"))}}"><< &nbsp; Datasets</a>
+        </div>
+        <div class="col offset-8 h5">
+            <a href="{{route("trainings.index", compact("user"))}}">Trainings &nbsp; >></a>
+        </div>
+    </div>
+
     @if($user->id != Auth::user()->id)
         <h2 class="mb-4">Models | user: {{$user->username}}</h2>
     @else

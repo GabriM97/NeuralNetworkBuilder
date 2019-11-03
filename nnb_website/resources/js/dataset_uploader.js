@@ -40,6 +40,7 @@ $(document).ready(function () {
 			},
 			error: function (reject) {
 				$('#progressBar').addClass("d-none");
+				$("#upload-button").removeClass("disabled").attr("disabled", false);
 				var response = $.parseJSON(reject.responseText);
                 if( reject.status === 422 ) {
 					$("span.invalid-feedback").remove();
@@ -59,9 +60,10 @@ $(document).ready(function () {
 		})
 	}
 
-	$('form').submit(function (e) {
+	$("#main-form").submit(function (e) {
 		e.preventDefault();
 		$(pbar).width(0).removeClass('d-none').addClass('active');
+		$("#upload-button").addClass("disabled").attr("disabled", true);
 		uploadFile();
 	});
 });

@@ -19,6 +19,17 @@
         
     @endif
     --}}
+    <div class="container">
+        <div class="row">
+            <div class="col h5">
+                <a href="{{route("datasets.index", compact("user"))}}"><< &nbsp; Datasets</a>
+            </div>
+            <div class="col offset-8 h5">
+                <a href="{{route("networks.index", compact("user"))}}">Models &nbsp; >></a>
+            </div>
+        </div>
+    </div>
+
 
     <div class="container col-8 text-sm-center">
         <div class="row my-5">

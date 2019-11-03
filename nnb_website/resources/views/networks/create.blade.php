@@ -6,9 +6,21 @@
 
 @section('page-title', $title)
 
-@section('content')
+@section('scripts')
+    <script src="{{ asset('js/generate_layers.js') }}"></script>
+    <script src="{{ asset('js/handle_submit.js') }}"></script>
+@endsection
 
-	<form method="POST" action="{{route("networks.store", ['user' => $user])}}">
+@section('content')
+	<div class="container">
+		<div class="row">
+			<div class="col h5">
+				<a href="{{route("networks.index", compact("user"))}}"><< &nbsp; Models</a>
+			</div>
+		</div>
+	</div>
+
+	<form id="main-form" method="POST" action="{{route("networks.store", ['user' => $user])}}">
 		@csrf
 		<div class="container col-md-6">
 			<h2 class="mb-5 text-center">Build new Model</h2>
@@ -102,8 +114,8 @@
 			{{-- Submit button --}}
 			<div class="form-group row">
 				<div class="col text-center">
-					<button type="submit" class="btn btn-primary">
-						{{ __('Build model') }} &ensp; <span class="font-weight-bold h5">></span>
+					<button id="upload-button" type="submit" class="btn btn-primary">
+						{{ __('Build model') }} &ensp; <span class="font-weight-bold h6">>></span>
 					</button>
 				</div>
 			</div>

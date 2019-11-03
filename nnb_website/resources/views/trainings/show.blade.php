@@ -11,6 +11,13 @@
 @endsection
 
 @section('content')
+    <div class="container">
+        <div class="row">
+            <div class="col-2 h5">
+                <a href="{{route("trainings.index", compact("user"))}}"><< &nbsp; Trainings</a>
+            </div>
+        </div>
+    </div>
 
     @if($training->return_message)  <!-- Info message box -->
         @php

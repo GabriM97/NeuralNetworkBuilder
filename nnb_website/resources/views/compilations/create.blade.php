@@ -6,8 +6,20 @@
 
 @section('page-title', $title)
 
+@section('scripts')
+    <script src="{{ asset('js/handle_submit.js') }}"></script>
+@endsection
+
 @section('content')
-	<form method="POST" action="{{route("compilations.store", compact("user", "network"))}}">
+	<div class="container">
+		<div class="row">
+			<div class="col h5">
+				<a href="{{route("networks.show", compact("user", "network"))}}"><< &nbsp; Model Details</a>
+			</div>
+		</div>
+	</div>
+
+	<form id="main-form" method="POST" action="{{route("compilations.store", compact("user", "network"))}}">
 		@csrf
 		<div class="container col-md-6">
         	<h2 class="mb-5 text-center">Compile Model | {{$network->model_name}}</h2>
@@ -84,7 +96,7 @@
 			{{-- Submit button --}}
 			<div class="form-group row">
 				<div class="col text-center">
-					<button type="submit" class="btn btn-warning">
+					<button id="upload-button" type="submit" class="btn btn-warning">
 						{{ __('Compile model') }}
 					</button>
 				</div>

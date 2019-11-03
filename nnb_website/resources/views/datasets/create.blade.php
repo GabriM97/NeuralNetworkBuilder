@@ -15,6 +15,14 @@
 @endsection
 
 @section('content')
+	<div class="container">
+		<div class="row">
+			<div class="col h5">
+				<a href="{{route("datasets.index", compact("user"))}}"><< &nbsp; Datasets</a>
+			</div>
+		</div>
+	</div>
+
 	<div class="container col-md-5">
 		<h2 class="mb-5 mt-3 text-center">Create new Dataset</h2>
 		<form id="main-form" method="POST" enctype="multipart/form-data" action="{{route("datasets.store", ['user' => $user])}}">
@@ -148,7 +156,7 @@
 			{{-- Submit button --}}
 			<div class="form-group row mb-0">
 				<div class="col-md text-center">
-					<button type="submit" class="btn btn-primary">
+					<button id="upload-button" type="submit" class="btn btn-primary">
 						{{ __('Upload Dataset') }}
 					</button>
 				</div>

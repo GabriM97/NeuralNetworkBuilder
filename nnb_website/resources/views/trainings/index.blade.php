@@ -9,6 +9,12 @@
 @section('content')
 
 <div class="container text-center">
+    <div class="row">
+        <div class="col-2 h5">
+            <a href="{{route("networks.index", compact("user"))}}"><< &nbsp; Models</a>
+        </div>
+    </div>
+
     @if($user->id != Auth::user()->id)
         <h2 class="mb-4">Trainings | user: {{$user->username}}</h2>
     @else

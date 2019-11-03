@@ -14,7 +14,7 @@
 
         <div class="w-100"></div>
 
-        <div class="col text-muted d-block">Compile again to 'edit' the compilation details</div>
+        <div class="col text-muted d-block">Compile again to edit the compilation details</div>
     </div>
     <div class="row my-2">
         <div class="col-6 align-self-center text-right font-weight-bold">Learning rate</div>

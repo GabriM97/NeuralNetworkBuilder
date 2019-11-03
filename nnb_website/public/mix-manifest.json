@@ -6,6 +6,7 @@
     "/js/dataset_uploader.js": "/js/dataset_uploader.js",
     "/js/edit_form_control.js": "/js/edit_form_control.js",
     "/js/generate_layers.js": "/js/generate_layers.js",
+    "/js/handle_submit.js": "/js/handle_submit.js",
     "/js/manage_training.js": "/js/manage_training.js",
     "/js/update_realtime_data.js": "/js/update_realtime_data.js"
 }

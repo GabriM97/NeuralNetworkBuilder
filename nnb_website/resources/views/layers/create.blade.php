@@ -1,6 +1,8 @@
+{{-- 
 @section('scripts')
     <script src="{{ asset('js/generate_layers.js') }}"></script>
-@endsection
+@endsection 
+--}}
 
 
 <div id="layers_container" class="form-group mx-3 my-5">
