@@ -38,20 +38,20 @@
                     <ul class="navbar-nav mr-auto">
                         @auth
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('home') }}">{{ __('Dashboard') }}</a>
+                                <a class="nav-link {{ Route::is('home') ? 'active-tab' : null }}" href="{{ route('home') }}">{{ __('Dashboard') }}</a>
                             </li>
                             <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('datasets.index', ["user" => Auth::user()]) }}">{{ __('Datasets') }}</a>
+                                    <a class="nav-link {{ Route::currentRouteNamed('datasets*') ? 'active-tab' : null }}" href="{{ route('datasets.index', ["user" => Auth::user()]) }}">{{ __('Datasets') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('networks.index', ["user" => Auth::user()]) }}">{{ __('Models') }}</a>
+                                <a class="nav-link {{ Route::currentRouteNamed('networks*') ? 'active-tab' : null }}" href="{{ route('networks.index', ["user" => Auth::user()]) }}">{{ __('Models') }}</a>
                             </li>
                             <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('trainings.index', ["user" => Auth::user()]) }}">{{ __('Trainings') }}</a>
+                                    <a class="nav-link {{ Route::currentRouteNamed('trainings*') ? 'active-tab' : null }}" href="{{ route('trainings.index', ["user" => Auth::user()]) }}">{{ __('Trainings') }}</a>
                             </li>
 
                             @if (Auth::user()->rank == -1)
-                                <li class="nav-item dropdown ml-3">
+                                <li class="nav-item dropdown mx-3">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle text-danger" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         Admin panel <span class="caret"></span>
                                     </a>
@@ -62,6 +62,21 @@
                                     </div>
                                 </li>
                             @endif
+
+                            <li class="nav-item">
+                                @php
+                                    $size = Auth::user()->get_tot_files_size();
+                                    if($size/1024 < 1000) 
+                                        $size_render = round($size/1024, 2)." KB ";
+                                    elseif($size/1048576 < 1000) 
+                                        $size_render = round($size/1048576, 2)." MB ";
+                                    else //if($size/1073741824 < 1000) 
+                                        $size_render = round($size/1073741824, 2)." GB ";
+
+                                    $max_space = round(Auth::user()->get_max_available_space()/1073741824, 2)." GB used";
+                                @endphp
+                                <span class="navbar-text px-2 text-secondary">{{$size_render}} of {{$max_space}}</span>
+                            </li>
                         @endauth
                     </ul>
 
