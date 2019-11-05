@@ -205,7 +205,7 @@
                 
             <div class="w-100"></div>
             <!-- Chart -->
-        <div class="col text-center {{($training->status != "started") ? "d-none" : NULL}}">
+            <div class="col text-center {{($training->status != "started") ? "d-none" : NULL}}">
                 <div id="chart-container">
                     <canvas id="training_chart" class="chartjs-render-monitor"></canvas>
                 </div>
