@@ -1,3 +1,0 @@
-Don't remove this file.
-
-It is used to keep the "saves" folder created.
