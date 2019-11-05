@@ -120,7 +120,7 @@ function disableDataset(model, first_run) {
     y_data = $(this).attr("y_out");
 
     if (x_data != x || y_data != y) {
-      $(this).attr('disabled', true);
+      $(this).attr("disabled", true).addClass('d-none');
       $(this).attr('selected', false);
     } else {
       // x_data == x && y_data == y
@@ -128,15 +128,15 @@ function disableDataset(model, first_run) {
         // new training
         $("#training_dataset").children("option:selected").attr('selected', false); //remove previously selected option
 
-        $(this).attr('disabled', false);
+        $(this).attr("disabled", false).removeClass('d-none');
         $(this).attr('selected', true);
       } else {
         // edit training
-        if (first_run) $(this).attr('disabled', false);else {
+        if (first_run) $(this).attr("disabled", false).removeClass('d-none');else {
           // model on change
           $("#training_dataset").children("option:selected").attr('selected', false); //remove previously selected option
 
-          $(this).attr('disabled', false);
+          $(this).attr("disabled", false).removeClass('d-none');
           $(this).attr('selected', true);
         }
       }
@@ -149,7 +149,7 @@ function disableDataset(model, first_run) {
     y_data = $(this).attr("y_out");
 
     if (x_data != x || y_data != y) {
-      $(this).attr('disabled', true);
+      $(this).attr("disabled", true).addClass('d-none');
       $(this).attr('selected', false);
     } else {
       // x_data == x && y_data == y
@@ -157,15 +157,15 @@ function disableDataset(model, first_run) {
         // new training
         $("#test_dataset").children("option:selected").attr('selected', false); //remove previously selected option
 
-        $(this).attr('disabled', false);
+        $(this).attr("disabled", false).removeClass('d-none');
         $(this).attr('selected', true);
       } else {
         // edit training
-        if (first_run) $(this).attr('disabled', false);else {
+        if (first_run) $(this).attr("disabled", false).removeClass('d-none');else {
           // model on change
           $("#test_dataset").children("option:selected").attr('selected', false); //remove previously selected option
 
-          $(this).attr('disabled', false);
+          $(this).attr("disabled", false).removeClass('d-none');
           $(this).attr('selected', true);
         }
       }

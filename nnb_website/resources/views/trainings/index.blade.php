@@ -8,10 +8,12 @@
 
 @section('content')
 
-<div class="container text-center">
+<div class="container-fluid col-md-11 text-center">
     <div class="row">
-        <div class="col-2 h5">
-            <a href="{{route("networks.index", compact("user"))}}"><< &nbsp; Models</a>
+        <div class="col-md-2 h5">
+            <a class="text-decoration-none rounded text-white p-2" href="{{route("networks.index", compact("user"))}}">
+                <i class="fas fa-arrow-circle-left mr-2"></i>Models
+            </a>
         </div>
     </div>
 
@@ -20,14 +22,14 @@
     @else
         @if($user->available_space > 0)
             <a href="{{route("trainings.create", ['user' => $user])}}">
-                <button class="btn btn-info"><strong>+</strong> Start new training</button>
+                <button class="btn btn-info"><i class="fas fa-tools mr-2"></i>START NEW TRAINING</button>
             </a>
         @endif
         <h2 class="mb-3 mt-3 text-left">Your trainings</h2>
     @endif
 
-    <div class="container p-0 my-2">
-        <div class="row border border-secondary text-center font-weight-bold">    <!-- TITLE ROW -->
+    <div class="main-container rounded p-1 my-2">
+        <div class="row text-center font-weight-bold">    <!-- TITLE ROW -->
             <div class="col-md-2 align-self-center">Model</div>
             <div class="col-md-2 align-self-center">Training Dataset</div>
             <div class="col-md-2 align-self-center">Test Dataset</div>
@@ -45,8 +47,8 @@
                 $test_dataset = App\Dataset::find($train->dataset_id_test);
             @endphp
 
-            <div class="row border border-secondary text-center">
-                <div class="col-md-2 align-self-center">
+            <div class="row text-center my-3">
+                <div class="col-md-2 align-self-center font-weight-bold">
                     @if ($model)
                         <a href="{{route("networks.show", ['user' => $user, 'network' => $model])}}">
                             {{ $model->model_name }}
@@ -55,7 +57,7 @@
                         <span class="font-weight-bold text-danger">MODEL NOT FOUND</span>
                     @endif
                 </div>
-                <div class="col-md-2 align-self-center">
+                <div class="col-md-2 align-self-center font-weight-bold">
                     @if ($training_dataset)
                         <a href="{{route("datasets.show", ['user' => $user, 'dataset' => $training_dataset])}}">    
                             {{ $training_dataset->data_name }}
@@ -94,8 +96,8 @@
                 </div>
                 <div class="col-md-2 align-self-center">
                     {{-- DETAILS BUTTON --}}
-                    <a href="{{ route('trainings.show', ['user' => $user, 'training' => $train]) }}">
-                        <button class="btn btn-primary">Details</button>
+                    <a href="{{ route('trainings.show', ['user' => $user, 'training' => $train]) }}" class="text-decoration-none" title="Details">
+                        <button class="btn btn-primary btn-circle"><i class="fas fa-list-ul"></i></button>
                     </a>
 
                     {{-- START/STOP BUTTON --}}
@@ -103,12 +105,14 @@
                         if($train->status == "started" || $train->status == "paused"){
                             $action = route('trainings.stop', ["user" => $user, "training" => $train]);
                             $method = "stop";
+                            $icon = "fa-stop";
                         }else{
                             $action = route('trainings.start', ["user" => $user, "training" => $train]);
                             $method = "start";
+                            $icon = "fa-play";
                         }
                     @endphp    
-                    <form method="POST" action="{{ $action }}" class="d-inline-block mx-1">
+                    <form method="POST" action="{{ $action }}" class="d-inline-block">
                         @csrf
                         <input type="hidden" name="_type" value="{{ $method }}">
                         @php
@@ -124,28 +128,11 @@
                                 if($train->status == "error")
                                     $btn_satatus = "disabled";
                         @endphp
-                        <button class="btn btn-warning" {{ $btn_satatus }}>{{ ucfirst($method) }}</button>
+                        <button class="btn btn-warning btn-circle" title="{{ ucfirst($method) }}" {{ $btn_satatus }}>
+                                <i class="fas {{$icon}}"></i>
+                        </button>
                     </form>
                 </div>
-
-                {{--
-                <div class="col-md-3 align-self-center">
-                    {{-- DETAILS BUTTON -}}
-                    <a href="{{ route('networks.show', ['user' => $user, 'network' => $train]) }}">
-                        <button class="btn btn-primary">Details</button>
-                    </a>
-                    
-                    {{-- COMPILE BUTTON -}}
-                    <a href="{{ route("compilations.create", ['user' => $user, 'network' => $train]) }}">
-                        <button class="btn btn-warning">Compile</button>
-                    </a>
-
-                    {{-- DOWNLOAD BUTTON -}}
-                    <a href="{{ route("networks.download", ['user' => $user, 'network' => $train]) }}">
-                        <button class="btn btn-outline-dark">Download</button>
-                    </a>
-                </div>
-                --}}
             </div>
         @endforeach
     </div>

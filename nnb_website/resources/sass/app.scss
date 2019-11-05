@@ -7,14 +7,38 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-/*
 body{
-    background-color: lightgrey;
+    background-color: #222831;
+    color: white;
 }
-*/
 
-button{
-    margin: 5px 0;
+.navbar{
+    padding-bottom: 0;
+    background-color: #393e46;
+}
+
+.dropdown-item:hover{
+    background-color: grey;
+}
+
+.dropdown-item:active{
+    background-color: #393e46;
+}
+
+.btn{
+    margin: 5px 5px 10px 5px;
+}
+
+
+.btn-circle {
+    border-radius: 100%;
+    height: 2.5rem;
+    width: 2.5rem;
+    font-size: 1.1rem;
+    padding: 0.2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .tooltip-custom {
@@ -69,21 +93,25 @@ button{
     font-weight: bold;
 }
 
+.main-container{
+    background-color: #393e46;
+    font-size: 1rem;
+}
+
 .card-body .card{
-    background-color: #6c757d;  //bg-secondary
+    //background-color: #6c757d;  //bg-secondary
+    background-color: #393e46; 
     color: white;
-    border-radius: 0.5rem;
-    border: 0;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem; 
+    border: 1px;
+    margin-bottom: 0.5rem;
 }
 
 .active-tab{
     border-radius: 0.5rem;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    background-color: #343a40; //bg-dark
+    background-color: #222831; 
     color: rgb(255,255,255) !important;
     margin-bottom: 0;
-    padding-top: 5px;
 }
+

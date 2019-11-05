@@ -11,6 +11,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="https://kit.fontawesome.com/cd5aa7a425.js" crossorigin="anonymous"></script>
     @yield("scripts")
 
     <!-- Fonts -->
@@ -24,7 +25,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-dark">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'NeuralNetworkBuilder') }}
@@ -52,7 +53,7 @@
 
                             @if (Auth::user()->rank == -1)
                                 <li class="nav-item dropdown mx-3">
-                                    <a id="navbarDropdown" class="nav-link dropdown-toggle text-danger" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle bg-danger text-white font-weight-bold py-0 mt-2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         Admin panel <span class="caret"></span>
                                     </a>
     
@@ -75,7 +76,7 @@
 
                                     $max_space = round(Auth::user()->get_max_available_space()/1073741824, 2)." GB used";
                                 @endphp
-                                <span class="navbar-text px-2 text-secondary">{{$size_render}} of {{$max_space}}</span>
+                                <span class="navbar-text px-2 text-light">{{$size_render}} of {{$max_space}}</span>
                             </li>
                         @endauth
                     </ul>

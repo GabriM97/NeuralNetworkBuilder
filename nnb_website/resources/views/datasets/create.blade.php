@@ -17,20 +17,22 @@
 @section('content')
 	<div class="container">
 		<div class="row">
-			<div class="col h5">
-				<a href="{{route("datasets.index", compact("user"))}}"><< &nbsp; Datasets</a>
+			<div class="col-md h5">
+				<a class="text-decoration-none rounded text-white p-md-2" href="{{route("datasets.index", compact("user"))}}">
+					<i class="fas fa-arrow-circle-left mr-2"></i>Datasets
+				</a>
 			</div>
 		</div>
 	</div>
 
-	<div class="container col-md-5">
-		<h2 class="mb-5 mt-3 text-center">Create new Dataset</h2>
-		<form id="main-form" method="POST" enctype="multipart/form-data" action="{{route("datasets.store", ['user' => $user])}}">
-			@csrf
+	<form id="main-form" method="POST" enctype="multipart/form-data" action="{{route("datasets.store", ['user' => $user])}}">
+		@csrf
+		<div class="main-container rounded container col-md-5 p-2">
+			<h2 class="mb-5 mt-3 text-center">Create new Dataset</h2>
 
 			{{-- Import dataset field --}}
-			<div class="form-group row">
-				<div class="offset-md-2 font-weight-bold">Dataset</div>
+			<div class="form-group row px-5">
+				<div class="font-weight-bold">Dataset</div>
 				
 				<div class="tooltip tooltip-custom">
 					<img src="{{ asset('img/info_icon.png') }}" alt="info_icon" class="info">
@@ -44,7 +46,7 @@
 				</div>
 				
 				{{-- Upload field --}}
-				<div class="custom-file offset-md-2 mr-3">
+				<div class="custom-file">
 					<div id="progressBar"></div>
 					<input type="file" class="custom-file-input @error('dataset_file') is-invalid @enderror" id="dataset_file" name="dataset_file" accept=".json, .csv, .pickle, .pkl" required>
 					<label class="custom-file-label" for="dataset_file">Choose file</label>
@@ -58,10 +60,10 @@
 			</div>
 
 			{{-- Title field --}}
-			<div class="form-group row">
-				<label for="title" class="col-md-4 col-form-label text-md-right font-weight-bold">{{ __('Title') }}</label>
+			<div class="form-group row px-5">
+				<label for="title" class="col-md-3 col-form-label text-md-right font-weight-bold">{{ __('Title') }}</label>
 
-				<div class="col-md-8">
+				<div class="col-md">
 					<input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') }}" placeholder="Insert dataset title" required autofocus>
 
 					@error('title')
@@ -73,10 +75,10 @@
 			</div>
 
 			{{-- Description field --}}
-			<div class="form-group row">
-				<label for="description" class="col-md-4 col-form-label align-self-center text-md-right font-weight-bold">{{ __('Description') }}</label>
+			<div class="form-group row px-5">
+				<label for="description" class="col-md-3 col-form-label align-self-center text-md-right font-weight-bold">{{ __('Description') }}</label>
 
-				<div class="col-md-8">
+				<div class="col-md">
 					<textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" placeholder="Insert dataset description">{{ old('description') }}</textarea>
 
 					@error('description')
@@ -87,11 +89,11 @@
 				</div>
 			</div>
 
-			<div class="form-group row">
-				<div class="col-md-6 text-md-right">
+			<div class="form-group row px-5">
+				<div class="col-md-6 text-md-center">
 					{{-- X_Shape field --}}
-					<label for="input_shape" class="col-form-label pr-2 align-self-center font-weight-bold">{{ __('Input shape ( X_features )') }}</label><br>
-					<input id="input_shape" type="number" class="col-md-6 form-control float-right @error('input_shape') is-invalid @enderror" name="input_shape" required value="1" step="1" min="1" max="1000">
+					<label for="input_shape" class="col-form-label align-self-center font-weight-bold">{{ __('Input shape ( X_features )') }}</label><br>
+					<input id="input_shape" type="number" class="col-md-6 mx-md-auto form-control @error('input_shape') is-invalid @enderror" name="input_shape" required value="1" step="1" min="1" max="1000">
 					
 					@error('input_shape')
 						<span class="invalid-feedback" role="alert">
@@ -99,10 +101,10 @@
 						</span>
 					@enderror
 				</div>
-				<div class="col-md-6 text-md-right">
+				<div class="col-md-6 text-md-center">
 					{{-- Y_Classes field --}}
-					<label for="output_classes" class="col-form-label pr-2 align-self-center font-weight-bold">{{ __('Output classes ( Y_labels )') }}</label><br>
-					<input id="output_classes" type="number" class="col-md-6 form-control float-right @error('output_classes') is-invalid @enderror" name="output_classes" required value="1" step="1" min="1" max="1000">
+					<label for="output_classes" class="col-form-label align-self-center font-weight-bold">{{ __('Output classes ( Y_labels )') }}</label><br>
+					<input id="output_classes" type="number" class="col-md-6 mx-md-auto form-control @error('output_classes') is-invalid @enderror" name="output_classes" required value="1" step="1" min="1" max="1000">
 					
 					@error('output_classes')
 						<span class="invalid-feedback" role="alert">
@@ -113,10 +115,10 @@
 			</div>
 
 			{{-- Train, Test or Both --}}
-			<fieldset class="form-group row">
+			<fieldset class="form-group row px-5">
 				<div class="row">
-					<legend class="col-form-label col-sm-5 text-sm-right align-self-center font-weight-bold">Data Type</legend>
-					<div class="col-sm-6">
+					<legend class="col-form-label col-md-5 text-md-right align-self-center font-weight-bold">Data Type</legend>
+					<div class="col-md-6">
 						<div class="form-check">
 							<input class="form-check-input @error('dataset_type') is-invalid @enderror" type="radio" name="dataset_type" id="train" value="train" >
 							<label class="form-check-label" for="train">For Train 
@@ -156,11 +158,11 @@
 			{{-- Submit button --}}
 			<div class="form-group row mb-0">
 				<div class="col-md text-center">
-					<button id="upload-button" type="submit" class="btn btn-primary">
-						{{ __('Upload Dataset') }}
+					<button id="upload-button" type="submit" class="btn btn-info">
+						<i class="fas fa-upload fa-lg mr-2"></i>{{ __('Upload Dataset') }}
 					</button>
 				</div>
 			</div>
-		</form>
-	</div>
+		</div>
+	</form>
 @endsection

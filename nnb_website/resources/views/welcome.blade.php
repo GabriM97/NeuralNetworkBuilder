@@ -7,11 +7,9 @@
 @endsection
 
 @section('content')
-    <div class="content">
-        <div class="title">
-            <div class="sub-title">Welcome to</div>
-            Neural Network Builder
-        </div>
+    <div id="welcome-content" class="content mt-5">
+        <div class="sub-title">Welcome to</div>
+        <div class="title">Neural Network Builder</div>
 
         <div class="description">
             With this tool you can build your own Neural Network Models. <br>

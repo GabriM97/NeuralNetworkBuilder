@@ -19,38 +19,41 @@
         
     @endif
     --}}
-    <div class="container">
+    <div class="container text-center">
         <div class="row">
             <div class="col h5">
-                <a href="{{route("datasets.index", compact("user"))}}"><< &nbsp; Datasets</a>
+                <a class="text-decoration-none rounded text-white p-2" href="{{route("datasets.index", compact("user"))}}">
+                    <i class="fas fa-arrow-circle-left mr-2"></i>Datasets
+                </a>
             </div>
-            <div class="col offset-8 h5">
-                <a href="{{route("networks.index", compact("user"))}}">Models &nbsp; >></a>
+            <div class="col offset-md-8 h5">
+                <a class="text-decoration-none rounded text-white p-2" href="{{route("networks.index", compact("user"))}}">
+                    Models<i class="fas fa-arrow-circle-right ml-2"></i>
+                </a>
             </div>
         </div>
     </div>
 
-
-    <div class="container col-8 text-sm-center">
-        <div class="row my-5">
-            <div class="col offset-1 align-self-center text-right">
+    <div class="main-container rounded container col-md-8 text-md-center p-2 my-4">
+        <div class="align-self-center text-center my-3">
+            <div class="d-inline-block align-self-center text-right">
                 <h2 class="content-title m-0">Dataset details</h2>
             </div>
 
             {{-- DOWNLOAD BUTTON --}}
-            <div class="col align-self-center text-left">
+            <div class="d-inline-block align-self-center text-left">
                 <a href="{{ route("datasets.download", compact('user', 'dataset')) }}">
-                    <button class="btn btn-sm btn-outline-dark">Download</button>
+                    <button class="btn btn-sm btn-warning">Download<i class="fas fa-download pl-2"></i></button>
                 </a>
             </div>
         </div>
         
-        <div class="row">
+        <div class="row px-5">
             <!-- Left column -->
-            <div class="col-3 offset-2">
+            <div class="col-md">
                 <div class="row my-2">
-                    <div class="col-7 align-self-center text-right font-weight-bold">Data type</div>
-                    <div class="col-5 align-self-center text-left"> {{-- DATA TYPE --}}
+                    <div class="col-md-7 align-self-center text-md-right font-weight-bold">Data type</div>
+                    <div class="col-md-5 align-self-center text-md-left"> {{-- DATA TYPE --}}
                         @php
                             if($dataset->is_train) echo "Train";
                             if($dataset->is_test) echo "Test";
@@ -59,16 +62,16 @@
                     </div>
                 </div>
                 <div class="row my-2">
-                    <div class="col-7 align-self-center text-right font-weight-bold">Input shape</div>
-                    <div class="col-5 align-self-center text-left">{{$dataset->x_shape}}</div>
+                    <div class="col-md-7 align-self-center text-md-right font-weight-bold">Input shape</div>
+                    <div class="col-md-5 align-self-center text-md-left">{{$dataset->x_shape}}</div>
                 </div>
                 <div class="row my-2">
-                    <div class="col-7 align-self-center text-right font-weight-bold">Output classes</div>
-                    <div class="col-5 align-self-center text-left">{{$dataset->y_classes}}</div>
+                    <div class="col-md-7 align-self-center text-md-right font-weight-bold">Output classes</div>
+                    <div class="col-md-5 align-self-center text-md-left">{{$dataset->y_classes}}</div>
                 </div>
                 <div class="row my-2">
-                    <div class="col-7 align-self-center text-right font-weight-bold">File size</div>
-                    <div class="col-5 align-self-center text-left pr-0">    {{-- FILE SIZE --}}
+                    <div class="col-md-7 align-self-center text-md-right font-weight-bold">File size</div>
+                    <div class="col-md-5 align-self-center text-md-left pr-0">    {{-- FILE SIZE --}}
                         @php
                             if($dataset->file_size/1024 < 1000) 
                                 echo round($dataset->file_size/1024, 2)." KB";
@@ -80,28 +83,28 @@
                     </div>
                 </div>
                 <div class="row my-2">
-                    <div class="col-7 align-self-center text-right font-weight-bold">File extension</div>
-                    <div class="col-5 align-self-center text-left">{{strtoupper($dataset->file_extension)}}</div>
+                    <div class="col-md-7 align-self-center text-md-right font-weight-bold">File extension</div>
+                    <div class="col-md-5 align-self-center text-md-left">{{strtoupper($dataset->file_extension)}}</div>
                 </div>
             </div>
 
             <!-- Right column -->
-            <div class="col-6 offset-1 text-break">
+            <div class="col-md text-break">
                 
                 @if(Auth::user()->rank == -1 && $user->id != Auth::user()->id)
                     <div class="row my-2">
-                        <div class="col-4 align-self-center text-right font-weight-bold">Owner</div>
-                        <div class="col-8 align-self-center text-left">{{$user->username}}</div>
+                        <div class="col-md-4 align-self-center text-md-right font-weight-bold">Owner</div>
+                        <div class="col-md-8 align-self-center text-md-left">{{$user->username}}</div>
                     </div>
                 @endif
 
                 <div class="row my-2">
-                    <div class="col-4 align-self-center text-right font-weight-bold">Title</div>
-                    <div class="col-8 align-self-center text-left">{{ $dataset->data_name }}</div>
+                    <div class="col-md-4 align-self-center text-md-right font-weight-bold">Title</div>
+                    <div class="col-md-8 align-self-center text-md-left">{{ $dataset->data_name }}</div>
                 </div>
                 <div class="row my-2">
-                    <div class="col-4 align-self-center text-right font-weight-bold">Description</div>
-                    <div class="col-8 align-self-center border text-left">
+                    <div class="col-md-4 align-self-center text-md-right font-weight-bold">Description</div>
+                    <div class="col-md-8 align-self-center text-md-left">
                         @if($dataset->data_description)     {{-- description != NULL --}}
                             {{$dataset->data_description}}
                         @else
@@ -110,8 +113,8 @@
                     </div>
                 </div>
                 <div class="row my-2">
-                    <div class="col-4 align-self-center text-right font-weight-bold">Last time used</div>
-                    <div class="col-8 align-self-center text-left">
+                    <div class="col-md-4 align-self-center text-md-right font-weight-bold">Last time used</div>
+                    <div class="col-md-8 align-self-center text-md-left">
                         @if($dataset->last_time_used)
                                 {{$dataset->last_time_used}}
                         @else
@@ -120,22 +123,22 @@
                     </div>
                 </div>
                 <div class="row my-2">
-                    <div class="col-4 align-self-center text-right font-weight-bold">Uploaded at</div>
-                    <div class="col-8 align-self-center text-left">{{$dataset->created_at}}</div>
+                    <div class="col-md-4 align-self-center text-md-right font-weight-bold">Uploaded at</div>
+                    <div class="col-md-8 align-self-center text-md-left">{{$dataset->created_at}}</div>
                 </div>
             </div>
         </div>
         <div class="row mt-5">
             <div class="col-6 text-right">   {{-- EDIT BUTTON --}}         
                 <a href="{{ route('datasets.edit', compact("user", "dataset")) }}">
-                    <button class="btn btn-primary">Edit</button>
+                    <button class="btn btn-light"><i class="fas fa-pen fa-lg mr-2"></i>Edit</button>
                 </a>
             </div>
             <div class="col-6 text-left">   {{-- DELETE BUTTON --}}
                 <form class="form-delete d-inline-block" method="POST" action="{{route('datasets.destroy', compact("user", "dataset"))}}">
                     @csrf
                     @method("DELETE")
-                    <button class="btn btn-danger" type="submit">Delete</button>
+                    <button class="btn btn-danger" type="submit"><i class="fas fa-trash-alt fa-lg mr-2"></i>Delete</button>
                 </form>
             </div>
         </div>

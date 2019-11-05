@@ -16,15 +16,6 @@
         </div>
 
         @if(Auth::user()->rank == -1)
-            <!-- DELETE USER FORM (ADMIN ONLY) -->
-            {{-- 
-                <form class="form-delete d-inline-block" method="POST" action="{{route("users.destroy", ["user" => $user])}}">
-                    @csrf
-                    @method("DELETE")
-                    <button class="btn btn-danger btn-sm" type="submit">Delete</button>
-                </form>
-            --}}
-            
             <!-- CHANGE USERNAME FORM (ADMIN ONLY) -->
             <div class="form-group my-5">
                 <div class="row my-2">
@@ -49,8 +40,16 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col text-center">
+                        {{-- CONFIRM BUTTON --}}
+                        <div class="col text-right px-0">
                             <button class="btn btn-primary" type="submit">Confirm</button>
+                        </div>
+
+                        {{-- CANCEL BUTTON --}}
+                        <div class="col text-left px-0">
+                            <a href="{{ route("users.show", compact("user")) }}">
+                                <button type="button" class="btn btn-secondary">Cancel</button>
+                            </a>
                         </div>
                     </div>
                 </form>
@@ -102,7 +101,17 @@
                 @endif
 
                 <div class="row">
-                    <div class="col"><button class="btn btn-primary" type="submit">Confirm</button></div>
+                    {{-- CONFIRM BUTTON --}}
+                    <div class="col text-right px-0">
+                        <button class="btn btn-primary" type="submit">Confirm</button>
+                    </div>
+                    
+                    {{-- CANCEL BUTTON --}}
+                    <div class="col text-left px-0">
+                        <a href="{{ route("users.show", compact("user")) }}">
+                            <button type="button" class="btn btn-secondary">Cancel</button>
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>
@@ -152,7 +161,17 @@
                 @endif
 
                 <div class="row">
-                    <div class="col"><button class="btn btn-primary" type="submit">Confirm</button></div>
+                    {{-- CONFIRM BUTTON --}}
+                    <div class="col text-right px-0">
+                        <button class="btn btn-primary" type="submit">Confirm</button>
+                    </div>
+                    
+                    {{-- CANCEL BUTTON --}}
+                    <div class="col text-left px-0">
+                        <a href="{{ route("users.show", compact("user")) }}">
+                            <button type="button" class="btn btn-secondary">Cancel</button>
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>

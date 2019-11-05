@@ -64,7 +64,7 @@ function renderLayers(layers_num) {
 }
 
 function addLayer_col(cols, current_main_row, layer_number_cnt) {
-	var layer_container = $("<div class='border border-secondary my-4 p-4 rounded-pill col-" + cols + "'></div>");
+	var layer_container = $("<div class='main-container border border-secondary my-4 p-4 rounded-pill col-" + cols + "'></div>");
 	$(layer_container).append("");
 
 	//Layer number
@@ -78,7 +78,7 @@ function addLayer_col(cols, current_main_row, layer_number_cnt) {
 
 	// Neurons number
 	var neurons_num = '\
-  	<div class="col text-center">\
+  	<div class="col-md text-center">\
   		<label class="col-form-label font-weight-bold" for="neurons_number[]">Neurons</label>\
   		<input class="form-control" type="number" name="neurons_number[]" min="1" max="500" value="4">\
 	</div>';
@@ -86,8 +86,8 @@ function addLayer_col(cols, current_main_row, layer_number_cnt) {
 
 	// Activ function
     var activ_func = '\
-	<div class="col text-center">\
-		<label class="col-form-label font-weight-bold" for="activ_funct[]">Activation function</label>\
+	<div class="col-md text-center">\
+		<label class="col-form-label font-weight-bold" for="activ_funct[]">Activ. function</label>\
 		<select class="form-control" name="activ_funct[]">\
 			<option value="relu" selected="">ReLU</option>\
 			<option value="sigmoid">Sigmoid</option>\

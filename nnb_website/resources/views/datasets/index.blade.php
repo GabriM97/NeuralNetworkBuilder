@@ -8,7 +8,7 @@
 
 @section('content')
 
-<div class="container text-center">
+<div class="container-fluid col-md-11 text-center">
     <div class="row">
         @php
             if(Auth::user()->rank == -1 && $user->id != Auth::user()->id)
@@ -17,10 +17,14 @@
                 $visibility = "";
         @endphp
         <div class="col h5">
-            <a class="{{$visibility}}" href="{{route("home")}}"><< &nbsp; Dashboard</a>
+            <a class="text-decoration-none rounded text-white p-2 {{$visibility}}" href="{{route("home")}}">
+                <i class="fas fa-arrow-circle-left mr-2"></i>Dashboard
+            </a>
         </div>
-        <div class="col offset-8 h5">
-            <a href="{{route("networks.index", compact("user"))}}">Models &nbsp; >></a>
+        <div class="col offset-md-8 h5">
+            <a class="text-decoration-none rounded text-white p-2" href="{{route("networks.index", compact("user"))}}">
+                Models<i class="fas fa-arrow-circle-right ml-2"></i>
+            </a>
         </div>
     </div>
 
@@ -42,14 +46,14 @@
     @else
         @if($user->available_space > 0)
             <a href="{{route("datasets.create", ['user' => $user])}}">
-                <button class="btn btn-info"><strong>+</strong> Import new Dataset</button>
+                <button class="btn btn-info"><i class="fas fa-upload mr-2"></i>IMPORT NEW DATASET</button>
             </a>
         @endif
         <h2 class="mb-3 mt-3 text-left">Your datasets</h2>
     @endif
 
-    <div class="container p-0 my-2">
-        <div class="row border border-secondary text-center font-weight-bold">    <!-- TITLE ROW -->
+    <div class="main-container border-left-primary rounded p-1 my-2">
+        <div class="row text-center font-weight-bold">    <!-- TITLE ROW -->
             <div class="col-md-2 align-self-center">Title</div>
             <div class="col-md-1 align-self-center">Filesize</div>
             <div class="col-md-1 align-self-center">File type</div>
@@ -62,7 +66,7 @@
         </div>
 
         @foreach ($datasets as $data)
-            <div class="row border border-secondary text-center text-break">
+            <div class="row text-center text-break my-3">
                 <div class="col-md-2 align-self-center">{{$data->data_name}}</div>
                 <div class="col-md-1 align-self-center">    {{-- FILE SIZE --}}
                     @php
@@ -96,21 +100,26 @@
 
                 <div class="col-md-3 align-self-center">
                     {{-- DETAILS BUTTON --}}
-                    <a href="{{ route('datasets.show', ['user' => $user, 'dataset' => $data]) }}">
-                        <button class="btn btn-primary">Details</button>
+                    <a href="{{ route('datasets.show', ['user' => $user, 'dataset' => $data]) }}" class="text-decoration-none" title="Details">
+                        <button class="btn btn-primary btn-circle"><i class="fas fa-list-ul"></i></button>
                     </a>
-                    
-                    {{-- DELETE BUTTON --}}
-                    <form class="form-delete d-inline-block" method="POST" action="{{route('datasets.destroy', ['user' => $user, 'dataset' => $data])}}">
-                        @csrf
-                        @method("DELETE")
-                        <button class="btn btn-danger" type="submit">Delete</button>
-                    </form>
+
+                    {{-- EDIT BUTTON --}}         
+                    <a href="{{ route('datasets.edit', ['user' => $user, 'dataset' => $data]) }}" class="text-decoration-none" title="Edit">
+                        <button class="btn btn-light btn-circle"><i class="fas fa-pen"></i></button>
+                    </a>
 
                     {{-- DOWNLOAD BUTTON --}}
-                    <a href="{{ route("datasets.download", ['user' => $user, 'dataset' => $data]) }}">
-                        <button class="btn btn-outline-dark">Download</button>
+                    <a href="{{ route("datasets.download", ['user' => $user, 'dataset' => $data]) }}" class="text-decoration-none" title="Download">
+                        <button class="btn btn-warning btn-circle"><i class="fas fa-download"></i></button>
                     </a>
+
+                    {{-- DELETE BUTTON --}}
+                    <form class="form-delete d-inline" method="POST" action="{{route('datasets.destroy', ['user' => $user, 'dataset' => $data])}}">
+                        @csrf
+                        @method("DELETE")
+                        <button class="btn btn-danger btn-circle" type="submit" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                    </form>
                 </div>
             </div>
         @endforeach

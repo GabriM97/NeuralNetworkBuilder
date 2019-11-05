@@ -8,13 +8,17 @@
 
 @section('content')
 
-<div class="container text-center">
+<div class="container-fluid col-md-11 text-center">
     <div class="row">
         <div class="col h5">
-            <a href="{{route("datasets.index", compact("user"))}}"><< &nbsp; Datasets</a>
+            <a class="text-decoration-none rounded text-white p-2" href="{{route("datasets.index", compact("user"))}}">
+                <i class="fas fa-arrow-circle-left mr-2"></i>Datasets
+            </a>
         </div>
-        <div class="col offset-8 h5">
-            <a href="{{route("trainings.index", compact("user"))}}">Trainings &nbsp; >></a>
+        <div class="col offset-md-8 h5">
+            <a class="text-decoration-none rounded text-white p-2" href="{{route("trainings.index", compact("user"))}}">
+                Trainings<i class="fas fa-arrow-circle-right ml-2"></i>
+            </a>
         </div>
     </div>
 
@@ -36,14 +40,14 @@
     @else
         @if($user->available_space > 0)
             <a href="{{route("networks.create", ['user' => $user])}}">
-                <button class="btn btn-info"><strong>+</strong> Build new Model</button>
+                <button class="btn btn-info"><i class="fas fa-project-diagram mr-2"></i>BUILD NEW MODEL</button>
             </a>
         @endif
         <h2 class="mb-3 mt-3 text-left">Your models</h2>
     @endif
 
-    <div class="container p-0 my-2">
-        <div class="row border border-secondary text-center font-weight-bold">    <!-- TITLE ROW -->
+    <div class="main-container rounded p-1 my-2">
+        <div class="row text-center font-weight-bold">    <!-- TITLE ROW -->
             <div class="col-md-2 align-self-center">Name</div>
             <div class="col-md-1 align-self-center">Input shape</div>
             <div class="col-md-1 align-self-center">Output classes</div>
@@ -56,7 +60,7 @@
         </div>
 
         @foreach ($networks as $model)
-            <div class="row border border-secondary text-center">
+            <div class="row text-center text-break my-3">
                 <div class="col-md-2 align-self-center">{{$model->model_name}}</div>
                 <div class="col-md-1 align-self-center">{{$model->input_shape}}</div>
                 <div class="col-md-1 align-self-center">{{$model->output_classes}}</div>
@@ -81,18 +85,23 @@
 
                 <div class="col-md-3 align-self-center">
                     {{-- DETAILS BUTTON --}}
-                    <a href="{{ route('networks.show', ['user' => $user, 'network' => $model]) }}">
-                        <button class="btn btn-primary">Details</button>
+                    <a href="{{ route('networks.show', ['user' => $user, 'network' => $model]) }}" class="text-decoration-none" title="Details">
+                        <button class="btn btn-primary btn-circle"><i class="fas fa-list-ul"></i></button>
                     </a>
                     
+                    {{-- EDIT BUTTON --}}         
+                    <a href="{{ route('networks.edit', ['user' => $user, 'network' => $model]) }}" class="text-decoration-none" title="Edit">
+                        <button class="btn btn-light btn-circle"><i class="fas fa-pen"></i></button>
+                    </a>
+
                     {{-- COMPILE BUTTON --}}
-                    <a href="{{ route("compilations.create", ['user' => $user, 'network' => $model]) }}">
-                        <button class="btn btn-warning">Compile</button>
+                    <a href="{{ route("compilations.create", ['user' => $user, 'network' => $model]) }}" class="text-decoration-none" title="Compile">
+                        <button class="btn btn-success btn-circle text-dark"><i class="fas fa-barcode fa-lg"></i></button>
                     </a>
 
                     {{-- DOWNLOAD BUTTON --}}
-                    <a href="{{ route("networks.download", ['user' => $user, 'network' => $model]) }}">
-                        <button class="btn btn-outline-dark">Download</button>
+                    <a href="{{ route("networks.download", ['user' => $user, 'network' => $model]) }}" class="text-decoration-none" title="Download">
+                        <button class="btn btn-warning btn-circle"><i class="fas fa-download"></i></button>
                     </a>
                 </div>
             </div>
