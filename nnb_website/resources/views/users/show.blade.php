@@ -31,7 +31,7 @@
     @endif
 
     <div class="main-container rounded container col-md-6 p-2 my-4">
-        <h2 class="content-title align-self-center my-3 text-center"><i class="fas fa-user fa-sm mr-2"></i>Profile details</h2>
+        <h2 class="content-title align-self-center my-3 text-center"><i class="fas fa-user fa-xs mr-2"></i>Profile details</h2>
         
         <div class="row my-2 px-5">
             <div class="col-md-6 text-md-right align-self-center font-weight-bold">Username</div>

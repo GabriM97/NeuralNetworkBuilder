@@ -25,7 +25,7 @@
 	<form id="main-form" method="POST" action="{{route("networks.store", ['user' => $user])}}">
 		@csrf
 		<div class="main-container rounded container col-md-5 p-2">
-			<h2 class="mb-5 mt-3 text-center">Build new Model</h2>
+			<h2 class="mb-5 mt-3 text-center">Build new Model<i class="fas fa-project-diagram fa-xs pl-3"></i></h2>
 
             <div class="form-group row px-5"> {{-- Model type --}}
                 <label for="model_type" class="col-md-3 col-form-label text-md-right font-weight-bold">Model type</label>

@@ -18,14 +18,14 @@
     </div>
 
     <div class="main-container rounded container col-md-6 text-md-center p-2 my-4">
-        <h2 class="content-title mb-5 mt-3 text-center">Edit profile | {{ $user->username }}</h2>
+        <h2 class="content-title mb-5 mt-3 text-center"><i class="fas fa-pen fa-xs pr-3"></i>Edit profile | {{ $user->username }}</h2>
 
         @if(Auth::user()->rank == -1)
             <!-- CHANGE USERNAME FORM (ADMIN ONLY) -->
             <div class="form-group my-5 px-5">
                 <div class="row my-2">
                     <div class="col-md">
-                        <h4>Change username</h4>
+                        <h4>Change username<i class="fas fa-signature fa-xs pl-2"></i></h4>
                     </div>
                 </div>
                 <form class="form-edit" method="POST" action="{{route("users.update", ["user" => $user])}}">
@@ -68,11 +68,11 @@
             </div>
         @endif
 
-        <!-- CHANGE EMAIL FORM -->
+        <!-- CHANGE EMAIL FORM -->  
         <div class="form-group my-5 px-5">    
             <div class="row my-2">
                 <div class="col-md">
-                    <h4 class="d-inline-block">Change email</h4> &ensp;<span>(current: {{ $user->email }})</span>
+                    <h4 class="d-inline-block"><i class="fas fa-envelope fa-xs pr-2"></i>Change email</h4> &ensp;<span>(current: {{ $user->email }})</span>
                 </div>
             </div>
             <form id="form-email" class="form-edit" method="POST" action="{{route("users.update", ["user" => $user])}}">
@@ -139,7 +139,7 @@
         <div class="form-group my-5 px-5">
             <div class="row my-2">
                 <div class="col-md">
-                    <h4>Change password</h4>
+                    <h4><i class="fas fa-key fa-xs pr-2"></i>Change password</h4>
                 </div>
             </div>
             <form id="form-password" class="form-edit" method="POST" action="{{route("users.update", ["user" => $user])}}">

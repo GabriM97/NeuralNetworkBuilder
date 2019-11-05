@@ -68,7 +68,7 @@ function addLayer_col(cols, current_main_row, layer_number_cnt) {
 	$(layer_container).append("");
 
 	//Layer number
-    $(layer_container).append("<div class='row'><div class='col text-center font-weight-bold'>Layer " + layer_number_cnt + "</div></div>");
+    $(layer_container).append("<div class='row'><div class='col text-center font-weight-bold'><i class='fas fa-layer-group fa-sm pr-2'></i>Layer " + layer_number_cnt + "</div></div>");
 	
 	// Container Row for Neurons and Activ Function
 	$(layer_container).append("<div id='row-" + current_main_row + "_" + content_cnt + "' class='row'></div>");

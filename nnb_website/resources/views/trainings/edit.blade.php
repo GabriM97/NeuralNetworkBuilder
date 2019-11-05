@@ -23,7 +23,7 @@
     </div>
 
     <div class="main-container rounded container col-md-6 p-2">
-        <h2 class="content-title text-center mb-5 mt-3">Edit Training</h2>
+        <h2 class="content-title text-center mb-5 mt-3">Edit Training<i class="fas fa-pen fa-xs pl-3"></i></h2>
 
         <form class="form-edit px-5" method="POST" action="{{route("trainings.update", compact("user", "training"))}}">
             @csrf

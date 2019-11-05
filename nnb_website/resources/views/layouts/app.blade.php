@@ -27,7 +27,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-dark">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand font-weight-bold" href="{{ url('/') }}">
                     {{ config('app.name', 'NeuralNetworkBuilder') }}
                 </a>
                 <button class="navbar-toggler mb-1" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -39,16 +39,16 @@
                     <ul class="navbar-nav mr-auto">
                         @auth
                             <li class="nav-item">
-                                <a class="nav-link {{ Route::is('home') ? 'active-tab' : null }}" href="{{ route('home') }}">{{ __('Dashboard') }}</a>
+                                <a class="nav-link font-weight-bold {{ Route::is('home') ? 'active-tab' : null }}" href="{{ route('home') }}">{{ __('Dashboard') }}</a>
                             </li>
                             <li class="nav-item">
-                                    <a class="nav-link {{ Route::currentRouteNamed('datasets*') ? 'active-tab' : null }}" href="{{ route('datasets.index', ["user" => Auth::user()]) }}">{{ __('Datasets') }}</a>
+                                    <a class="nav-link font-weight-bold {{ Route::currentRouteNamed('datasets*') ? 'active-tab' : null }}" href="{{ route('datasets.index', ["user" => Auth::user()]) }}">{{ __('Datasets') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ Route::currentRouteNamed('networks*') ? 'active-tab' : null }}" href="{{ route('networks.index', ["user" => Auth::user()]) }}">{{ __('Models') }}</a>
+                                <a class="nav-link font-weight-bold {{ Route::currentRouteNamed('networks*') ? 'active-tab' : null }}" href="{{ route('networks.index', ["user" => Auth::user()]) }}">{{ __('Models') }}</a>
                             </li>
                             <li class="nav-item">
-                                    <a class="nav-link {{ Route::currentRouteNamed('trainings*') ? 'active-tab' : null }}" href="{{ route('trainings.index', ["user" => Auth::user()]) }}">{{ __('Trainings') }}</a>
+                                    <a class="nav-link font-weight-bold {{ Route::currentRouteNamed('trainings*') ? 'active-tab' : null }}" href="{{ route('trainings.index', ["user" => Auth::user()]) }}">{{ __('Trainings') }}</a>
                             </li>
 
                             @if (Auth::user()->rank == -1)
@@ -102,7 +102,7 @@
                                 @endif        
                             </li>
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle font-weight-bold" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->username }} <span class="caret"></span>
                                 </a>
 

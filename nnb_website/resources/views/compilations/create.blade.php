@@ -24,7 +24,7 @@
 	<form id="main-form" method="POST" action="{{route("compilations.store", compact("user", "network"))}}">
 		@csrf
 		<div class="main-container rounded container col-md-5 p-2">
-        	<h2 class="mb-5 mt-3 text-center">Compile Model | {{$network->model_name}}</h2>
+        	<h2 class="mb-5 mt-3 text-center"><i class="fas fa-barcode pr-2"></i>Compile Model | {{$network->model_name}}</h2>
 
 			@php	//if network->is_compiled
 				if($compile = App\Compilation::where("model_id", $network->id)->first())

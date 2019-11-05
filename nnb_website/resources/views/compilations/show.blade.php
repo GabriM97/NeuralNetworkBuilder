@@ -2,7 +2,7 @@
 @if ($network->is_compiled)
     <div class="align-self-center text-center my-3">
         <div class="d-inline-block my-0 align-self-center h3">
-            <span class="content-title">Compilation details</span>
+            <span class="content-title"><i class="fas fa-barcode pr-2"></i>Compilation details</span>
         </div>
 
         {{-- COMPILE BUTTON --}}

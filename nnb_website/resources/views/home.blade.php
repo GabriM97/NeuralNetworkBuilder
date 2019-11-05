@@ -16,7 +16,7 @@
                             <div class="col-md">  
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="car-title mb-2"><i class="fas fa-user mr-2"></i>USER</h6>
+                                        <h6 class="card-title mb-2"><i class="fas fa-user mr-2"></i>USER</h6>
                                         <p class="card-text mt-4 h4"> {{ $user->username }}</p>
                                     </div>
                                 </div>
@@ -26,7 +26,7 @@
                             <div class="col-md">  
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="car-title mb-2"><i class="fas fa-layer-group mr-2"></i>ACCOUNT TYPE</h6>
+                                        <h6 class="card-title mb-2"><i class="fas fa-layer-group mr-2"></i>ACCOUNT TYPE</h6>
                                         @php
                                             switch ($user->rank){
                                                 case -1:    // Admin
@@ -57,7 +57,7 @@
                             <div class="col-md">  
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="car-title mb-2"><i class="fas fa-database mr-2"></i>STORAGE</h6>
+                                        <h6 class="card-title mb-2"><i class="fas fa-database mr-2"></i>STORAGE</h6>
                                         <p class="card-text mt-4 h4">
                                             @php
                                                 $size = $user->get_tot_files_size();
@@ -83,7 +83,7 @@
                             <div class="col-md">  
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="car-title mb-2"><i class="fas fa-tools mr-2"></i>TOTAL TRAININGS</h6>
+                                        <h6 class="card-title mb-2"><i class="fas fa-tools mr-2"></i>TOTAL TRAININGS</h6>
                                         <p class="card-text mt-4 h2"> {{ $trainings["num"] }}</p>
                                     </div>
                                 </div>
@@ -93,7 +93,7 @@
                             <div class="col-md">  
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="car-title mb-2"><i class="fas fa-spinner fa-pulse mr-2"></i>TRAINING IN PROGRESS</h6>
+                                        <h6 class="card-title mb-2"><i class="fas fa-spinner fa-pulse mr-2"></i>TRAINING IN PROGRESS</h6>
                                         <p class="card-text mt-4 h2"> {{ $trainings["started"] }}</p>
                                     </div>
                                 </div>
@@ -103,7 +103,7 @@
                             <div class="col-md">  
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="car-title mb-2"><i class="fas fa-pause mr-2"></i>TRAINING IN PAUSE</h6>
+                                        <h6 class="card-title mb-2"><i class="fas fa-pause mr-2"></i>TRAINING IN PAUSE</h6>
                                         <p class="card-text mt-4 h2"> {{ $trainings["paused"] }}</p>
                                     </div>
                                 </div>
@@ -116,7 +116,7 @@
                             <div class="col-md">  
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="car-title mb-2">TOTAL DATASETS</h6>
+                                        <h6 class="card-title mb-2">TOTAL DATASETS</h6>
                                         <p class="card-text mt-4 h2"> {{ $datasets["num"] }}</p>
                                     </div>
                                 </div>
@@ -126,7 +126,7 @@
                             <div class="col-md">  
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="car-title mb-2"><i class="fas fa-list-ul mr-2"></i>DATASETS FOR TRAINING</h5>
+                                        <h6 class="card-title mb-2"><i class="fas fa-list-ul mr-2"></i>DATASETS FOR TRAINING</h5>
                                         <p class="card-text mt-4 h2"> {{ $datasets["train"] + $datasets["both"] }}</p>
                                     </div>
                                 </div>
@@ -136,7 +136,7 @@
                             <div class="col-md">  
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="car-title mb-2"><i class="fas fa-list-ul mr-2"></i>DATASETS FOR TEST</h5>
+                                        <h6 class="card-title mb-2"><i class="fas fa-list-ul mr-2"></i>DATASETS FOR TEST</h5>
                                         <p class="card-text mt-4 h2"> {{ $datasets["test"] + $datasets["both"] }}</p>
                                     </div>
                                 </div>
@@ -146,7 +146,7 @@
                             <div class="col-md">  
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="car-title mb-2"><i class="fas fa-archive mr-2"></i>TOT DATASETS SIZE</h6>
+                                        <h6 class="card-title mb-2"><i class="fas fa-archive mr-2"></i>TOT DATASETS SIZE</h6>
                                         <p class="card-text mt-4 h4">
                                             @php
                                                 $size = $datasets["size"];
@@ -169,7 +169,7 @@
                             <div class="col-md">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="car-title mb-2"><i class="fas fa-project-diagram mr-2"></i>TOTAL MODELS</h6>
+                                        <h6 class="card-title mb-2"><i class="fas fa-project-diagram mr-2"></i>TOTAL MODELS</h6>
                                         <p class="card-text mt-4 h2"> {{ $models["num"] }}</p>
                                     </div>
                                 </div>
@@ -179,7 +179,7 @@
                             <div class="col-md">  
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="car-title mb-2"><i class="fas fa-project-diagram mr-2"></i>TRAINED MODELS</h6>
+                                        <h6 class="card-title mb-2"><i class="fas fa-project-diagram mr-2"></i>TRAINED MODELS</h6>
                                         <p class="card-text mt-4 h2"> {{ $models["trained"] }}</p>
                                     </div>
                                 </div>
@@ -189,7 +189,7 @@
                             <div class="col-md">  
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="car-title mb-2"><i class="fas fa-archive mr-2"></i>TOT MODELS SIZE</h6>
+                                        <h6 class="card-title mb-2"><i class="fas fa-archive mr-2"></i>TOT MODELS SIZE</h6>
                                         <p class="card-text mt-4 h4">
                                             @php
                                                 $size = $models["size"];

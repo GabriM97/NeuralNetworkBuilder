@@ -25,7 +25,7 @@
 	<form method="POST" action="{{route("trainings.store", ['user' => $user])}}">
 		@csrf
 		<div class="main-container rounded container col-md-5 p-2">
-			<h2 class="mb-5 mt-3 text-center">Make new training</h2>
+			<h2 class="mb-5 mt-3 text-center">Make new training<i class="fas fa-tools fa-xs pl-3"></i></h2>
 
 			{{-- Description field --}}
 			<div class="form-group row px-5">

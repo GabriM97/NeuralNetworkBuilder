@@ -10742,6 +10742,12 @@ body {
   margin-bottom: 0.5rem;
 }
 
+/*
+.card-title{
+    color: grey;
+}
+*/
+
 .active-tab {
   border-radius: 0.5rem;
   border-bottom-left-radius: 0;

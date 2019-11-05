@@ -37,7 +37,7 @@
     <div class="main-container rounded container col-md-8 text-md-center p-2 my-4">
         <div class="align-self-center text-center my-3">
             <div class="d-inline-block align-self-center">
-                <h2 class="content-title m-0">Model details</h2>
+                <h2 class="content-title m-0"><i class="fas fa-project-diagram fa-xs pr-2"></i>Model details</h2>
             </div>
 
             {{-- DOWNLOAD BUTTON --}}
@@ -167,7 +167,7 @@
 		<hr>
         <div class="row my-4">  {{-- LAYERS --}}
             <div class="col-12 align-self-center text-center h4">
-                <span class="font-weight-bold">Layers number:</span>
+                <span class="font-weight-bold"><i class="fas fa-layer-group fa-sm pr-2"></i>Layers number:</span>
                 <span class="ml-3">{{$network->layers_number}}</span>
             </div>
 

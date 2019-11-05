@@ -21,7 +21,7 @@
 	<form method="POST" action="{{route("users.store")}}">
 		@csrf
 		<div class="main-container rounded container col-md-5 p-2">
-			<h2 class="mb-5 mt-3 text-center">Create new User</h2>
+			<h2 class="mb-5 mt-3 text-center">Create new User<i class="fas fa-user fa-xs pl-3"></i></h2>
 			
 			{{-- Username field --}}
 			<div class="form-group row px-5">

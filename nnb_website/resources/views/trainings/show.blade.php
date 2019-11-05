@@ -43,7 +43,7 @@
     <div class="main-container rounded container col-md-8 text-md-center p-2 my-4">
         <div class="align-self-center text-center my-3">
             <div class="d-inline-block align-self-center text-right"> {{-- TRAINING DETAILS --}}
-                <h2 class="content-title m-0">Training details</h2>
+                <h2 class="content-title m-0"><i class="fas fa-tools fa-xs pr-2"></i>Training details</h2>
             </div>
             
             {{-- START/STOP BUTTON --}}
@@ -229,7 +229,7 @@
         {{-- MODEL DETAILS --}}
         <div class="align-self-center text-center my-3">
             <div class="d-inline-block align-self-center text-right">
-                <h2 class="content-title m-0">Model details</h2>
+                <h2 class="content-title m-0"><i class="fas fa-project-diagram fa-xs pr-2"></i>Model details</h2>
             </div>
 
             {{-- DOWNLOAD BUTTON --}}
@@ -323,7 +323,7 @@
         {{-- DATASET DETAILS --}}
         <div class="align-self-center text-center my-3">
             <div class="d-inline-block align-self-center text-right">
-                <h2 class="content-title m-0">Dataset details</h2>
+                <h2 class="content-title m-0"><i class="fas fa-list fa-xs pr-2"></i>Dataset details</h2>
             </div>
         </div>
 

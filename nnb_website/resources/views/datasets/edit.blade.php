@@ -14,7 +14,7 @@
     </div>
 
     <div class="main-container rounded container col-md-5 text-md-center p-2 my-4">
-        <h2 class="content-title mb-5 mt-3 text-center">Edit Dataset</h2>
+        <h2 class="content-title mb-5 mt-3 text-center">Edit Dataset<i class="fas fa-pen fa-xs pl-3"></i></h2>
 
         <form class="form-edit px-5" method="POST" action="{{route("datasets.update", compact("user", "dataset"))}}">
             @csrf

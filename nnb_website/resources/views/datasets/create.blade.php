@@ -28,7 +28,7 @@
 	<form id="main-form" method="POST" enctype="multipart/form-data" action="{{route("datasets.store", ['user' => $user])}}">
 		@csrf
 		<div class="main-container rounded container col-md-5 p-2">
-			<h2 class="mb-5 mt-3 text-center">Create new Dataset</h2>
+			<h2 class="mb-5 mt-3 text-center">Create new Dataset<i class="fas fa-list fa-sm pl-3"></i></h2>
 
 			{{-- Import dataset field --}}
 			<div class="form-group row px-5">
