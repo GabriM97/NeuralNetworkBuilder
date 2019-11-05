@@ -7,6 +7,7 @@
 @section('page-title', "Training | NeuralNetworkBuilder")
 
 @section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="{{ asset('js/update_realtime_data.js') }}"></script>
 @endsection
 
@@ -59,7 +60,7 @@
                         $icon = "fa-play";
                     }
                 @endphp    
-                <form method="POST" action="{{ $action }}">
+                <form class="training-main-form" method="POST" action="{{ $action }}">
                     @csrf
                     <input type="hidden" name="_type" value="{{ $method }}">
                     @php
@@ -94,7 +95,7 @@
                         $icon = "fa-pause";
                     }
                 @endphp
-                <form method="POST" action="{{ $action }}">
+                <form class="training-main-form" method="POST" action="{{ $action }}">
                     @csrf
                     <input type="hidden" name="_type" value="{{ $method }}">
                     @php
@@ -133,7 +134,7 @@
             <div class="col-md">
                 <div class="row my-2">
                     <div class="col-md-8 align-self-center text-md-right font-weight-bold">Epochs</div>
-                    <div class="col-md-4 align-self-center text-md-left">{{ $training->epochs }}</div>
+                    <div id="epochs" class="col-md-4 align-self-center text-md-left">{{ $training->epochs }}</div>
                 </div>
                 <div class="row my-2">
                     <div class="col-md-8 align-self-center text-md-right font-weight-bold">Batch size</div>
@@ -200,7 +201,15 @@
                     <div class="col-md-5 align-self-center text-md-right font-weight-bold">Created at</div>
                     <div class="col-md-7 align-self-center text-md-left">{{ $training->created_at }}</div>
                 </div>
-            </div>    
+            </div>
+                
+            <div class="w-100"></div>
+            <!-- Chart -->
+        <div class="col text-center {{($training->status != "started") ? "d-none" : NULL}}">
+                <div id="chart-container">
+                    <canvas id="training_chart" class="chartjs-render-monitor"></canvas>
+                </div>
+            </div>
         </div>
 
         <div class="row px-5 mt-2">

@@ -10757,3 +10757,8 @@ body {
   margin-bottom: 0;
 }
 
+#chart-container {
+  height: 300px;
+  background-color: lightgrey;
+}
+

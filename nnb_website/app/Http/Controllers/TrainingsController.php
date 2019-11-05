@@ -326,7 +326,8 @@ class TrainingsController extends Controller
             "train_perc" => $training->training_percentage,
             "evaluation_in_progress" => $training->evaluation_in_progress,
             "accuracy" => $model->accuracy,
-            "loss" => $model->loss
+            "loss" => $model->loss,
+            "epoch" => $training->executed_epochs
         );
 
         return $response;
@@ -428,6 +429,7 @@ class TrainingsController extends Controller
             return redirect(route('trainings.show', compact("user", "training")));
             
         if($training->status == 'started'){
+            $training->executed_epochs = 0;
             try {
                 $training_pid = $training->process_pid;
                 if(!posix_kill($training_pid, SIGKILL))
@@ -442,6 +444,7 @@ class TrainingsController extends Controller
             if($training->status == 'paused'){
                 $training->status = "stopped";
                 $training->return_message = "Training stopped sucesfully.";
+                $training->executed_epochs = 0;
                 $training->update();
             }
 
