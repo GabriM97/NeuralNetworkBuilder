@@ -32,7 +32,7 @@ Into the directory `utils/supervisor/` you can find supervisor configuration fil
 
 <br/>
 
-### To run the Laravel app:
+### To run the app:
 * composer install
 * npm install
 * ./start.sh
