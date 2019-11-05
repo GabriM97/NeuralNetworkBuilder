@@ -17,11 +17,11 @@
             Also you can just predict values from your models. <br>
             What are you waiting for? Start now, <span class="highlight-text">IT'S FREE!</span> <br>
             @auth
-                <br>Go to your <a class="font-weight-bold" href="{{ url('/home') }}">Home</a>
+                <br>Go to your <a class="font-weight-bold" href="{{ url('/home') }}"><u>Home</u></a>
             @else
                 <br><br>
-                If you are registered, <a href="{{ route('login') }}" class="font-weight-bold">Sign in</a> <br><br>
-                Otherwise create a new account and Join Us! <a href="{{ route('register') }}" class="font-weight-bold">Register now</a>
+                If you are registered, <a href="{{ route('login') }}" class="font-weight-bold"><u>Sign in</u></a> <br><br>
+                Otherwise create a new account and Join Us! <a href="{{ route('register') }}" class="font-weight-bold"><u>Register now</u></a>
             @endauth
         </div>
     </div>

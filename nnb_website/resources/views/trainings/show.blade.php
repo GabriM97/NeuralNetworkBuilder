@@ -98,7 +98,7 @@
                     @csrf
                     <input type="hidden" name="_type" value="{{ $method }}">
                     @php
-                        if(($training->status != 'paused' && $training->status != 'started') || $training->evaluation_in_progress){
+                        if(($training->status != 'paused' && $training->status != 'started') || ($training->in_queue && $training->status == 'paused') || $training->evaluation_in_progress){
                             $btn_satatus = "disabled";
                             $class = "d-none";
                         }else{

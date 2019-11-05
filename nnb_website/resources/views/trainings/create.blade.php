@@ -140,8 +140,8 @@
 				<div class="col-md">
 					<div class="row">
 						<div class="text-md-center">
-							<span class="font-weight-bold">During training, do you want to save the best model only?</span><br>
-							<span class="text-md-left float-md-left my-1">
+							<span class="font-weight-bold d-block">During training, do you want to save the best model only?</span>
+							<span class="text-md-left float-md-left my-1 d-block">
 								<span class="font-weight-bold bg-warning text-dark px-1">NOTE:</span><u class="mx-1">It will work only if Validation Split > 0 </u><br>
 								<span class="font-weight-bold bg-warning text-dark px-1">NOTE:</span><u class="mx-1">If you stop and then resume the training, it will resume from the last saved model (that could be a very old checkpoint)</u>
 							</span>

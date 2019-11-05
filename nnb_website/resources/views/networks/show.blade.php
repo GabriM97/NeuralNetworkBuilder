@@ -36,7 +36,7 @@
 
     <div class="main-container rounded container col-md-8 text-md-center p-2 my-4">
         <div class="align-self-center text-center my-3">
-            <div class="d-inline-block align-self-center text-right">
+            <div class="d-inline-block align-self-center">
                 <h2 class="content-title m-0">Model details</h2>
             </div>
 
