@@ -259,7 +259,7 @@ function downloadCanvasImage() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/gabri/Desktop/NeuralNetworkBuilder/nnb_website/resources/js/update_realtime_data.js */"./resources/js/update_realtime_data.js");
+module.exports = __webpack_require__(/*! /home/gabri/Desktop/NeuralNetworkBuilder/website/resources/js/update_realtime_data.js */"./resources/js/update_realtime_data.js");
 
 
 /***/ })

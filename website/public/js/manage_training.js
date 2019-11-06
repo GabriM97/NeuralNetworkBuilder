@@ -182,7 +182,7 @@ function disableDataset(model, first_run) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/gabri/Desktop/NeuralNetworkBuilder/nnb_website/resources/js/manage_training.js */"./resources/js/manage_training.js");
+module.exports = __webpack_require__(/*! /home/gabri/Desktop/NeuralNetworkBuilder/website/resources/js/manage_training.js */"./resources/js/manage_training.js");
 
 
 /***/ })
