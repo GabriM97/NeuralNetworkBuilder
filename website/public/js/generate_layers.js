@@ -194,7 +194,7 @@ function addLayer_col(cols, current_main_row, layer_number_cnt) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/gabri/Desktop/NeuralNetworkBuilder/nnb_website/resources/js/generate_layers.js */"./resources/js/generate_layers.js");
+module.exports = __webpack_require__(/*! /home/gabri/Desktop/NeuralNetworkBuilder/website/resources/js/generate_layers.js */"./resources/js/generate_layers.js");
 
 
 /***/ })
