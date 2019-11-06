@@ -1,0 +1,12 @@
+{
+    "/js/app.js": "/js/app.js",
+    "/css/app.css": "/css/app.css",
+    "/css/welcome.css": "/css/welcome.css",
+    "/css/progress_bar.css": "/css/progress_bar.css",
+    "/js/dataset_uploader.js": "/js/dataset_uploader.js",
+    "/js/edit_form_control.js": "/js/edit_form_control.js",
+    "/js/generate_layers.js": "/js/generate_layers.js",
+    "/js/handle_submit.js": "/js/handle_submit.js",
+    "/js/manage_training.js": "/js/manage_training.js",
+    "/js/update_realtime_data.js": "/js/update_realtime_data.js"
+}

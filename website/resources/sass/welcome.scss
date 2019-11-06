@@ -1,0 +1,44 @@
+#welcome-content{
+	text-align: center;
+	color: grey;
+}
+
+#welcome-content .title {
+	color: white;
+	font-size: 70px;
+	text-transform: uppercase;
+	margin-bottom: 30px;
+	font-weight: 400;
+}
+
+#welcome-content .sub-title {
+	margin-top: 20px;
+	font-size: 40px;
+	font-weight: 400;
+	text-transform: uppercase;
+}
+
+#welcome-content .description{
+	padding: 0 5px;
+	font-size: 20px;
+	font-weight: 500;
+	letter-spacing: .1rem;
+	line-height: 1.5rem;
+}
+
+#welcome-content .description a {
+	color: #636b6f;
+	padding: 0 2px;
+	font-size: 20px;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+#welcome-content .description a:hover {
+	color: grey;
+	text-decoration: none;
+}
+
+#welcome-content .highlight-text {
+	color: white;
+}

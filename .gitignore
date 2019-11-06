@@ -1,5 +1,5 @@
 
 *.csv
-*.json
 *.pkl
 *.h5
+*.vscode
