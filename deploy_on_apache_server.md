@@ -2,7 +2,7 @@
 - If are you running on Operating Systems with SELinux (or others security modules): <br>
 **SELINUX WILL CAUSE A LOT OF PROBLEMS. DISABLE IT!** <br>
 _(the following command temporary disable SELinux, it will be up again at next restart)_ <br>
-#> `sudo set enforce 0` <br>
+#> `sudo setenforce 0` <br>
 
 ------------------------------------------ <br>
 
