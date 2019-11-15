@@ -11,6 +11,7 @@ I promise you will not write a single line of code, just Import a Dataset -> Bui
 ### Requires:
 * _root permissions (sudo)_
 * _MySQL (create database: neural_network_builder <admin:admin>)_
+* _Apache_ --> __read `deploy-on-apache-server.md`__
 * _PHP_
 * _python3_
 * _pip3_
@@ -32,7 +33,7 @@ Into the directory `utils/supervisor/` you can find supervisor configuration fil
 
 <br/>
 
-### To run the app:
+### To deploy the app read 'deploy-on-apache-server.md' first. Then run the following commands:
 * composer install
 * npm install
 * ./start.sh
