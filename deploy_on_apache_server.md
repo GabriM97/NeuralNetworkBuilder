@@ -37,11 +37,8 @@ Copy the config file and Paste it into `/etc/httpd/sites-available/`. <br>
 Edit now the config file with your properly data. <br>
 
 
-[ OPTIONAL ] <br>
-- Add the virtual host `neuralnetworkbuilder`: <br>
+- **OPTIONAL CHANGES.** Add the virtual host `neuralnetworkbuilder`: <br>
 #> `echo "127.0.0.1 neuralnetworkbuilder" >> /etc/hosts` <br>
-<br>
-[ OPTIONAL ] <br>
 
 
 - Create a `neuralnetworkbuilder.conf` softlink from `sites-available/` to `sites-enabled/` directory: <br>
@@ -61,8 +58,8 @@ Edit now the config file with your properly data. <br>
 #> `sudo systemctl restart httpd.service` <br>
 
 
-[OPTIONAL] <br>
-- Otherwise try running all this commands, but you will get errors still because _php-fpm_ will try to write things for each started user sessions (SELinux will block this attempts) into the application: <br>
+- **OPTIONAL CHANGES.** <br>
+If you dont want to disable SELinux try running all these commands, but still you will get errors because _php-fpm_ will try to write things for each started user sessions (SELinux will block this attempts) into the application: <br>
 #> `chcon -R -t httpd_sys_content_t path/to/repo/NeuralNetworkBuilder` <br>
 #> `sudo setsebool -P httpd_read_user_content 1` <br>
 #> `sudo setsebool -P httpd_can_network_connect 1` <br>
@@ -77,5 +74,3 @@ Edit now the config file with your properly data. <br>
 #> `sudo semodule -X 300 -i my-httpd.pp` <br>
 #> `sudo semanage fcontext -a -t httpd_sys_rw_content_t 'error.log'` <br>
 #> `sudo restorecon -v 'error.log'` <br>
-<br>
-[OPTIONAL] <br>
