@@ -1,8 +1,14 @@
-**IMPORTANT NOTE:** <br>
-- If are you running on Operating Systems with SELinux (or others security modules): <br>
+**IMPORTANT NOTES:** <br>
+- If are you running an Operating Systems with SELinux (or others security modules): <br>
 **SELINUX WILL CAUSE A LOT OF PROBLEMS. DISABLE IT!** <br>
 _(the following command temporary disable SELinux, it will be up again at next restart)_ <br>
 #> `sudo setenforce 0` <br>
+- With the following commands you will install Apache Server using _'httpd'_ name. That's why the Apache Server name in Fedora/CentosOS is _'httpd'_. <br>
+	You need to know how Apache Server is called in your Linux distro. So, you will problably need to change the _'httpd'_, in each command you'll run, with the correct one. <br>
+	For example, in Linux Mint you'll need to change 'httpd' with 'apache2'.
+- The similar thing as above will need for the user that will run the Apache Server. <br>
+	Check what user runs Apache Server on your OS (usually by default it's _'www-data'_, but not always), than change the correct user name into the commands below. <br>
+	In my case it was _'apache'_. <br>
 
 ------------------------------------------ <br>
 
@@ -51,7 +57,7 @@ Edit now the config file with your properly data. <br>
 
 - Test if apache config it's ok: <br>
 #> `apachectl configtest` <br>
-
+If the command output shows "`Syntax OK`", then you setting up everythings okay.
 
 - Reload/Restart apache server (AS SUDO): <br>
 #> `sudo systemctl reload httpd.service` <br>
