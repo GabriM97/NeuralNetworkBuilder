@@ -146,7 +146,7 @@
 			</div>            
 		</div>
         
-        <div class="row my-2 mb-5 px-5">
+        <div class="row my-2 px-5">
             <div class="col-6 text-right">   {{-- EDIT BUTTON --}}         
                 <a href="{{ route('networks.edit', compact("user", "network")) }}">
                     <button class="btn btn-light"><i class="fas fa-pen fa-lg mr-2"></i>Edit</button>
@@ -160,11 +160,14 @@
                 </form>
             </div>
         </div>
+    </div>
 
+    <div class="main-container rounded container col-md-8 text-md-center p-2 my-4">
 		{{-- Compilations Details --}}
-		@include('compilations.show')
+        @include('compilations.show')
+    </div>
 
-		<hr>
+	<div class="main-container rounded container col-md-8 text-md-center p-2 my-4">
         <div class="row my-4">  {{-- LAYERS --}}
             <div class="col-12 align-self-center text-center h4">
                 <span class="font-weight-bold"><i class="fas fa-layer-group fa-sm pr-2"></i>Layers number:</span>

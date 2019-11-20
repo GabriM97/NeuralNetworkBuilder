@@ -33,7 +33,6 @@ Route::resource('/users/{user}/networks/{network}/compilations', 'CompilationsCo
     'only' => ['create', 'store']
 ]);
 
-
 // Training routes
 Route::resource('/users/{user}/trainings', 'TrainingsController');
 Route::post('/users/{user}/trainings/{training}/start', 'TrainingsController@start')->name("trainings.start");
@@ -41,3 +40,7 @@ Route::post('/users/{user}/trainings/{training}/pause', 'TrainingsController@pau
 Route::post('/users/{user}/trainings/{training}/resume', 'TrainingsController@resume')->name("trainings.resume");
 Route::post('/users/{user}/trainings/{training}/stop', 'TrainingsController@stop')->name("trainings.stop");
 Route::post('/users/{user}/trainings/{training}/getTrainingInfo', 'TrainingsController@getTrainingInfo')->name("trainings.getInfo");
+
+//Nodes routes
+Route::resource("/nodes", 'NodesController');
+Route::get("/nodes/{node}/refresh", 'NodesController@refreshHWInfo')->name("nodes.refresh");

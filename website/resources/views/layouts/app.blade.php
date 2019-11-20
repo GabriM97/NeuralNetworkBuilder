@@ -59,7 +59,9 @@
     
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="{{ route('users.index') }}">{{ __('All Users') }}</a>
-                                        <a class="dropdown-item" href="{{ route('users.create') }}">{{ __('Create user') }}</a>
+                                        <a class="dropdown-item" href="{{ route('users.create') }}">{{ __('Create new User') }}</a>
+                                        <a class="dropdown-item" href="{{ route('nodes.index') }}">{{ __('Show Cluster Nodes') }}</a>
+                                        <a class="dropdown-item" href="{{ route('nodes.create') }}">{{ __('Create new Node') }}</a>
                                     </div>
                                 </li>
                             @endif
