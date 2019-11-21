@@ -1,4 +1,4 @@
-#How to add a new node to the main cluster (root permissions required).
+# How to add a new node to the main cluster (root permissions required).
 1. Start the machine you want to add to the cluster;
 2. Install all python dependeces as in `README.md`;
 3. Copy the _python_ folder (`website/resources/python/`) into the local machine you want to add to the cluster;
