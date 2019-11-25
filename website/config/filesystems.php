@@ -49,11 +49,11 @@ return [
             'permissions' => [
                 'file' => [
                     'public' => 0666,
-                    'private' => 0644,
+                    'private' => 0664,
                 ],
                 'dir' => [
                     'public' => 0777,
-                    'private' => 0755,
+                    'private' => 0775,
                 ],
             ],
         ],
