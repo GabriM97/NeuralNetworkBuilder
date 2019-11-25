@@ -80,15 +80,25 @@ class UsersController extends Controller
         $user_dir_models = "users/$hashed_user/models";
         $user_dir_trainings = "users/$hashed_user/trainings";
         
-        // make private directories
+        // make "private" directories
         Storage::makeDirectory($user_dir_datasets);
+        Storage::setVisibility($user_dir_datasets, 'public');
+
         Storage::makeDirectory($user_dir_models);
+        Storage::setVisibility($user_dir_models, 'public');
+
         Storage::makeDirectory($user_dir_trainings);
+        Storage::setVisibility($user_dir_trainings, 'public');
 
         // make public directories
         Storage::makeDirectory("public/$user_dir_datasets");
+        Storage::setVisibility("public/$user_dir_datasets", 'public');
+
         Storage::makeDirectory("public/$user_dir_models");
+        Storage::setVisibility("public/$user_dir_models", 'public');
+
         Storage::makeDirectory("public/$user_dir_trainings");
+        Storage::setVisibility("public/$user_dir_trainings", 'public');
         
         $user->save();
 

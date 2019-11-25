@@ -141,12 +141,14 @@ class TrainingsController extends Controller
         $hashed_user = hash("md5", $user_id);  
         $training_path = "users/$hashed_user/trainings/$training->id";
         Storage::makeDirectory("$training_path/checkpoints");
+        Storage::setVisibility("$training_path/checkpoints", 'public');
 
         // store paths
         $training->checkpoint_filepath = "$training_path/checkpoints/";
         $training->filepath_epochs_log = "$training_path/epochs_log.csv";
         $file_log = fopen(storage_path()."/app/".$training->filepath_epochs_log, "w");
         fclose($file_log);
+        Storage::setVisibility($training->filepath_epochs_log, 'public');
         $training->update();
 
         return redirect(route("trainings.show", compact("user", "training")));
