@@ -19,7 +19,7 @@ I promise you will not write a single line of code, just Import a Dataset -> Bui
 <br/>
 
 ### Dependences:
-**pip3 install**:
+**pip3 install** _(install them globally: `sudo -H pip3 intall <package-name>)_:
 * _tensorflow_
 * _keras_
 * _pandas_
