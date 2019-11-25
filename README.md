@@ -23,7 +23,6 @@ I promise you will not write a single line of code, just Import a Dataset -> Bui
 * _tensorflow_
 * _keras_
 * _pandas_
-* _flask_
 * _supervisor_
 
 <br/>
