@@ -192,7 +192,8 @@ class NodesController extends Controller
             $node->cpu_numbers = $hw_info['cpu']["threads"];
             $node->gpu_details = $hw_info['gpu']["model"];
             $node->total_ram = $hw_info['ram']["total"];
-        }
+        }else
+            $node->status = $hw_info['status'];
         $node->update();
         return redirect(route("nodes.show", compact("node")));
     }
