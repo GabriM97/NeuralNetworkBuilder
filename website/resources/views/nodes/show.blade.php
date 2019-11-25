@@ -74,17 +74,35 @@
         
         <div class="row my-2 px-5">
             <div class="col-md-6 text-md-right align-self-center font-weight-bold">CPU Model</div>
-            <div class="col-md-6 align-self-center">{{ $node->cpu_description }}</div>
+            <div class="col-md-6 align-self-center">
+                @if ($node->cpu_description != NULL)
+                    {{ $node->cpu_description }}
+                @else
+                    <span class="font-italic">Not Available</span>
+                @endif
+            </div>
         </div>
 
         <div class="row my-2 px-5">
             <div class="col-md-6 text-md-right text-break align-self-center font-weight-bold">CPU Threads</div>
-            <div class="col-md-6 align-self-center">{{ $node->cpu_numbers }}</div>
+            <div class="col-md-6 align-self-center">
+                @if ($node->cpu_numbers != NULL)
+                    {{ $node->cpu_numbers }}
+                @else
+                    <span class="font-italic">Not Available</span>
+                @endif
+            </div>
         </div>
 
         <div class="row my-2 px-5">
             <div class="col-md-6 text-md-right align-self-center font-weight-bold">GPU Details</div>
-            <div class="col-md-6 align-self-center">{{ $node->gpu_details }}</div>
+            <div class="col-md-6 align-self-center">
+                @if ($node->gpu_details != NULL)
+                    {{ $node->gpu_details }}
+                @else
+                    <span class="font-italic">Not Available</span>
+                @endif
+            </div>
         </div>
 
         <div class="row my-2 px-5">

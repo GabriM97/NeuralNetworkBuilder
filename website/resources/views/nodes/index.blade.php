@@ -47,11 +47,17 @@
                         @if($node->cpu_numbers != NULL)
                             {{$node->cpu_numbers}}
                         @else
-
+                            <span class="font-italic">Not Available</span>
                         @endif
                     </div>
 					<div class="col-md-1 align-self-center px-0">{{round($node->total_ram/1073741824, 2)}} GB</div>
-					<div class="col-md-2 align-self-center pr-2 pl-2">{{$node->gpu_details}}</div>
+					<div class="col-md-2 align-self-center pr-2 pl-2">
+                        @if ($node->gpu_details != NULL)
+                            {{$node->gpu_details}}
+                        @else
+                            <span class="font-italic">Not Available</span>
+                        @endif
+                    </div>
                     <div class="col-md-1 align-self-center">{{$node->running_trainings}}</div>
                     <div class="col-md-2 align-self-center">{{$node->created_at}}</div>
                     <div class="col-md-2 align-self-center">

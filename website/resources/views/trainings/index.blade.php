@@ -66,7 +66,7 @@
                         <span class="font-weight-bold text-danger">DATASET NOT FOUND</span>
                     @endif
                 </div>
-                <div class="col-md-2 align-self-center">
+                <div class="col-md-2 align-self-center font-weight-bold">
                     @if ($test_dataset)
                         <a href="{{route("datasets.show", ['user' => $user, 'dataset' => $test_dataset])}}">
                             {{ $test_dataset->data_name }}
