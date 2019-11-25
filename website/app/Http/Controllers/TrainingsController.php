@@ -382,7 +382,7 @@ class TrainingsController extends Controller
 
         try {
             $training_pid = $training->process_pid;
-            if(!posix_kill($training_pid, SIGTERM))
+            if(!posix_kill($training_pid, 15))   // SIGTERM
                 throw new Exception("Error sending Pause signal.");
 
         } catch (Exception $err) {
@@ -434,7 +434,7 @@ class TrainingsController extends Controller
             $training->executed_epochs = 0;
             try {
                 $training_pid = $training->process_pid;
-                if(!posix_kill($training_pid, SIGKILL))
+                if(!posix_kill($training_pid, 9))   // SIGKILL
                     throw new Exception("Error sending Pause signal.");
 
             } catch (Exception $err) {
