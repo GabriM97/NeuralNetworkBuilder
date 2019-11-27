@@ -18,6 +18,7 @@ class CreateNodesTable extends Migration
             $table->string('description')->nullable();
             $table->boolean('status')->default(0);  // OFF
             $table->ipAddress('ip_address')->unique();  // kk.jj.xx.yy
+            $table->boolean("is_webserver")->default(0);
             $table->string('cpu_description')->nullable();
             $table->tinyInteger('cpu_numbers')->nullable();
             $table->string('gpu_details')->nullable();

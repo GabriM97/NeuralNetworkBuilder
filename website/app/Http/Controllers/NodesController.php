@@ -195,6 +195,7 @@ class NodesController extends Controller
         }else
             $node->status = $hw_info['status'];
         $node->update();
+        $node->touch(); //update "updated_at" attribute also if no node info changes
         return redirect(route("nodes.show", compact("node")));
     }
 }

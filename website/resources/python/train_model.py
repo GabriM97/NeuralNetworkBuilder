@@ -70,11 +70,16 @@ def train():
     checkpoint_path = sys.argv[8]
     save_best_model = int(sys.argv[9])
     epochs_log = sys.argv[10]
+    is_webserver = sys.argv[11]
     verbose = 2
 
     try:
-        path_prefix = app_path + "/storage/app/"
-
+        if(is_webserver.lower() == "true"):
+            storage = "/storage/app/"
+        elif(is_webserver.lower() == "false"):
+            storage = "/saves/"
+        path_prefix = app_path + storage
+        
         # Get Training Dataset
         train_x, train_y = loadLocalDataset(path_prefix + "public/" + data_train_path)
 
@@ -84,8 +89,8 @@ def train():
         # Load the model to train
         model = load_model(path_prefix + "public/" + model_path)
 
-        epochs_log = path_prefix + epochs_log               # app/storage/path/to/log.txt
-        checkpoint_path = path_prefix + checkpoint_path     # app/storage/path/to/checkpoint/model_id.h5
+        epochs_log = path_prefix + epochs_log               # path/to/log.txt
+        checkpoint_path = path_prefix + checkpoint_path     # path/to/checkpoint/model_id.h5
         # Start training
         model = trainModel(model, train_x, train_y, epochs,
                            batch_size, verbose, valid_split, 

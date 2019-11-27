@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
-//use Illuminate\Support\Facades\Bus;
+use GuzzleHttp\Client;
 
 use Carbon\Carbon;
 use Exception;
@@ -401,6 +401,7 @@ class TrainingsController extends Controller
         } catch (\Throwable $th) {
             Storage::move("public/".$model->local_path.".backup", "public/".$model->local_path);
         }
+        Storage::setVisibility("public/$model->local_path", 'public');
 
         // Update user->available_space with new model_size
         $model_size_after = Storage::size("public/".$model->local_path);
@@ -460,6 +461,7 @@ class TrainingsController extends Controller
         } catch (\Throwable $th) {
             Storage::move("public/".$model->local_path.".backup", "public/".$model->local_path);
         }
+        Storage::setVisibility("public/$model->local_path", 'public');
 
         // Update user->available_space with new model_size
         $model_size_after = Storage::size("public/".$model->local_path);

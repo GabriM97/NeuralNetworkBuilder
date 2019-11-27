@@ -6,8 +6,10 @@ use App\Dataset;
 use App\Network;
 use App\Compilation;
 use App\User;
+use App\Node;
 
 use Exception;
+use GuzzleHttp\Client;
 // use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\Model;
@@ -23,8 +25,10 @@ class Training extends Model
         'checkpoint_filepath', 'save_best_only', 'filepath_epochs_log',
     ];
 
+    const THROW_DEFAULT = 0;
     const THROW_SETPAUSE = 3;
     const THROW_STOPPROCESS = 4;
+    const THROW_CANTRUN = 5;
 
     // Start training function
     public function startTraining(User $user, Network $model, Dataset $dataset_training){
@@ -72,72 +76,74 @@ class Training extends Model
         }
 
         try {
-            // --- START Training Process ---
-            $process = new Process("python3 $app_path/resources/python/train_model.py \"$app_path\" \"$data_train_path\" \"$model_path\" $diff_epochs $batch_size $valid_split $output_classes \"$checkpoint_path\" $save_best \"$epochs_log_path\"");
-            $process->setTimeout(86400);    // 24 hours
-            $process->setIdleTimeout(600);  // 10 mins (time since the last output)
-            $process->mustRun(
-                function ($type, $buffer) use ($user, $model, $process, $exec_epochs, $old_status, $epoch_index, $acc_index, $loss_index, $val_acc_index, $val_loss_index) {
-                    if (Process::ERR === $type) {
-                        //echo '--- ERR --- > '.$buffer;
-                    } else {
-                        if($old_status == "stopped" || $old_status == "paused"){
-                            $process_pid = $process->getPid();
-                            $this->process_pid = $process_pid;
-                            $this->status = "started";
-                            $this->return_message = "Training in progress...";
-                            $this->update();
-                        }
-                        echo(PHP_EOL."[PID: $process_pid - Training_id: $this->id - User $user->id: $user->username]".PHP_EOL);   // PHP_EOL = \n
-
-                        // Get epoch
-                        $epochs_info = $this->getEpochInfo($buffer);
-                        
-                        // epochs info
-                        if(isset($epochs_info[$epoch_index])){
-                            $current_epoch = $epochs_info[$epoch_index]+1 + $exec_epochs;
-                            $this->executed_epochs = $current_epoch;
-                            $this->training_percentage = round($current_epoch/$this->epochs, 2);
-                            print_r("Epochs: $current_epoch/$this->epochs".PHP_EOL);
-                        }
-
-                        // accuracy info
-                        if(isset($epochs_info[$acc_index])){
-                            $current_accuracy = $epochs_info[$acc_index];
-                            $model->accuracy = round($current_accuracy, 2);
-                            print_r("Accuracy: $current_accuracy".PHP_EOL);
-                        }
-
-                        // loss info
-                        if(isset($epochs_info[$loss_index])){
-                            $current_loss = $epochs_info[$loss_index];
-                            $model->loss = round($current_loss, 2);
-                            print_r("Loss: $current_loss".PHP_EOL);
-                        }
-
-                        // validation info
-                        if($this->validation_split){
-                            // val_accuracy
-                            if(isset($epochs_info[$val_acc_index])){
-                                $current_val_accuracy = $epochs_info[$val_acc_index];
-                                $model->accuracy = round($current_val_accuracy, 2);
-                                print_r("Val_accuracy: $current_val_accuracy".PHP_EOL);
-                            }
-
-                            // val_loss
-                            if(isset($epochs_info[$val_loss_index])){
-                                $current_val_loss = $epochs_info[$val_loss_index];
-                                $model->loss = round($current_val_loss, 2);
-                                print_r("Val_loss: $current_val_loss".PHP_EOL);
-                            }
-                        }
-                        $this->update();
-                        $model->update();
-                    }
-                }
-            );
-            // --- STOP Training Process ---
+            $script_name = "$app_path/resources/python/train_model.py";
+            $options = "\"$data_train_path\" \"$model_path\" $diff_epochs $batch_size $valid_split $output_classes \"$checkpoint_path\" $save_best \"$epochs_log_path\"";
             
+            $node = Node::getLightestNode();
+            $ip_addr = $node->ip_address;
+            if(!$node->is_webserver){
+                $client = new Client();
+                $result = $client->request('POST', "http://$ip_addr:5050/start", [
+                    'form_params' => [
+                        'script' => 'train_model.py',
+                        'options' => " \".\" $options false",  //false, it isn't webserver
+                    ]
+                ]);
+
+                $pid = $result->getBody();
+                if(strpos(strtolower($pid), "error") !== false)
+                    throw new Exception("Error running training on node $ip_addr", self::THROW_CANTRUN);
+                    
+                $this->process_pid = $pid;
+                $this->status = "started";
+                $this->return_message = "Training in progress...";
+                $this->processing_node_id = $node->id;
+                $this->update();
+                $node->running_trainings++;
+                $node->update();
+                
+                $handle = fopen(storage_path()."/app/".$this->filepath_epochs_log, "w");
+                fclose($handle);
+
+                while($this->manageTrainingInfo($user, $model, $pid, $exec_epochs, $epoch_index, $acc_index, $loss_index, $val_acc_index, $val_loss_index, $ip_addr) < 1){
+                    // CHECK HERE TRAINING STATUS
+                    sleep(1);   //update records each second
+                }
+                
+                $node->running_trainings--;
+                $node->update();
+            }else{
+                // --- START Training Process ---
+                $process = new Process("python3 $script_name \"$app_path\" $options true"); //true, it's webserver
+                $process->setTimeout(86400);    // 24 hours
+                $process->setIdleTimeout(600);  // 10 mins (time since the last output)
+                
+                $this->processing_node_id = $node->id;
+                $this->update();
+                $node->running_trainings++;
+                $node->update();
+
+                $process->mustRun(
+                    function ($type, $buffer) use ($user, $model, $process, $exec_epochs, $old_status, $epoch_index, $acc_index, $loss_index, $val_acc_index, $val_loss_index, $ip_addr) {
+                        if (Process::ERR === $type) {
+                            //echo '--- ERR --- > '.$buffer;
+                        } else {
+                            if($old_status == "stopped" || $old_status == "paused"){
+                                $process_pid = $process->getPid();
+                                $this->process_pid = $process_pid;
+                                $this->status = "started";
+                                $this->return_message = "Training in progress...";
+                                $this->update();
+                            }
+                            $this->manageTrainingInfo($user, $model, $process_pid, $exec_epochs, $epoch_index, $acc_index, $loss_index, $val_acc_index, $val_loss_index, $ip_addr);
+                        }
+                    }
+                );
+                // --- STOP Training Process ---
+                $node->running_trainings--;
+                $node->update();
+            }
+
             // Update user->available_space with new model_size
             $model_size_after = Storage::size("public/$model_path");
             $model->file_size = $model_size_after;
@@ -150,7 +156,7 @@ class Training extends Model
 
             $user->update();
             $model->update();
-
+        
         } catch (ProcessFailedException $err) {
             throw new Exception($process->getErrorOutput());
 
@@ -162,13 +168,17 @@ class Training extends Model
                     throw new Exception("Training stopped. You cannot resume the training.", self::THROW_STOPPROCESS);
                 else
                     throw new Exception($process->getErrorOutput());
-        } catch (\Throwable $th){
-            throw $th;
+        } catch (Exception $err){
+            if($err->getCode() == self::THROW_CANTRUN){
+                $node->running_trainings++;     //it will be decremented in TrainingJob on_fail() method
+                $node->update();
+            }
+            throw new Exception($err->getMessage());
         }
     }
 
     // Get Epoch Info from log file
-    private function getEpochInfo(string $buffer){
+    private function getEpochInfo(){
         $epochs_info = array();
         
         if (($handle = fopen(storage_path()."/app/".$this->filepath_epochs_log, "r")) !== FALSE) {
@@ -178,5 +188,55 @@ class Training extends Model
         }
 
         return $epochs_info;
+    }
+
+    private function manageTrainingInfo($user, $model, $process_pid, $exec_epochs, $epoch_index, $acc_index, $loss_index, $val_acc_index, $val_loss_index, $ip_addr){
+        echo(PHP_EOL."[Node: $ip_addr - PID: $process_pid - Training_id: $this->id - User $user->id: $user->username]".PHP_EOL);   // PHP_EOL = \n
+
+        // Get epoch
+        $epochs_info = $this->getEpochInfo();
+        
+        // epochs info
+        if(isset($epochs_info[$epoch_index])){
+            $current_epoch = $epochs_info[$epoch_index]+1 + $exec_epochs;
+            $this->executed_epochs = $current_epoch;
+            $this->training_percentage = round($current_epoch/$this->epochs, 2);
+            print_r("Epochs: $current_epoch/$this->epochs".PHP_EOL);
+        }
+
+        // accuracy info
+        if(isset($epochs_info[$acc_index])){
+            $current_accuracy = $epochs_info[$acc_index];
+            $model->accuracy = round($current_accuracy, 2);
+            print_r("Accuracy: $current_accuracy".PHP_EOL);
+        }
+
+        // loss info
+        if(isset($epochs_info[$loss_index])){
+            $current_loss = $epochs_info[$loss_index];
+            $model->loss = round($current_loss, 2);
+            print_r("Loss: $current_loss".PHP_EOL);
+        }
+
+        // validation info
+        if($this->validation_split){
+            // val_accuracy
+            if(isset($epochs_info[$val_acc_index])){
+                $current_val_accuracy = $epochs_info[$val_acc_index];
+                $model->accuracy = round($current_val_accuracy, 2);
+                print_r("Val_accuracy: $current_val_accuracy".PHP_EOL);
+            }
+
+            // val_loss
+            if(isset($epochs_info[$val_loss_index])){
+                $current_val_loss = $epochs_info[$val_loss_index];
+                $model->loss = round($current_val_loss, 2);
+                print_r("Val_loss: $current_val_loss".PHP_EOL);
+            }
+        }
+        $this->update();
+        $model->update();
+
+        return $this->training_percentage;
     }
 }

@@ -39,6 +39,13 @@ class CreateTrainingsTable extends Migration
             $table->foreign('dataset_id_test')
                     ->references('id')->on('datasets')
                     ->onDelete('set null');
+
+
+            // processing node
+            $table->unsignedBigInteger('processing_node_id')->nullable();
+            $table->foreign('processing_node_id')
+                    ->references('id')->on('nodes')
+                    ->onDelete('set null');
                     
             // training info
             $table->string("train_description")->nullable();

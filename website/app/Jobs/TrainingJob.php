@@ -6,6 +6,7 @@ use App\Training;
 use App\Network;
 use App\Dataset;
 use App\User;
+use App\Node;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -154,12 +155,22 @@ class TrainingJob implements ShouldQueue
             $this->training->status = "paused";
             $this->training->in_queue = false;
             $this->training->process_pid = NULL;
+            $node = Node::find($this->training->processing_node_id);
+            $node->running_trainings--;
+            $node->update();
+            $this->training->processing_node_id = NULL;
             $this->training->update();
             //throw $exception;     // do not fail the job
         }
         
         // Training STOP PROCESS status Exception
         if($exception->getCode() == self::THROW_STOPPROCESS){
+            if($this->training->status != "paused"){
+                $node = Node::find($this->training->processing_node_id);
+                $node->running_trainings--;
+                $node->update();
+                $this->training->processing_node_id = NULL;
+            }
             $this->training->return_message = $exception->getMessage();
             $this->training->status = "stopped";
             $this->training->in_queue = false;
@@ -176,6 +187,10 @@ class TrainingJob implements ShouldQueue
             $this->training->in_queue = false;
             $this->training->evaluation_in_progress = false;
             $this->training->process_pid = NULL;
+            $node = Node::find($this->training->processing_node_id);
+            $node->running_trainings--;
+            $node->update();
+            $this->training->processing_node_id = NULL;
             $this->training->update();
 
             //delete model from checkpoint path
