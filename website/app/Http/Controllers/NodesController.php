@@ -150,6 +150,7 @@ class NodesController extends Controller
             $node->gpu_details = $hw_info['gpu']["model"];
             $node->total_ram = $hw_info['ram']["total"];
         }else{
+            $node->status = 0;
             $node->cpu_description = NULL;
             $node->cpu_numbers = NULL;
             $node->gpu_details = NULL;

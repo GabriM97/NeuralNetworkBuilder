@@ -107,7 +107,7 @@ class Training extends Model
 
                 while($this->manageTrainingInfo($user, $model, $pid, $exec_epochs, $epoch_index, $acc_index, $loss_index, $val_acc_index, $val_loss_index, $ip_addr) < 1){
                     // CHECK HERE TRAINING STATUS
-                    sleep(1);   //update records each second
+                    //sleep(1);   //update records each second
                 }
                 
                 $node->running_trainings--;

@@ -436,7 +436,7 @@ class TrainingsController extends Controller
             try {
                 $training_pid = $training->process_pid;
                 if(!posix_kill($training_pid, 9))   // SIGKILL
-                    throw new Exception("Error sending Pause signal.");
+                    throw new Exception("Error sending Stop signal.");
 
             } catch (Exception $err) {
                 $training->status = "error";
