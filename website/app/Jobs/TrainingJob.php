@@ -92,6 +92,7 @@ class TrainingJob implements ShouldQueue
             if(!$this->training->evaluation_in_progress){
                 $this->training->startTraining($this->user, $this->model, $this->dataset_training);
                 $this->training->process_pid = NULL;
+                $this->training->processing_node_id = NULL;
                 $this->training->update();
             }
 

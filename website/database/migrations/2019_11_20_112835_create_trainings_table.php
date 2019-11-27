@@ -62,6 +62,7 @@ class CreateTrainingsTable extends Migration
             $table->boolean('in_queue')->default(false);
             $table->boolean('evaluation_in_progress')->default(false);
             $table->integer('process_pid')->nullable();
+            $table->enum('training_node_signal', ['stopprocess', 'setpause'])->nullable();
 
             // info model checkpoints
             $table->string('checkpoint_filepath')->nullable();

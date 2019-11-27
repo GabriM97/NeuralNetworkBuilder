@@ -42,7 +42,13 @@
 							<i class="text-danger fas fa-circle mr-2"></i>OFF
 						@endif
 					</div>
-                    <div class="col-md-2 align-self-center">{{$node->ip_address}}</div>
+                    <div class="col-md-2 align-self-center">
+                        @if ($node->is_webserver)
+                            <span class="bg-danger">{{$node->ip_address}}</span>
+                        @else
+                            {{$node->ip_address}}
+                        @endif
+                    </div>
                     <div class="col-md-1 align-self-center">
                         @if($node->cpu_numbers != NULL)
                             {{$node->cpu_numbers}}

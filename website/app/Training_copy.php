@@ -111,34 +111,33 @@ class Training extends Model
                                                 $val_acc_index, $val_loss_index, $ip_addr) < 1){
                     sleep(1);
                     
-                    //Check process status
-                    $client = new Client();
-                    $params = [
-                        'query' => [
-                            "training_id" => $this->id,
-                            "process_pid" => $this->process_pid,
-                        ]
-                    ];
-                    $result = $client->request('GET', "http://$ip_addr:5050/checkStatus?training_id=$this->id&process_pid=$this->process_pid");
-                    $res = $result->getBody();
                     $signal = $this->training_node_signal;
-
-                    if(strpos(strtolower($res), "error") !== false){
-                        throw new Exception("Error checking training status on node $ip_addr: $res");
-                    
                     // Stop the process
-                    }elseif((strpos(strtolower($res), "stop") !== false) && $this->training_node_signal == "stopprocess"){
+                    if($signal == "stopprocess"){
                         $this->training_node_signal = NULL;
                         $this->update();
                         throw new Exception("Training stopped. You cannot resume the training.", self::THROW_STOPPROCESS);
-                    
-                    // "Pause" the process
-                    }elseif((strpos(strtolower($res), "pause") !== false) && $this->training_node_signal == "setpause"){
+                    }elseif($signal == "setpause"){     // "Pause" the process
                         $this->training_node_signal = NULL;
                         $this->update();
                         throw new Exception("Training paused. Click 'Resume' button to resume your training from the last saved model.", self::THROW_SETPAUSE);
+                    }else{
+                        //Check process status
+                        $client = new Client();
+                        $result = $client->request('GET', "http://$ip_addr:5050/checkStatus", [
+                            'query' => [
+                                "process_pid=$this->process_pid",
+                                "training_id=$this->id",
+                                ]
+                        ]);
+                        $res = $result->getBody();
+                        if(strpos(strtolower($res), "error") !== false)
+                            throw new Exception("Error checking training status on node $ip_addr: $res");
+                        else
+                            if((strpos(strtolower($res), "stop") !== false) || (strpos(strtolower($res), "kill") !== false))  // process does not exists or is not running
+                                if($this->training_node_signal === NULL)
+                                    break;  //exit the while loop
                     }
-
                 }
                 $node->running_trainings--;
                 $node->update();

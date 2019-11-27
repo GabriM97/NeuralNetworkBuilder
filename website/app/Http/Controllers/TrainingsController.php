@@ -6,7 +6,12 @@ use App\Training;
 use App\Network;
 use App\Dataset;
 use App\User;
+use App\Node;
 use App\Jobs\TrainingJob;
+
+use Exception;
+use GuzzleHttp\Client;
+use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -14,10 +19,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
-use GuzzleHttp\Client;
-
-use Carbon\Carbon;
-use Exception;
 
 class TrainingsController extends Controller
 {
@@ -356,7 +357,7 @@ class TrainingsController extends Controller
             ->onQueue($user->getRank());
 
         $training->in_queue = true;
-        $training->return_message = "Training is in queue. It will be scheduled as soon as possible based on your Account Type.";   //add "... Account Type ($user->rank)." with it's type-name
+        $training->return_message = "Training is in queue. It will be scheduled as soon as possible";   //add "... Account Type ($user->rank)." with it's type-name
         $training->training_percentage = 0;     // not necessary
         if(!$network->is_trained){
             $network->is_trained = true;
@@ -380,15 +381,33 @@ class TrainingsController extends Controller
         if(((Auth::user()->id !== $user->id) && (Auth::user()->rank !== -1)) || $training->status != 'started' || $request->_type != 'pause' || $training->evaluation_in_progress)
             return redirect(route('trainings.show', compact("user", "training")));
 
+        $node = Node::find($training->processing_node_id);
+        $ip_addr = $node->ip_address;
+        $training_pid = $training->process_pid;
         try {
-            $training_pid = $training->process_pid;
-            if(!posix_kill($training_pid, 15))   // SIGTERM
-                throw new Exception("Error sending Pause signal.");
+            if(!$node->is_webserver){
+                $training->training_node_signal = "setpause";
+                $training->update();
 
+                $client = new Client();
+                $result = $client->request('POST', "http://$ip_addr:5050/pause", [
+                    'form_params' => [
+                        'training_id' => $training->id,
+                        'pid' => $training_pid,
+                    ]
+                ]);
+                $output = $result->getBody();
+                if(strpos(strtolower($output), "error") !== false){
+                    throw new Exception("Error sending Pause signal to node $ip_addr: $output");
+                }
+            }else{
+                if(!posix_kill($training_pid, 15))   // SIGTERM
+                    throw new Exception("Error sending Pause signal.");
+            }
         } catch (Exception $err) {
+            //$training->status = "error";
             $training->return_message = $err->getMessage()." Could not pause the training.";
             $training->update();
-            //throw $err;
         }
 
         // move the model from user checkpoint path to user public dir
@@ -401,7 +420,7 @@ class TrainingsController extends Controller
         } catch (\Throwable $th) {
             Storage::move("public/".$model->local_path.".backup", "public/".$model->local_path);
         }
-        Storage::setVisibility("public/$model->local_path", 'public');
+        //Storage::setVisibility("public/$model->local_path", 'public');
 
         // Update user->available_space with new model_size
         $model_size_after = Storage::size("public/".$model->local_path);
@@ -433,13 +452,31 @@ class TrainingsController extends Controller
             
         if($training->status == 'started'){
             $training->executed_epochs = 0;
+            $node = Node::find($training->processing_node_id);
+            $ip_addr = $node->ip_address;
+            $training_pid = $training->process_pid;
             try {
-                $training_pid = $training->process_pid;
-                if(!posix_kill($training_pid, 9))   // SIGKILL
-                    throw new Exception("Error sending Stop signal.");
+                if(!$node->is_webserver){
+                    $training->training_node_signal = "stopprocess";
+                    $training->update();
 
+                    $client = new Client();
+                    $result = $client->request('POST', "http://$ip_addr:5050/stop", [
+                        'form_params' => [
+                            'training_id' => $training->id,
+                            'pid' => $training_pid,
+                        ]
+                    ]);
+                    $output = $result->getBody();
+                    if(strpos(strtolower($output), "error") !== false){
+                        throw new Exception("Error sending Stop signal to node $ip_addr: $output");
+                    }
+                }else{
+                    if(!posix_kill($training_pid, 9))   // SIGKILL
+                        throw new Exception("Error sending Stop signal.");
+                }
             } catch (Exception $err) {
-                $training->status = "error";
+                //$training->status = "error";
                 $training->return_message = $err->getMessage()." Could not stop the training.";
                 $training->update();
             }
@@ -461,7 +498,7 @@ class TrainingsController extends Controller
         } catch (\Throwable $th) {
             Storage::move("public/".$model->local_path.".backup", "public/".$model->local_path);
         }
-        Storage::setVisibility("public/$model->local_path", 'public');
+        //Storage::setVisibility("public/$model->local_path", 'public');
 
         // Update user->available_space with new model_size
         $model_size_after = Storage::size("public/".$model->local_path);
@@ -501,7 +538,7 @@ class TrainingsController extends Controller
             ->onQueue($user->getRank());
 
         $training->in_queue = true;
-        $training->return_message = "Training is in queue. It will be scheduled as soon as possible based on your Account Type.";   //add "... Account Type ($user->rank)." with it's type-name
+        $training->return_message = "Training is in queue. It will be scheduled as soon as possible.";
         $training->update();
 
         return redirect(route("trainings.show", compact("user", "training")));

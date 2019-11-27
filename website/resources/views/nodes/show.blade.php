@@ -58,7 +58,13 @@
 
         <div class="row my-2 px-5">
             <div class="col-md-6 text-md-right align-self-center font-weight-bold">IP Address</div>
-            <div class="col-md-6 text-break align-self-center">{{ $node->ip_address }}</div>
+            <div class="col-md-6 text-break align-self-center">
+                @if ($node->is_webserver)
+                    <span class="bg-danger">{{$node->ip_address}}</span>
+                @else
+                    {{$node->ip_address}}
+                @endif    
+            </div>
         </div>
 
         <div class="row my-2 px-5">
