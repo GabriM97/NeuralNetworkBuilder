@@ -157,12 +157,12 @@ def checkProcessStatus():
 					print("STOP")
 					return "STOP"
 				if(not setstop[training_id] and not setstop[training_id]):	# END?
-					print("EXIT")
+					print(proc_status + " - EXIT")
 					return "EXIT"
-			print("OK (ERROR? ENDED?)")
+			print(proc_status + " - OK")
 			return "OK"
 		else:	# process does not exists
-			print("EXIT")
+			print(proc_status + " - EXIT")
 			return "EXIT"
 	except Exception as err:
 		print(str(err))

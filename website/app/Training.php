@@ -106,10 +106,12 @@ class Training extends Model
                 $handle = fopen(storage_path()."/app/".$this->filepath_epochs_log, "w");
                 fclose($handle);
 
+                $exit_cond = true;
                 while($this->manageTrainingInfo($user, $model, $pid, $exec_epochs, 
                                                 $epoch_index, $acc_index, $loss_index, 
-                                                $val_acc_index, $val_loss_index, $ip_addr) < 1){
+                                                $val_acc_index, $val_loss_index, $ip_addr) < 1 && $exit_cond){
                     sleep(1);
+                    $exit_cond = true;
                     
                     //Check process status
                     $client = new Client();
@@ -123,6 +125,7 @@ class Training extends Model
                     $res = $result->getBody();
                     $signal = $this->training_node_signal;
 
+                    error_log("\n\n\n--------$res-------$signal-------\n\n\n");
                     if(strpos(strtolower($res), "error") !== false){
                         throw new Exception("Error checking training status on node $ip_addr: $res");
                     
@@ -137,6 +140,9 @@ class Training extends Model
                         $this->training_node_signal = NULL;
                         $this->update();
                         throw new Exception("Training paused. Click 'Resume' button to resume your training from the last saved model.", self::THROW_SETPAUSE);
+                    
+                    }elseif((strpos(strtolower($res), "exit") !== false) && $this->training_node_signal == NULL){
+                        //$exit_cond = false;
                     }
 
                 }
@@ -193,6 +199,7 @@ class Training extends Model
             throw new Exception($process->getErrorOutput());
 
         } catch (ProcessSignaledException $err){
+            print("\n\n\n---------------------------\n\n\n".$err->getCode());
             if($process->getTermSignal() == SIGTERM)
                 throw new Exception("Training paused. Click 'Resume' button to resume your training from the last saved model.", self::THROW_SETPAUSE);
             else 
@@ -201,6 +208,7 @@ class Training extends Model
                 else
                     throw new Exception($process->getErrorOutput());
         } catch (Exception $err){
+            print("\n\n\n---------------------------\n\n\n".$err->getCode());
             if($err->getCode() == self::THROW_CANTRUN){
                 $node->running_trainings++;     //it will be decremented in TrainingJob on_fail() method
                 $node->update();

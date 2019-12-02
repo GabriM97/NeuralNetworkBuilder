@@ -10,7 +10,7 @@
 
 3. Add the folder to share and which hosts can access the directory. <br>
 Add the following line at the end of `/etc/exports`: <br>
-`#> echo "/PATH/TO/REPO/NeuralNetworkBuilder/website/storage/app 192.168.1.0/24(rw,no_root_squash)" >> /etc/exports` <br>
+`#> echo "/PATH/TO/REPO/NeuralNetworkBuilder/website/storage/app 192.168.1.0/24(rw,no_root_squash,no_wdelay,async)" >> /etc/exports` <br>
 
 4. Start NFS service and NFS Server: <br>
 `#> systemctl start rpcbind nfs-server` <br>

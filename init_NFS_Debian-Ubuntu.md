@@ -9,7 +9,7 @@
 
 3. Add the folder to share and which hosts can access the directory. <br>
 Add the following line to the end of `/etc/exports`: <br>
-`#> echo "/PATH/TO/REPO/NeuralNetworkBuilder/website/storage/app 192.168.1.0/24(rw,no_root_squash)" >> /etc/exports` <br>
+`#> echo "/PATH/TO/REPO/NeuralNetworkBuilder/website/storage/app 192.168.1.0/24(rw,no_root_squash,no_wdelay,async)" >> /etc/exports` <br>
 
 4. Restart the server to read the new settings: <br>
 `#> systemctl restart nfs-server` <br>
