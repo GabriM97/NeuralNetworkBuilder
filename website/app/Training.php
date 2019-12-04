@@ -107,11 +107,11 @@ class Training extends Model
                 fclose($handle);
 
                 $exit_cond = true;
+                //$counter = 0;
                 while($this->manageTrainingInfo($user, $model, $pid, $exec_epochs, 
                                                 $epoch_index, $acc_index, $loss_index, 
                                                 $val_acc_index, $val_loss_index, $ip_addr) < 1 && $exit_cond){
                     sleep(1);
-                    $exit_cond = true;
                     
                     //Check process status
                     $client = new Client();
@@ -125,24 +125,37 @@ class Training extends Model
                     $res = $result->getBody();
                     $signal = $this->training_node_signal;
 
-                    error_log("\n\n\n--------$res-------$signal-------\n\n\n");
+                    /*
+                    if($counter >= 20){
+                        throw new Exception("Response: $res - Process_status: ".$this->training_node_signal);
+                    }
+                    $counter++;
+                    */
+                                        
                     if(strpos(strtolower($res), "error") !== false){
+                        $this->training_node_signal = NULL;
+                        $this->update();
+                        $exit_cond = false;
                         throw new Exception("Error checking training status on node $ip_addr: $res");
-                    
+
                     // Stop the process
                     }elseif((strpos(strtolower($res), "stop") !== false) && $this->training_node_signal == "stopprocess"){
                         $this->training_node_signal = NULL;
                         $this->update();
+                        $exit_cond = false;
                         throw new Exception("Training stopped. You cannot resume the training.", self::THROW_STOPPROCESS);
                     
                     // "Pause" the process
                     }elseif((strpos(strtolower($res), "pause") !== false) && $this->training_node_signal == "setpause"){
                         $this->training_node_signal = NULL;
                         $this->update();
+                        $exit_cond = false;
                         throw new Exception("Training paused. Click 'Resume' button to resume your training from the last saved model.", self::THROW_SETPAUSE);
                     
                     }elseif((strpos(strtolower($res), "exit") !== false) && $this->training_node_signal == NULL){
-                        //$exit_cond = false;
+                        $exit_cond = false;
+                        if($this->training_percentage < 1) //training not completed
+                            throw new Exception("Training Error. Try again with different settings/datasets.");
                     }
 
                 }

@@ -16,7 +16,7 @@ class AddServerNode extends Migration
         DB::table('nodes')->insert([
             [
                 'description' => 'Web Server',
-                'ip_address' => '192.168.1.184',
+                'ip_address' => '127.0.0.1',
                 'is_webserver' => true,
                 'created_at' => DB::raw('now()'),
                 'updated_at' => DB::raw('now()'),
